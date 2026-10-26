@@ -1,0 +1,121 @@
+/* SetupViz shared look: quiet, monochrome, editorial. Loaded by every page. */
+/* Geist is declared here, in the blocking sheet, with optional. A stylesheet that
+   arrives after first paint (media=print, or a late Google CSS file) makes Chrome
+   swap an "optional" face whenever the file shows up. */
+@font-face{
+  font-family:'Geist';
+  font-style:normal;
+  font-weight:100 900;
+  font-display:optional;
+  src:url('/fonts/geist-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Geist Mono';
+  font-style:normal;
+  font-weight:400;
+  font-display:optional;
+  src:url('/fonts/geist-mono-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+/* Advance widths of the site's text in Geist latin vs Arimo, so the fallback occupies the same space.
+   optional: a local() face that resolves after first paint must not widen text and wrap a line. */
+@font-face{
+  font-family:'Geist Fallback';
+  src:local('Arial'),local('Arimo'),local('Liberation Sans');
+  size-adjust:103.40%;
+  ascent-override:97.19%;
+  descent-override:28.53%;
+  line-gap-override:0%;
+  font-display:optional;
+}
+@font-face{
+  font-family:'Geist Mono Fallback';
+  src:local('Courier New'),local('Cousine'),local('Liberation Mono');
+  size-adjust:99.98%;
+  ascent-override:100.52%;
+  descent-override:29.50%;
+  line-gap-override:0%;
+  font-display:optional;
+}
+:root{
+  --bg:#121212;
+  --panel:#171717;
+  --panel-2:#1C1C1C;
+  --raise:#232323;
+  --line:rgba(255,255,255,0.08);
+  --line-2:rgba(255,255,255,0.14);
+  --line-3:rgba(255,255,255,0.28);
+  --text:#EDEDED;
+  --muted:#8F8F8F;
+  --dim:#5E5E5E;
+  --ink:#121212;
+  --font:'Geist','Geist Fallback',-apple-system,BlinkMacSystemFont,system-ui,'Helvetica Neue',sans-serif;
+  --mono:'Geist Mono','Geist Mono Fallback',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased}
+a{color:var(--text);text-decoration:none}
+a:hover{color:#FFFFFF}
+button{font-family:inherit}
+::selection{background:#EDEDED;color:#121212}
+
+/* top bar */
+.sv-nav{position:sticky;top:0;z-index:20;background:rgba(18,18,18,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sv-nav-in{max-width:1200px;margin:0 auto;padding:12px 24px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.sv-brand{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:500;letter-spacing:-0.01em}
+.sv-links{display:flex;align-items:center;gap:4px;font-size:14px}
+.sv-links a.l{height:32px;min-height:24px;padding:0 12px;display:inline-flex;align-items:center;color:var(--muted);border-radius:999px}
+.sv-links a.l:hover{color:var(--text)}
+.nav-short{display:none}
+.sv-links .nav-cta{margin-left:8px}
+@media (max-width:540px){
+  .sv-nav-in{flex-wrap:nowrap;align-items:flex-start;padding:8px 10px;gap:6px}
+  .sv-links{flex-wrap:nowrap;align-items:flex-start;gap:2px}
+  .nav-full{display:none}
+  .nav-short{display:inline}
+  .sv-brand,.sv-links a{height:32px}
+  .sv-links a.l{padding:0 6px}
+  .sv-links .nav-cta{margin-left:2px;padding:0 8px}
+}
+
+/* pill buttons */
+.pill{height:36px;min-height:24px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;border:1px solid transparent;font:400 14px/1 var(--font);cursor:pointer;white-space:nowrap;transition:background-color .15s,border-color .15s,color .15s}
+.pill-lg{height:44px;min-height:44px;padding:0 20px;font-size:15px}
+.pill-sm{height:30px;min-height:24px;padding:0 12px;font-size:13px}
+.pill-light{background:#EDEDED;color:var(--ink)}
+.pill-light:hover{background:#FFFFFF;color:var(--ink)}
+.pill-dark{background:var(--panel-2);border-color:var(--line);color:var(--text)}
+.pill-dark:hover{background:var(--raise);border-color:var(--line-2);color:var(--text)}
+.pill-ghost{background:transparent;color:var(--muted)}
+.pill-ghost:hover{color:var(--text)}
+.arrow{font-size:.95em;opacity:.8}
+
+/* type */
+.eyebrow{font-size:14px;color:var(--muted)}
+.lede{font-size:clamp(20px,2vw,26px);line-height:1.25;font-weight:400;letter-spacing:-0.015em;margin:0}
+.lede .g,.g{color:var(--muted)}
+
+/* app window frame, used for product shots */
+.win{border-radius:12px;background:var(--panel);border:1px solid var(--line-2);box-shadow:0 40px 100px rgba(0,0,0,0.55),0 0 0 1px rgba(0,0,0,0.4);overflow:hidden}
+.win-bar{height:34px;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+.win-bar i{width:9px;height:9px;border-radius:50%;background:#2E2E2E;display:inline-block}
+.win-bar span{flex:1;text-align:center;margin-right:36px}
+
+/* the grainy gray stage a window sits on */
+.stage{position:relative;border-radius:16px;overflow:hidden;background-color:#1A1A1A;background-image:
+  radial-gradient(120% 90% at 15% 0%,rgba(255,255,255,0.09),transparent 60%),
+  radial-gradient(90% 80% at 100% 100%,rgba(0,0,0,0.55),transparent 60%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* desk drawing, shared by landing, builder and share */
+.desk-dots{background-color:#141414;background-image:radial-gradient(rgba(255,255,255,0.09) 1px,transparent 1.2px)}
+
+/* affiliate disclosure, shown at the foot of every page */
+.sv-disclosure{max-width:1200px;margin:0 auto;padding:16px 24px 32px;box-sizing:border-box;font-size:12px;line-height:24px;min-height:24px;color:#8F8F8F;text-align:center}
+@media (pointer:coarse){
+  .sv-links a.l,.pill,.pill-sm,.pill-lg,.sv-brand,.brand{min-height:44px;min-width:44px}
+  .sv-links a.l,.pill,.pill-sm,.pill-lg{height:44px}
+  a.pill{animation:none;transform:none}
+  .sv-disclosure{min-height:44px}
+}

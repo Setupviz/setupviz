@@ -1,0 +1,16 @@
+[
+  {"name": "Logitech G Pro X Superlight", "length_mm": 125.0, "width_mm": 63.5, "height_mm": 40.0, "weight_g": 63, "shape": "symmetrical", "hump": "center", "in_shop": true},
+  {"name": "Logitech G305", "length_mm": 116.6, "width_mm": 62.2, "height_mm": 38.2, "weight_g": 99, "shape": "symmetrical", "hump": "center", "in_shop": true},
+  {"name": "Logitech G502 X", "length_mm": 131.4, "width_mm": 79.2, "height_mm": 41.1, "weight_g": 89, "shape": "ergonomic", "hump": "rear", "in_shop": true},
+  {"name": "Logitech MX Master 3S", "length_mm": 124.9, "width_mm": 84.3, "height_mm": 51.0, "weight_g": 141, "shape": "ergonomic", "hump": "rear", "in_shop": true},
+  {"name": "Razer Viper V2 Pro", "length_mm": 126.7, "width_mm": 57.6, "height_mm": 37.8, "weight_g": 58, "shape": "symmetrical", "hump": "center", "in_shop": true},
+  {"name": "Razer DeathAdder V3", "length_mm": 128.0, "width_mm": 68.0, "height_mm": 44.0, "weight_g": 59, "shape": "ergonomic", "hump": "rear", "in_shop": true},
+  {"name": "Razer Basilisk V3", "length_mm": 130.0, "width_mm": 60.0, "height_mm": 42.5, "weight_g": 101, "shape": "ergonomic", "hump": "rear", "in_shop": true},
+  {"name": "Zowie EC2-C", "length_mm": 120.0, "width_mm": 64.0, "height_mm": 40.0, "weight_g": 73, "shape": "ergonomic", "hump": "rear", "in_shop": true},
+  {"name": "Glorious Model O", "length_mm": 128.0, "width_mm": 66.0, "height_mm": 37.5, "weight_g": 67, "shape": "symmetrical", "hump": "center", "in_shop": true},
+  {"name": "Pulsar X2", "length_mm": 120.4, "width_mm": 63.0, "height_mm": 38.0, "weight_g": 52, "shape": "symmetrical", "hump": "rear", "in_shop": true},
+  {"name": "Lamzu Atlantis", "length_mm": 119.6, "width_mm": 63.8, "height_mm": 38.2, "weight_g": 55, "shape": "symmetrical", "hump": "rear", "in_shop": true},
+  {"name": "SteelSeries Rival 3", "length_mm": 120.6, "width_mm": 58.3, "height_mm": 37.9, "weight_g": 77, "shape": "symmetrical", "hump": "rear", "in_shop": true},
+  {"name": "Logitech G Pro Wireless", "length_mm": 125.0, "width_mm": 63.5, "height_mm": 40.0, "weight_g": 80, "shape": "symmetrical", "hump": "center", "in_shop": false},
+  {"name": "Razer DeathAdder Elite", "length_mm": 127.0, "width_mm": 70.0, "height_mm": 44.0, "weight_g": 105, "shape": "ergonomic", "hump": "rear", "in_shop": false}
+]

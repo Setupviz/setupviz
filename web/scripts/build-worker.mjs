@@ -1,5 +1,10 @@
-// Build the production Worker from the site files at the repo root.
+// Build the production Worker from the site files in this folder.
 // Writes a module whose fetch handler serves those files. Does not deploy.
+//
+// The handler in worker-runtime.js is the routing from the Worker deployed
+// on 2026-10-21: www to apex, / and /index to /home, extensionless paths,
+// /preview, security headers, the public Cloudflare Web Analytics beacon
+// on setupviz.com, and the 404 page in ../404.html.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,11 +20,17 @@ const files = [
   'hand.html',
   'share.html',
   'use.html',
+  'privacy.html',
+  'terms.html',
+  'disclosure.html',
   'sv.css',
   'data.js',
   'favicon.svg',
   'favicon.ico',
+  'apple-touch-icon.png',
   'og-desk.png',
+  'sitemap.xml',
+  'robots.txt',
   'fonts/geist-latin.woff2',
   'fonts/geist-mono-latin.woff2',
 ];
@@ -31,6 +42,8 @@ const mime = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.png': 'image/png',
+  '.xml': 'application/xml',
+  '.txt': 'text/plain',
   '.woff2': 'font/woff2',
 };
 
@@ -41,20 +54,15 @@ const entries = files.map((name) => {
   return `  ${JSON.stringify('/' + name)}: [${JSON.stringify(type)}, ${JSON.stringify(body.toString('base64'))}]`;
 });
 
+const notFound = readFileSync(join(root, '404.html')).toString('base64');
+const runtime = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'worker-runtime.js'), 'utf8');
+if (!runtime.startsWith('function b(s)')) throw new Error('worker-runtime.js is not the fetch handler');
+
 const source = `const F={
 ${entries.join(',\n')}
 };
-function b(s){const x=atob(s);const u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u;}
-export default{async fetch(req){const url=new URL(req.url);
-if(url.hostname==='www.setupviz.com'){url.hostname='setupviz.com';return Response.redirect(url.toString(),301);}
-let p=decodeURIComponent(url.pathname);
-if(p==='/preview'||p.startsWith('/preview/'))p=p.slice('/preview'.length)||'/';
-if(p.endsWith('/'))p+='index.html';
-let f=F[p]||F[p+'.html'];
-if(!f)return new Response('Not found',{status:404,headers:{'content-type':'text/plain'}});
-let ct=f[0];if(ct.startsWith('text/')||ct.includes('javascript'))ct+='; charset=utf-8';
-return new Response(b(f[1]),{headers:{'content-type':ct,'cache-control':'public, max-age=300'}});}};
-`;
+const NF=${JSON.stringify(notFound)};
+${runtime.endsWith('\n') ? runtime : runtime + '\n'}`;
 
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, source);

@@ -3,26 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SetupViz — See your desk setup to scale before you buy</title>
-<meta name="description" content="Enter your desk and hand size. Get a keyboard, mouse, pad and monitor that fit, shown on your desk to scale.">
-<link rel="canonical" href="https://setupviz.com/hand.html">
-<meta property="og:title" content="SetupViz — See your desk setup to scale before you buy">
-<meta property="og:description" content="Enter your desk and hand size. Get a keyboard, mouse, pad and monitor that fit, shown on your desk to scale.">
+<title>Your hand size | SetupViz</title>
+<meta name="description" content="A quick hand measurement so the mouse sizes in your setup fit your hand.">
+<link rel="canonical" href="https://setupviz.com/hand">
+<meta property="og:title" content="Your hand size | SetupViz">
+<meta property="og:description" content="A quick hand measurement so the mouse sizes in your setup fit your hand.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://setupviz.com/hand.html">
+<meta property="og:url" content="https://setupviz.com/hand">
 <meta property="og:site_name" content="SetupViz">
 <meta property="og:image" content="https://setupviz.com/og-desk.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SetupViz — See your desk setup to scale before you buy">
-<meta name="twitter:description" content="Enter your desk and hand size. Get a keyboard, mouse, pad and monitor that fit, shown on your desk to scale.">
+<meta name="twitter:title" content="Your hand size | SetupViz">
+<meta name="twitter:description" content="A quick hand measurement so the mouse sizes in your setup fit your hand.">
 <meta name="twitter:image" content="https://setupviz.com/og-desk.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="sv.css">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/sv.css">
 <style>
 body{margin:0;background:#121212;color:#EDEDED;font-family:var(--font)}
 a{color:#EDEDED;text-decoration:none}
 .wrap{min-height:100vh;display:flex;flex-direction:column}
-.hdr{width:100%;max-width:1200px;margin:0 auto;padding:14px 24px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.hdr{width:100%;max-width:var(--sv-content);margin:0 auto;padding:14px 24px;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-end;gap:16px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:500;font-size:15px;letter-spacing:-0.01em}
 .btn{height:40px;min-height:24px;padding:0 18px;display:inline-flex;align-items:center;border-radius:999px;font-size:14px;font-weight:400;cursor:pointer;border:0;font-family:inherit;transition:background-color .15s,color .15s}
 .btn-primary{background:#EDEDED;color:#121212}.btn-primary:hover{background:#FFFFFF;color:#121212}
@@ -47,10 +48,18 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
 </style>
 </head>
 <body>
+<nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
+  <a href="/home" class="sv-brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" stroke="#EDEDED" stroke-width="2"/><rect x="6" y="12" width="8" height="3" rx="1.5" fill="#EDEDED"/><rect x="16" y="11" width="2.5" height="4" rx="1.25" fill="#8F8F8F"/></svg>SetupViz</a>
+  <div class="sv-links">
+    <a class="l" href="/home#story" aria-label="How it works"><span class="nav-full">How it works</span></a>
+    <a class="l" href="/home#checks" aria-label="Checks we run"><span class="nav-full">Checks we run</span></a>
+    <a class="l" href="/builder" aria-label="Builder">Builder</a>
+  </div>
+  <a class="pill pill-light pill-sm nav-cta" href="/desk" aria-label="Find my setup"><span class="nav-full">Find my setup</span></a>
+</div></nav>
 <div class="wrap">
   <header class="hdr">
-    <a href="index.html" class="brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" stroke="#EDEDED" stroke-width="2"/><rect x="6" y="12" width="8" height="3" rx="1.5" fill="#EDEDED"/><rect x="16" y="11" width="2.5" height="4" rx="1.25" fill="#8F8F8F"/></svg>SetupViz</a>
-    <a href="index.html" class="btn btn-outline">Close</a>
+    <a href="/home" class="btn btn-outline">Close</a>
   </header>
   <div class="prog">
     <div class="bars" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></div>
@@ -69,11 +78,12 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
     </div>
   </main>
   <footer>
-    <a href="desk.html" class="btn btn-ghost" style="padding:0 12px">Back</a>
+    <a href="/desk" class="btn btn-ghost" style="padding:0 12px">Back</a>
     <div style="display:flex;gap:8px">
-      <a href="grip.html" class="btn btn-ghost" style="padding:0 14px">Skip</a>
-      <a href="grip.html" class="btn btn-primary">Continue</a>
+      <a href="/grip" class="btn btn-ghost" style="padding:0 14px">Skip</a>
+      <a href="/grip" class="btn btn-primary">Continue</a>
     </div>
+    <div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
   </footer>
 </div>
 <script>

@@ -5,6 +5,7 @@
 // on 2026-10-21: www to apex, / and /index to /home, extensionless paths,
 // /preview, security headers, the public Cloudflare Web Analytics beacon
 // on setupviz.com, and the 404 page in ../404.html.
+// Since then the content security policy is enforced instead of report-only.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

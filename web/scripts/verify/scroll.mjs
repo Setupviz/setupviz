@@ -15,7 +15,9 @@ try {
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       const desktop = innerWidth > 820;
       const target = desktop ? document.querySelector('.mslot.st-2') : el;
-      return { top: document.querySelector('.pin').getBoundingClientRect().top, opacity: Number(getComputedStyle(target).opacity) };
+      const transform = getComputedStyle(target).transform;
+      const translateY = transform === 'none' ? 0 : new DOMMatrix(transform).m42;
+      return { translateY, top: document.querySelector('.pin').getBoundingClientRect().top, opacity: Number(getComputedStyle(target).opacity) };
     }, offset);
     if (width > 820) {
       const early = await sample('.story', 100);
@@ -26,7 +28,7 @@ try {
     } else {
       const early = await sample('.s-2 .win', -795);
       const late = await sample('.s-2 .win', -350);
-      assert.ok(late.opacity - early.opacity > 0.15, 'phone walkthrough responds to scroll');
+      assert.ok(early.translateY - late.translateY > 10, 'phone walkthrough responds to scroll');
     }
     await page.emulateMedia({ reducedMotion: 'reduce' });
     assert.equal(await page.locator('.pin').evaluate(el => getComputedStyle(el).position), 'static');

@@ -191,7 +191,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       </div>
       <div class="deskframe"><div id="desk" aria-busy="true"><div class="skel" id="skel" aria-hidden="true"><span class="skel-piece" style="left:28.07%;top:2.86%;width:43.86%;height:32.86%"></span><span class="skel-piece" style="left:17.86%;top:37.14%;width:64.29%;height:57.14%"></span><span class="skel-piece" style="left:27.14%;top:62.86%;width:25.71%;height:20%"></span><span class="skel-piece" style="left:64.29%;top:61.43%;width:4.57%;height:17.86%"></span></div></div></div>
       <div class="legend muted">
-        <span>Select a piece for details. Drag it to move it.</span>
+        <span id="deskHint">Select a piece for details. Drag it to move it.</span>
         <span class="k"><span><i class="dot" style="background:#5BE38A"></i>Fits</span><span><i class="dot" style="background:#F5C542"></i>Tight</span><span><i class="dot" style="background:#FF6B5B"></i>Won't fit</span><button type="button" class="linkbtn" id="reset">Reset to our picks</button></span>
       </div>
       <div class="status">
@@ -389,7 +389,6 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     render();
   });
 
-  // Drags hold only until the size or a product changes. Both go back to the fresh-desk arrangement.
   function choose(id, pid){
     endPreview(); state.open = null; state.sel = id;
     SV.retarget(DESK, state.pick, state.pos, id, pid);
@@ -439,7 +438,10 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       var visible = id === 'pad' ? (s.kind === 'mat' ? 'Desk mat' : 'Mouse pad') : id === 'monitor' ? 'Monitor stand' : cats[id][0];
       b.setAttribute('aria-label', (visible ? visible + ', ' : '') + s.name + ', ' + words[st[id].lvl].toLowerCase() + '. Drag to move.');
     });
-    if (has('monitor')) SV.drawMonitor(pieceEl.monitor, spec('monitor'));
+    if (has('monitor')) { SV.drawMonitor(pieceEl.monitor, spec('monitor')); SV.markPadContact(pieceEl.monitor, draw.pick, draw.pos); }
+    $('deskHint').textContent = has('monitor') && pieceEl.monitor.querySelector('.pad-contact')
+      ? 'Stripes show where the stand overlaps the ' + (SV.isMat(spec('pad')) ? 'desk mat.' : 'mouse pad.')
+      : 'Select a piece for details. Drag it to move it.';
     if (has('pad')) { pieceEl.pad.classList.toggle('glass', spec('pad').kind === 'glass'); pieceEl.pad.firstChild.textContent = spec('pad').kind === 'mat' ? 'Desk mat' : 'Mouse pad'; }
 
     // tags only for the selected or hovered piece, plus anything that won't fit

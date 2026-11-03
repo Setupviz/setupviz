@@ -407,7 +407,7 @@ footer{border-top:1px solid var(--line)}
       var s = SV.get(c, pick[c]), p = pos[c], el = board.querySelector('[data-cat="' + c + '"]'), f = st[c];
       el.style.left = SV.percentText(p.x, desk.w); el.style.top = SV.percentText(p.y, desk.d); el.style.width = SV.percentText(s.w, desk.w); el.style.height = SV.percentText(s.d, desk.d);
       el.classList.toggle('sel', state.sel === c);
-      if (c === 'monitor') SV.drawMonitor(el, s);
+      if (c === 'monitor') { SV.drawMonitor(el, s); SV.markPadContact(el, pick, pos); }
       var over = SV.overhang(desk, { x: p.x, y: p.y, w: s.w, d: s.d });
       el.classList.toggle('hang', !!over); el.classList.toggle('drag', state.drag === c);
       if (over) { el.style.setProperty('--ol', over.l + '%'); el.style.setProperty('--or', over.r + '%'); el.style.setProperty('--ot', over.t + '%'); el.style.setProperty('--ob', over.b + '%'); }

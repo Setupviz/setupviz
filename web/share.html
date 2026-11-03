@@ -147,7 +147,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
     el.style.left = pct(p.x, S.desk.w); el.style.top = pct(p.y, S.desk.d); el.style.width = pct(s.w, S.desk.w); el.style.height = pct(s.d, S.desk.d);
     var over = SV.overhang(S.desk, { x: p.x, y: p.y, w: s.w, d: s.d });
     if (over) { el.className += ' hang'; el.style.setProperty('--ol', over.l + '%'); el.style.setProperty('--or', over.r + '%'); el.style.setProperty('--ot', over.t + '%'); el.style.setProperty('--ob', over.b + '%'); }
-    if (c === 'monitor') SV.drawMonitor(el, s);
+    if (c === 'monitor') { SV.drawMonitor(el, s); SV.markPadContact(el, S.pick, S.pos); }
     deskEl.appendChild(el);
   });
   var names = on.map(function(c){ return SV.get(c, S.pick[c]).name; });

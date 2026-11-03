@@ -516,8 +516,8 @@
       sum += points[j][0] * points[i][1] - points[i][0] * points[j][1];
     return Math.abs(sum) / 2;
   }
-  function standOverlap(base, rect){
-    if (!overlap(base, rect)) return false;
+  function standIntersection(base, rect){
+    if (!overlap(base, rect)) return [];
     // Clip the footprint to the item's four edges. A shared edge has zero area.
     var points = base.shape;
     function clip(axis, limit, direction){
@@ -537,7 +537,10 @@
     clip(0, (rect.x + rect.w - base.x) * 100 / base.w, -1);
     clip(1, (rect.y - base.y) * 100 / base.d, 1);
     clip(1, (rect.y + rect.d - base.y) * 100 / base.d, -1);
-    return polygonArea(points) > 1e-8;
+    return polygonArea(points) > 1e-8 ? points : [];
+  }
+  function standOverlap(base, rect){
+    return standIntersection(base, rect).length > 0;
   }
   function drawMonitor(el, m){
     if (el.dataset.drawnMonitor === m.id) return;
@@ -553,8 +556,31 @@
     }).join(' ');
     var mount = d - m.base[1] + m.base[1] * (m.standShape === 'tripod' || m.standShape === 'fork' ? .42 : .18);
     el.innerHTML = '<svg class="monitor-plan" aria-hidden="true" viewBox="0 0 ' + w + ' ' + d + '" preserveAspectRatio="none">' +
-      '<polygon class="stand-outline" points="' + stand + '"/><path class="stand-post" d="M' + half + ' ' + mount + ' V' + (front - sag) + '"/>' +
+      '<defs><pattern id="stand-contact-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><rect width="4" height="10" fill="#151515"/></pattern></defs><polygon class="stand-outline" points="' + stand + '"/><path class="stand-post" d="M' + half + ' ' + mount + ' V' + (front - sag) + '"/>' +
       '<path class="panel-housing" d="' + housing + '"/><path class="panel-face" d="' + face + '"/></svg>';
+  }
+  // The overlay uses the same clipped outline as the fit warning, including the gap between feet.
+  function markPadContact(el, pick, pos){
+    var svg = el.querySelector('.monitor-plan'), mark = svg.querySelector('.pad-contact');
+    var pad = pick.pad && get('pad', pick.pad), base = standBox(pick, pos);
+    var points = pad && pos.pad ? standIntersection(base, { x: pos.pad.x, y: pos.pad.y, w: pad.w, d: pad.d }) : [];
+    if (!points.length) {
+      if (mark) { mark.nextElementSibling.remove(); mark.remove(); }
+      return;
+    }
+    if (!mark) {
+      mark = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      mark.setAttribute('class', 'pad-contact');
+      mark.id = 'stand-pad-contact';
+      var stripes = document.createElementNS(mark.namespaceURI, 'use');
+      stripes.setAttribute('href', '#stand-pad-contact');
+      stripes.setAttribute('fill', 'url(#stand-contact-hatch)');
+      svg.append(mark, stripes);
+    }
+    svg.style.fill = isMat(pad) ? '#f5c542' : '#ff6b5b';
+    mark.setAttribute('points', points.map(function(p){
+      return [base.x - pos.monitor.x + p[0] * base.w / 100, base.y - pos.monitor.y + p[1] * base.d / 100].join(',');
+    }).join(' '));
   }
   function standBox(pick, pos){
     var m = size('monitor', pick), front = pos.monitor.y + m.d;
@@ -699,16 +725,15 @@
     if (worse) return pick;
     return next;
   }
-  // A swap re-lays the fresh-desk arrangement. previewSetup copies first so the saved setup stays put.
+  // Compare products in place. Only an added item needs a starting position.
   function retarget(desk, pick, pos, cat, id){
+    var previous = pick[cat];
     pick[cat] = id;
-    if (cat !== 'pad') {
-      var settled = settle(desk, pick);
-      cats.forEach(function(c){ pick[c] = settled[c] || null; });
+    if (!previous || !pos[cat]) pos[cat] = layout(desk, pick)[cat];
+    else if (cat === 'monitor') {
+      var dx = (get(cat, previous).w - get(cat, id).w) / 2;
+      pos[cat] = { x: pos[cat].x + dx, y: pos[cat].y };
     }
-    var laid = layout(desk, pick);
-    ['monitor', 'pad', 'keyboard', 'mouse'].forEach(function(c){ delete pos[c]; });
-    ['monitor', 'pad', 'keyboard', 'mouse'].forEach(function(c){ if (laid[c]) pos[c] = laid[c]; });
     return pos;
   }
   function previewSetup(desk, pick, pos, cat, id){
@@ -925,7 +950,7 @@
     }
   }
 
-  window.SV = { drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
+  window.SV = { markPadContact: markPadContact, drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
     recommend: recommend, omission: omission, matchReason: matchReason, place: place, layout: layout, settle: settle, retarget: retarget, previewSetup: previewSetup, overhang: overhang, overlap: overlap, check: check, encode: encode, decode: decode, usedArea: usedArea,
     deskLimits: deskLimits, defaultDesk: defaultDesk, deskFallbackNotice: deskFallbackNotice,
     parseDeskInput: parseDeskInput, deskMm: deskMm, deskAxisOk: deskAxisOk, deskOk: deskOk, deskField: deskField, savedDesk: savedDesk,

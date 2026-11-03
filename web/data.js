@@ -16,12 +16,44 @@
 //   why, alt
 // }
 (function(){
+  const { deskLimits, defaultDesk, deskFallbackNotice, plain, finiteNum, parseDeskInput, deskMm, deskAxisOk, deskOk, deskRangeMessage, deskField, savedDesk, measureText } = window.SVDesk;
   var catalog = {
     monitor: [
-      { id: 'mon27', name: 'Dell 27 Plus QHD (S2725DS)', brand: 'Dell', model: 'S2725DS', asin: 'B0D3FGFPPB', w: 611, d: 200, base: [248, 180], dims: { w: 611.34, d: 200.38, h: 388.63 }, dimsSource: 'https://dl.dell.com/content/manual2557420-dell-s2725ds-monitor-outline-dimensions.pdf?language=en-us', why: 'Sharp at desk distance, and the stand base is compact.', alt: 'All-round pick' , stockCheckedAt: '2026-10-17' },
-      { id: 'mon24', name: 'Dell 24 Plus (S2425HSM)', brand: 'Dell', model: 'S2425HSM', asin: 'B0G49SZ24N', w: 537.64, d: 201.34, base: [242, 180], dims: { w: 537.64, d: 58.72, h: 313.73 }, dimsSource: 'https://dl.dell.com/content/manual79158351-dell-24-plus-monitor-s2425hsm-outline-dimension.pdf?language=en-us', why: 'A smaller screen. The stand still needs about {201.34} of depth.', alt: 'Smaller screen' , stockCheckedAt: '2026-10-17' },
-      { id: 'mon34', name: 'Dell 34 Plus USB-C curved (S3425DW)', brand: 'Dell', model: 'S3425DW', asin: 'B0F1H325FN', w: 807, d: 222, base: [259, 201.5], dims: { w: 807.32, d: 221.85, h: 411.53 }, dimsSource: 'https://dl.dell.com/content/manual6669801-dell-34-plus-usb-c-monitor-s3425dw-outline-dimension.pdf?language=en-us', why: 'Two windows side by side. It needs a long desk.', alt: 'Wider, needs a long desk' , stockCheckedAt: '2026-10-17' },
-      { id: 'xg27acs', name: 'ASUS ROG Strix 27" QHD (XG27ACS)', brand: 'ASUS', model: 'XG27ACS', asin: 'B0CV24GQ9W', w: 614.81, d: 218.82, base: [266.49, 218.82], dims: { w: 614.81, d: 60.12, h: 367.08 }, dimsSource: 'https://dlcdnets.asus.com/pub/ASUS/LCD%20Monitors/XG27ACS/ASUS_XG27ACS_English.pdf?model=XG27ACS', why: 'A QHD IPS screen at 180 Hz. Its base is hexagonal.', alt: 'Budget QHD', stockCheckedAt: '2026-10-17' }
+      { id: 'mon27', diagonalIn: 27, name: 'Dell 27 Plus QHD (S2725DS)', brand: 'Dell', model: 'S2725DS', asin: 'B0D3FGFPPB', w: 611, d: 200, base: [248, 180], dims: { w: 611.34, d: 200.38, h: 388.63 }, dimsSource: 'https://dl.dell.com/content/manual2557420-dell-s2725ds-monitor-outline-dimensions.pdf?language=en-us', why: 'Sharp at desk distance, and the stand base is compact.', alt: 'All-round pick' , stockCheckedAt: '2026-10-17' },
+      { id: 'mon24', diagonalIn: 23.8, name: 'Dell 24 Plus (S2425HSM)', brand: 'Dell', model: 'S2425HSM', asin: 'B0G49SZ24N', w: 537.64, d: 201.34, base: [242, 180], dims: { w: 537.64, d: 58.72, h: 313.73 }, dimsSource: 'https://dl.dell.com/content/manual79158351-dell-24-plus-monitor-s2425hsm-outline-dimension.pdf?language=en-us', why: 'A smaller screen. The stand still needs about {201.34} of depth.', alt: 'Smaller screen' , stockCheckedAt: '2026-10-17' },
+      { id: 'mon34', diagonalIn: 34, name: 'Dell 34 Plus USB-C curved (S3425DW)', brand: 'Dell', model: 'S3425DW', asin: 'B0F1H325FN', w: 807, d: 222, base: [259, 201.5], dims: { w: 807.32, d: 221.85, h: 411.53 }, dimsSource: 'https://dl.dell.com/content/manual6669801-dell-34-plus-usb-c-monitor-s3425dw-outline-dimension.pdf?language=en-us', why: 'Two windows side by side. It needs a long desk.', alt: 'Wider, needs a long desk' , stockCheckedAt: '2026-10-17' },
+      { id: 'xg27acs', diagonalIn: 27, name: 'ASUS ROG Strix 27" QHD (XG27ACS)', brand: 'ASUS', model: 'XG27ACS', asin: 'B0CV24GQ9W', w: 614.81, d: 218.82, base: [266.49, 218.82], dims: { w: 614.81, d: 60.12, h: 367.08 }, dimsSource: 'https://dlcdnets.asus.com/pub/ASUS/LCD%20Monitors/XG27ACS/ASUS_XG27ACS_English.pdf?model=XG27ACS', why: 'A QHD IPS screen at 180 Hz. Its base is hexagonal.', alt: 'QHD · 180 Hz', stockCheckedAt: '2026-10-17' },
+      {"id": "msig27c4x", "name": "MSI G27C4X", "brand": "MSI", "model": "G27C4X", "diagonalIn": 27, "w": 611.5, "d": 225.4, "base": [452.8, 225.4], "dims": {"w": 611.5, "d": 225.4, "h": 457.9}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G27C4X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msig32c4x", "name": "MSI G32C4X", "brand": "MSI", "model": "G32C4X", "diagonalIn": 31.5, "w": 709.4, "d": 248.7, "base": [452.8, 248.7], "dims": {"w": 709.4, "d": 248.7, "h": 509.4}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G32C4X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msig32c4xs", "name": "MSI G32C4XS", "brand": "MSI", "model": "G32C4XS", "diagonalIn": 31.5, "w": 709.4, "d": 248.7, "base": [452.8, 248.7], "dims": {"w": 709.4, "d": 248.7, "h": 509.4}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G32C4XS.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msimag255pxf", "name": "MSI MAG 255PXF", "brand": "MSI", "model": "MAG 255PXF", "diagonalIn": 24.5, "w": 557.1, "d": 227.9, "base": [308.5, 227.9], "dims": {"w": 557.1, "d": 227.9, "h": 511.9}, "dimsSource": "https://storage-asset.msi.com/specSheet/in/monitor/MAG%20255PXF.pdf", "maxRefreshHz": 300, "alt": "1080p · 300 Hz", "why": "1080p · 300 Hz."},
+      {"id": "msimag255xf", "name": "MSI MAG 255XF", "brand": "MSI", "model": "MAG 255XF", "diagonalIn": 24.5, "asin": "B0DY14C946", "w": 557.1, "d": 220.1, "base": [318.0, 220.1], "dims": {"w": 557.1, "d": 220.1, "h": 418.5}, "dimsSource": "https://storage-asset.msi.com/specSheet/es/monitor/MAG%20255XF.pdf", "maxRefreshHz": 300, "alt": "1080p · 300 Hz", "why": "1080p · 300 Hz."},
+      {"id": "msimag255xfv", "name": "MSI MAG 255XFV", "brand": "MSI", "model": "MAG 255XFV", "diagonalIn": 24.5, "w": 557.1, "d": 220.1, "base": [318.0, 220.1], "dims": {"w": 557.1, "d": 220.1, "h": 418.5}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20255XFV.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msimag271qpqdoledx28", "name": "MSI MAG 271QP QD-OLED X28", "brand": "MSI", "model": "MAG 271QP QD-OLED X28", "diagonalIn": 26.5, "w": 609.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 609.0, "d": 242.0, "h": 416.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20271QP%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "1440p · 280 Hz", "why": "1440p · 280 Hz."},
+      {"id": "msimag271qpxqdoled", "name": "MSI MAG 271QPX QD-OLED", "brand": "MSI", "model": "MAG 271QPX QD-OLED", "diagonalIn": 26.5, "asin": "B0CWPXVQJN", "w": 609.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 609.0, "d": 242.0, "h": 416.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20271QPX%20QD-OLED.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
+      {"id": "msimag272qpqdoledx50", "name": "MSI MAG 272QP QD-OLED X50", "brand": "MSI", "model": "MAG 272QP QD-OLED X50", "diagonalIn": 26.5, "w": 610.31, "d": 241.9, "base": [308.67, 241.9], "dims": {"w": 610.31, "d": 241.9, "h": 532.03}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272QP%20QD-OLED%20X50.pdf", "maxRefreshHz": 500, "alt": "1440p · 500 Hz", "why": "1440p · 500 Hz."},
+      {"id": "msimag272qpwqdoledx28", "name": "MSI MAG 272QPW QD-OLED X28", "brand": "MSI", "model": "MAG 272QPW QD-OLED X28", "diagonalIn": 26.5, "w": 611.1, "d": 241.9, "base": [308.67, 241.9], "dims": {"w": 611.1, "d": 241.9, "h": 532.84}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272QPW%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "1440p · 280 Hz", "why": "1440p · 280 Hz."},
+      {"id": "msimag272urdfe16", "name": "MSI MAG 272URDF E16", "brand": "MSI", "model": "MAG 272URDF E16", "diagonalIn": 27, "asin": "B0FG5ZTC6P", "w": 613.5, "d": 227.9, "base": [308.52, 227.9], "dims": {"w": 613.5, "d": 227.9, "h": 536.3}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272URDF%20E16.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag274cqpdfx32", "name": "MSI MAG 274CQPDF X32", "brand": "MSI", "model": "MAG 274CQPDF X32", "diagonalIn": 27, "w": 613.5, "d": 278.3, "base": [549.9, 278.3], "dims": {"w": 613.5, "d": 278.3, "h": 403.7}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274CQPDF%20X32.pdf", "maxRefreshHz": 400, "alt": "1440p 320 Hz / 720p 400 Hz", "why": "1440p 320 Hz / 720p 400 Hz."},
+      {"id": "msimag274cxf", "name": "MSI MAG 274CXF", "brand": "MSI", "model": "MAG 274CXF", "diagonalIn": 27, "w": 614.0, "d": 250.0, "base": [340.0, 250.0], "dims": {"w": 614.0, "d": 250.0, "h": 438.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274CXF.pdf", "maxRefreshHz": 280, "alt": "1080p · 280 Hz", "why": "1080p · 280 Hz."},
+      {"id": "msimag274qpfx30mv", "name": "MSI MAG 274QPF X30MV", "brand": "MSI", "model": "MAG 274QPF X30MV", "diagonalIn": 27, "w": 613.1, "d": 227.9, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 227.9, "h": 423.53}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QPF%20X30MV.pdf", "maxRefreshHz": 300, "alt": "1440p · 300 Hz", "why": "1440p · 300 Hz."},
+      {"id": "msimag274qpfx32", "name": "MSI MAG 274QPF X32", "brand": "MSI", "model": "MAG 274QPF X32", "diagonalIn": 27, "w": 613.5, "d": 227.9, "base": [308.6, 227.89], "dims": {"w": 613.5, "d": 227.9, "h": 405.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QPF%20X32.pdf", "maxRefreshHz": 320, "alt": "1440p · 320 Hz", "why": "1440p · 320 Hz."},
+      {"id": "msimag274qrfwx32", "name": "MSI MAG 274QRFW X32", "brand": "MSI", "model": "MAG 274QRFW X32", "diagonalIn": 27, "w": 613.5, "d": 227.9, "base": [308.6, 227.89], "dims": {"w": 613.5, "d": 227.9, "h": 405.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QRFW%20X32.pdf", "maxRefreshHz": 320, "alt": "1440p · 320 Hz", "why": "1440p · 320 Hz."},
+      {"id": "msimag274updfe16m", "name": "MSI MAG 274UPDF E16M", "brand": "MSI", "model": "MAG 274UPDF E16M", "diagonalIn": 27, "w": 613.1, "d": 227.9, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 227.9, "h": 423.53}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274UPDF%20E16M.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag275upde14", "name": "MSI MAG 275UPD E14", "brand": "MSI", "model": "MAG 275UPD E14", "diagonalIn": 27, "asin": "B0F6VGYB2Z", "w": 613.3, "d": 227.9, "base": [308.6, 227.9], "dims": {"w": 613.3, "d": 227.9, "h": 534.2}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20275UPD%20E14.pdf", "maxRefreshHz": 288, "alt": "4K 144 Hz / 1080p 288 Hz", "why": "4K 144 Hz / 1080p 288 Hz."},
+      {"id": "msimag276cxf", "name": "MSI MAG 276CXF", "brand": "MSI", "model": "MAG 276CXF", "diagonalIn": 27, "w": 610.5, "d": 249.8, "base": [339.8, 249.7], "dims": {"w": 610.5, "d": 249.8, "h": 451.6}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20276CXF.pdf", "maxRefreshHz": 280, "alt": "1080p · 280 Hz", "why": "1080p · 280 Hz."},
+      {"id": "msimag27c6x", "name": "MSI MAG 27C6X", "brand": "MSI", "model": "MAG 27C6X", "diagonalIn": 27, "w": 610.5, "d": 249.8, "base": [339.8, 249.7], "dims": {"w": 610.5, "d": 249.8, "h": 451.6}, "dimsSource": "https://fr.msi.com/Monitor/MAG-27C6X/Specification", "maxRefreshHz": 250, "alt": "1080p · 250 Hz (OC)", "why": "1080p · 250 Hz (OC)."},
+      {"id": "msimag321cupdf", "name": "MSI MAG 321CUPDF", "brand": "MSI", "model": "MAG 321CUPDF", "diagonalIn": 31.5, "w": 711.0, "d": 267.0, "base": [470.0, 267.0], "dims": {"w": 711.0, "d": 267.0, "h": 534.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20321CUPDF.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag321upde14", "name": "MSI MAG 321UPD E14", "brand": "MSI", "model": "MAG 321UPD E14", "diagonalIn": 31.5, "w": 713.94, "d": 261.89, "base": [308.65, 261.89], "dims": {"w": 713.94, "d": 261.89, "h": 563.85}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20321UPD%20E14.pdf", "maxRefreshHz": 288, "alt": "4K 144 Hz / 1080p 288 Hz", "why": "4K 144 Hz / 1080p 288 Hz."},
+      {"id": "msimag322urdfe16", "name": "MSI MAG 322URDF E16", "brand": "MSI", "model": "MAG 322URDF E16", "diagonalIn": 31.5, "w": 714.08, "d": 227.9, "base": [308.52, 227.9], "dims": {"w": 714.08, "d": 227.76, "h": 564.48}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20322URDF%20E16.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag32c6x", "name": "MSI MAG 32C6X", "brand": "MSI", "model": "MAG 32C6X", "diagonalIn": 31.5, "w": 709.4, "d": 249.8, "base": [339.8, 249.8], "dims": {"w": 709.4, "d": 249.8, "h": 507.2}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%2032C6X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msimag341cqpqdoledx28", "name": "MSI MAG 341CQP QD-OLED X28", "brand": "MSI", "model": "MAG 341CQP QD-OLED X28", "diagonalIn": 34.18, "asin": "B0GVZKCD2F", "w": 811.7, "d": 229.9, "base": [275.5, 229.9], "dims": {"w": 811.7, "d": 229.9, "h": 430.4}, "dimsSource": "https://storage-asset.msi.com/specSheet/uk/monitor/MAG%20341CQP%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "Ultrawide 1440p · 280 Hz", "why": "Ultrawide 1440p · 280 Hz."},
+      {"id": "msimegx", "name": "MSI MEG X", "brand": "MSI", "model": "MEG X", "diagonalIn": 34.18, "w": 811.7, "d": 237.4, "base": [330.7, 237.4], "dims": {"w": 811.7, "d": 237.4, "h": 548.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/de/monitor/MEG%20X.pdf", "maxRefreshHz": 360, "alt": "Ultrawide 1440p · 360 Hz", "why": "Ultrawide 1440p · 360 Hz."},
+      {"id": "msimpg271qrqdoledx50", "name": "MSI MPG 271QR QD-OLED X50", "brand": "MSI", "model": "MPG 271QR QD-OLED X50", "diagonalIn": 26.5, "w": 609.3, "d": 241.9, "base": [308.7, 241.9], "dims": {"w": 609.3, "d": 241.9, "h": 416.1}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20271QR%20QD-OLED%20X50.pdf", "maxRefreshHz": 500, "alt": "1440p · 500 Hz", "why": "1440p · 500 Hz."},
+      {"id": "msimpg271qrxqdoled", "name": "MSI MPG 271QRX QD-OLED", "brand": "MSI", "model": "MPG 271QRX QD-OLED", "diagonalIn": 26.5, "asin": "B0CTS1RQ6Y", "w": 610.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 610.0, "d": 242.0, "h": 422.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20271QRX%20QD-OLED.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
+      {"id": "msimpg272qrfx36", "name": "MSI MPG 272QRF X36", "brand": "MSI", "model": "MPG 272QRF X36", "diagonalIn": 27, "w": 614.3, "d": 227.9, "base": [308.6, 227.9], "dims": {"w": 614.3, "d": 227.9, "h": 422.2}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20272QRF%20X36.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
+      {"id": "msimpg274urdfwe16m", "name": "MSI MPG 274URDFW E16M", "brand": "MSI", "model": "MPG 274URDFW E16M", "diagonalIn": 27, "asin": "B0FVPX9LFN", "w": 613.1, "d": 202.38, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 202.38, "h": 400.85}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20274URDFW%20E16M.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimpg341cqrqdoledx36", "name": "MSI MPG 341CQR QD-OLED X36", "brand": "MSI", "model": "MPG 341CQR QD-OLED X36", "diagonalIn": 34, "asin": "B0GL9NWNTQ", "w": 812.83, "d": 228.3, "base": [235.48, 228.3], "dims": {"w": 812.83, "d": 228.3, "h": 543.08}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20341CQR%20QD-OLED%20X36.pdf", "maxRefreshHz": 360, "alt": "Ultrawide 1440p · 360 Hz", "why": "Ultrawide 1440p · 360 Hz."}
     ],
     keyboard: [
       { id: 'tkl', name: 'Logitech G PRO X TKL LIGHTSPEED', brand: 'Logitech G', model: 'PRO X TKL LIGHTSPEED', asin: 'B0BQBSH6NQ', w: 352, d: 150, dims: { w: 352, d: 150, h: 34 }, dimsSource: 'https://www.logitechg.com/en-ca/products/gaming-keyboards/pro-x-tkl-wireless-keyboard.html', why: 'No number pad, so the mouse gets more room.', alt: 'All-round pick' , stockCheckedAt: '2026-10-17' },
@@ -29,12 +61,12 @@
       { id: 'full', name: 'Logitech MX Keys S', brand: 'Logitech', model: 'MX Keys S (Graphite)', asin: 'B0BKW3LB2B', w: 430, d: 132, dims: { w: 430.2, d: 131.63, h: 20.5 }, dimsSource: 'https://support.logi.com/hc/en-us/articles/13750828873623-Specification-MX-Keys-S', why: 'Has a number pad, and takes about {80} more width for it.', alt: 'Number pad, about {80} wider' , stockCheckedAt: '2026-10-17' },
       { id: 'gsv60', name: 'SteelSeries Apex Pro Mini', brand: 'SteelSeries', model: 'Apex Pro Mini (wired)', asin: 'B0B16HXVVQ', w: 293, d: 103, dims: { w: 293, d: 103, h: 40.3 }, dimsSource: 'https://steelseries.com/gaming-keyboards/apex-pro-mini', why: 'A wired 60% board. The smallest keyboard here, so the mouse gets the most room.', alt: '60%, wired' , stockCheckedAt: '2026-10-17' },
       { id: 'hv3m', name: 'Razer Huntsman V3 Pro Mini', brand: 'Razer', model: 'RZ03-04990200-R3U1', asin: 'B0CG7C1NVP', w: 298, d: 114, dims: { w: 298, d: 114, h: 38 }, dimsSource: 'https://mysupport.razer.com/app/answers/detail/a_id/13592', why: 'A 60% board with analog switches. Shorter than a tenkeyless, so the mouse gets more room.', alt: '60%, analog switches' , stockCheckedAt: '2026-10-17' },
-      { id: 'g515', name: 'Logitech G515 LIGHTSPEED TKL', brand: 'Logitech G', model: 'G515 LIGHTSPEED TKL (Tactile, Black)', asin: 'B0D1DSW8TF', w: 354.75, d: 146, dims: { w: 354.75, d: 146, h: 22.14 }, dimsSource: 'https://support.logi.com/hc/en-us/articles/23600704280087-Specification-G515-LIGHTSPEED-TKL', why: 'A low-profile tenkeyless, {22.14} tall, so it is easy on the wrists without a rest.', alt: 'Low profile, no number pad', stockCheckedAt: '2026-10-17' },
+      { id: 'g515', name: 'Logitech G515 LIGHTSPEED TKL', brand: 'Logitech G', model: 'G515 LIGHTSPEED TKL (Tactile, Black)', asin: 'B0D1DSW8TF', w: 354.75, d: 146, dims: { w: 354.75, d: 146, h: 22.14 }, dimsSource: 'https://support.logi.com/hc/en-us/articles/23600704280087-Specification-G515-LIGHTSPEED-TKL', why: 'A low-profile tenkeyless, {22.14} tall, with no number pad.', alt: 'Low profile, no number pad', stockCheckedAt: '2026-10-17' },
       { id: 'bwv475', name: 'Razer BlackWidow V4 75%', brand: 'Razer', model: 'RZ03-05000200-R3U1 (Black)', asin: 'B0CCFY349S', w: 321, d: 155.5, dims: { w: 321, d: 155.5, h: 24 }, dimsSource: 'https://mysupport.razer.com/app/answers/detail/a_id/13257', why: 'A 75% board that keeps the function row and arrows. The wrist rest adds {85} of depth.', alt: '75%, arrows and F-row', stockCheckedAt: '2026-10-17' },
       { id: 'k65pw', name: 'Corsair K65 PLUS WIRELESS', brand: 'Corsair', model: 'CH-91D401L-NA (Black/Gray)', asin: 'B0CQ31VFT4', w: 320, d: 136, dims: { w: 320, d: 136, h: 35 }, dimsSource: 'https://www.corsair.com/ww/en/explorer/gamer/keyboards/corsair-k65-plus-wireless-everything-you-need-to-know/', why: 'A wireless 75% board with arrows and a function row.', alt: '75%, wireless', stockCheckedAt: '2026-10-17' },
       { id: 'azoth', name: 'ASUS ROG Azoth', brand: 'ASUS', model: 'ROG Azoth (NX Snow, Black)', asin: 'B0CP6J59XB', w: 326, d: 136, dims: { w: 326, d: 136, h: 40 }, dimsSource: 'https://rog.asus.com/us/keyboards/keyboards/compact/rog-azoth-model/spec/', why: 'A 75% board with an OLED screen and knob. {40} tall, so a wrist rest helps.', alt: '75%, wireless', stockCheckedAt: '2026-10-17' },
       { id: 'k2max', name: 'Keychron K2 Max', brand: 'Keychron', model: 'K2 Max (RGB, Banana switch)', asin: 'B0DFGLWBK1', w: 311.54, d: 121.54, dims: { w: 311.54, d: 121.54, h: 41.54 }, dimsSource: 'https://www.keychron.com/products/keychron-k2-max-qmk-wireless-mechanical-keyboard', why: 'A wireless 75% board, so it leaves room on a shallow desk.', alt: '75%, compact', stockCheckedAt: '2026-10-17' },
-      { id: 'flow84', name: 'Lofree Flow84', brand: 'Lofree', model: 'Flow84 (White, Ghost linear)', asin: 'B0CJTV8P4Z', w: 316, d: 126, dims: { w: 316, d: 126, h: 24.5 }, dimsSource: 'https://www.lofree.co/products/lofree-flow-the-smoothest-mechanical-keyboard', why: 'A low-profile 75% board, {24.5} tall, so it works without a wrist rest.', alt: 'Low profile, 75%', stockCheckedAt: '2026-10-17' },
+      { id: 'flow84', name: 'Lofree Flow84', brand: 'Lofree', model: 'Flow84 (White, Ghost linear)', asin: 'B0CJTV8P4Z', w: 316, d: 126, dims: { w: 316, d: 126, h: 24.5 }, dimsSource: 'https://www.lofree.co/products/lofree-flow-the-smoothest-mechanical-keyboard', why: 'A low-profile 75% board, {24.5} tall, with a function row.', alt: 'Low profile, 75%', stockCheckedAt: '2026-10-17' },
       { id: 'mkusbc', name: 'Apple Magic Keyboard (USB-C)', brand: 'Apple', model: 'Magic Keyboard (USB-C), US English', asin: 'B0HGGHSWK7', w: 278.9, d: 114.9, dims: { w: 278.9, d: 114.9, h: 10.9 }, dimsSource: 'https://support.apple.com/en-au/121955', why: 'A slim Apple board, {10.9} tall. No number pad.', alt: 'Mac, low profile', stockCheckedAt: '2026-10-17' },
       { id: 'mknum', name: 'Apple Magic Keyboard with Numeric Keypad', brand: 'Apple', model: 'MXCJ3LL/A, US English (White)', asin: 'B0DWTT6Z7H', w: 418.7, d: 114.9, dims: { w: 418.7, d: 114.9, h: 10.9 }, dimsSource: 'https://www.apple.com/shop/product/mxcj3ll/a/magic-keyboard-with-numeric-keypad-us-english', why: 'A full-size Apple board with a number pad, only {10.9} tall.', alt: 'Mac, full size', stockCheckedAt: '2026-10-17' },
       { id: 'mktid', name: 'Apple Magic Keyboard with Touch ID (USB-C)', brand: 'Apple', model: 'Magic Keyboard with Touch ID (USB-C), US English', asin: 'B0HGG4574D', w: 278.9, d: 114.9, dims: { w: 278.9, d: 114.9, h: 10.9 }, dimsSource: 'https://support.apple.com/en-au/121954', why: 'The compact Magic Keyboard with a Touch ID key for Apple silicon Macs.', alt: 'Mac, Touch ID', stockCheckedAt: '2026-10-17' },
@@ -44,7 +76,7 @@
       { id: 'kb65he8k', name: 'Endgame Gear KB65HE 8k', brand: 'Endgame Gear', model: 'KB65HE 8k, Raesha silent magnetic switches, ANSI US', asin: 'B0F47MJ1GM', w: 315, d: 108.8, dims: { w: 315, d: 108.8, h: 37.2 }, dimsSource: 'https://endgamegear.com/products/kb65he-8k-hall-effect-gaming-keyboard-ansi-us', why: 'The 8000 Hz version of the KB65HE.', alt: '65%, Hall effect', stockCheckedAt: '2026-10-17' },
       { id: 'epf75', name: 'EPOMAKER x AULA F75', brand: 'EPOMAKER', model: 'F75 (Black, Ice Vein switch)', asin: 'B0CW9CT5TV', w: 322.7, d: 143.2, dims: { w: 322.7, d: 143.2, h: 43.1 }, dimsSource: 'https://epomaker.com/products/epomaker-aula-f75', why: 'A budget 75% gasket board with a knob. {43.1} tall, so a wrist rest helps.', alt: '75%, budget', stockCheckedAt: '2026-10-17' },
       { id: 'g75pro', name: 'MCHOSE G75 PRO', brand: 'MCHOSE', model: 'G75 PRO (White & Green, linear)', asin: 'B0F1F5HSP6', w: 321.62, d: 139.48, dims: { w: 321.62, d: 139.48, h: 42.14 }, dimsSource: 'https://www.mchose.store/products/mchose-g75-tri-mode-gaming-gasket-structure-customized-mechanical-keyboard', why: 'A budget wireless 75% gasket board. {42.14} tall, so a wrist rest helps.', alt: '75%, budget', stockCheckedAt: '2026-10-17' },
-      { id: 'gsv75lite', name: 'GravaStar Mercury V75 Lite', brand: 'GravaStar', model: 'Mercury V75 Lite', asin: 'B0FD3V3RPY', w: 343, d: 156, dims: { w: 343, d: 156, h: 46 }, dimsSource: 'https://www.gravastar.com/products/mercury-v75-lite-onyx-crystal', why: 'The cheaper Mercury V75.', alt: '75%, Hall effect, budget', stockCheckedAt: '2026-10-17' },
+      { id: 'gsv75lite', name: 'GravaStar Mercury V75 Lite', brand: 'GravaStar', model: 'Mercury V75 Lite', asin: 'B0FD3V3RPY', w: 343, d: 156, dims: { w: 343, d: 156, h: 46 }, dimsSource: 'https://www.gravastar.com/products/mercury-v75-lite-onyx-crystal', why: 'A compact keyboard with a function row.', alt: '75%, Hall effect, budget', stockCheckedAt: '2026-10-17' },
       { id: 'asx85', name: 'ATTACK SHARK X85', brand: 'ATTACK SHARK', model: 'X85 (Moonlit, White Jade linear)', asin: 'B0CZJLZKDZ', w: 355, d: 185, dims: { w: 355, d: 185, h: 50 }, dimsSource: 'https://attackshark.com/products/attack-shark-x85', why: 'A budget 75% board. {50} tall, so a wrist rest helps.', alt: '75%, budget', stockCheckedAt: '2026-10-17' }
     ],
     pad: [
@@ -59,7 +91,7 @@
       { id: 'mm350xl', name: 'Corsair MM350 PRO Extended XL', brand: 'Corsair', model: 'CH-9413770-WW (Black/Gray)', kind: 'mat', asin: 'B08JH89XLF', w: 930, d: 400, dims: { w: 930, d: 400, h: 4 }, dimsSource: 'https://www.corsair.com/us/en/p/mousepads/ch-9413770-ww/mm350-pro-premium-spill-proof-cloth-gaming-mouse-pad-extended-xl-black-ch-9413770-ww', why: 'Spill-proof cloth. The keyboard and mouse both fit.', alt: 'Cloth desk mat', stockCheckedAt: '2026-10-17' },
       { id: 'honeacexxl', name: 'ASUS ROG Hone Ace XXL', brand: 'ASUS', model: '90MP03G0-BPUA00', kind: 'mat', asin: 'B0CQPG6QC8', w: 900, d: 400, dims: { w: 900, d: 400, h: 3 }, dimsSource: 'https://rog.asus.com/us/mice-mouse-pads/mouse-pads/rog-hone-ace-xxl/spec/', why: 'Enough for the keyboard and mouse together.', alt: 'Cloth desk mat', stockCheckedAt: '2026-10-17' },
       { id: 'sp004a', name: 'Wallhack SP-004A', brand: 'Wallhack', model: 'SP-004A (Black)', kind: 'glass', asin: 'B0FKTHF6D8', w: 450, d: 390, dims: { w: 450, d: 390, h: 3.9 }, dimsSource: 'https://wallhack.com/en-eu/products/sp-004a-black-bundle-with-ptfe-silent-skates-pro-sleeve', why: 'A compact glass pad. Fast glide, and nothing but the mouse goes on it.', alt: 'Glass, compact', stockCheckedAt: '2026-10-17' },
-      { id: 'hienxl', name: 'Artisan Ninja FX Hien Soft XL', brand: 'Artisan', model: 'FX-HI-SF-XL-B (Black)', kind: 'cloth', asin: 'B07F61BYQP', w: 490, d: 420, dims: { w: 490, d: 420, h: 4 }, dimsSource: 'https://artisan-jp.com/global/fx-hien', why: 'A Japanese control-speed cloth pad. A lot of FPS players use it.', alt: 'Control, XL', stockCheckedAt: '2026-10-17' },
+      { id: 'hienxl', name: 'Artisan Ninja FX Hien Soft XL', brand: 'Artisan', model: 'FX-HI-SF-XL-B (Black)', kind: 'cloth', asin: 'B07F61BYQP', w: 490, d: 420, dims: { w: 490, d: 420, h: 4 }, dimsSource: 'https://artisan-jp.com/global/fx-hien', why: 'A cloth pad with a textured surface for more controlled movements.', alt: 'Control, XL', stockCheckedAt: '2026-10-17' },
       { id: 'zgsriii', name: 'ZOWIE G-SR III', brand: 'BenQ ZOWIE', model: 'G-SR III', kind: 'cloth', asin: 'B0DMTQ9922', w: 470, d: 390, dims: { w: 470, d: 390, h: 3.5 }, dimsSource: 'https://zowie.benq.com/en-us/mouse-pad/g-sr-iii.html', why: 'A cloth pad for the mouse only.', alt: 'Cloth, large', stockCheckedAt: '2026-10-17' },
       { id: 'zgsrsebi', name: 'ZOWIE G-SR-SE Bi', brand: 'BenQ ZOWIE', model: 'G-SR-SE Bi', kind: 'cloth', asin: 'B0D6V8623C', w: 470, d: 390, dims: { w: 470, d: 390, h: 3.5 }, dimsSource: 'https://zowie.benq.com/en-us/mouse-pad/g-sr-se-bi.html', why: 'A cloth pad for the mouse only.', alt: 'Cloth, large', stockCheckedAt: '2026-10-17' },
       { id: 'zgsrseorange', name: 'ZOWIE G-SR-SE Orange', brand: 'BenQ ZOWIE', model: 'G-SR-SE Orange', kind: 'cloth', asin: 'B0GY1NK31L', w: 470, d: 390, dims: { w: 470, d: 390, h: 3.5 }, dimsSource: 'https://zowie.benq.com/en-us/mouse-pad/g-sr-se-orange.html', why: 'A cloth pad for the mouse only.', alt: 'Cloth, large', stockCheckedAt: '2026-10-17' },
@@ -71,7 +103,7 @@
       { id: 'emc', name: 'Endgame Gear EM-C', brand: 'Endgame Gear', model: 'EM-C (490 x 410 mm, Black)', kind: 'cloth', asin: 'B0C59C7GSJ', w: 490, d: 410, dims: { w: 490, d: 410, h: 3 }, dimsSource: 'https://endgamegear.com/products/em-c-gaming-mousepad-1', why: 'A cloth pad, {3} thick.', alt: 'Cloth, large', stockCheckedAt: '2026-10-17' }
     ],
     mouse: [
-      { id: 'da3', name: 'Razer DeathAdder V3', brand: 'Razer', model: 'RZ01-04640100-R3U1', asin: 'B0B6XTDJS1', w: 68, d: 128, g: 59, grips: ['palm'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 68, d: 128, h: 44 }, dimsSource: 'https://mysupport.razer.com/app/answers/detail/a_id/6124', why: 'Long, with a rear hump, so a palm grip has something to rest on. At 59 g it is one of the lightest in its shape.', alt: 'Long, for palm grips' , stockCheckedAt: '2026-10-17' },
+      { id: 'da3', name: 'Razer DeathAdder V3', brand: 'Razer', model: 'RZ01-04640100-R3U1', asin: 'B0B6XTDJS1', w: 68, d: 128, g: 59, grips: ['palm'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 68, d: 128, h: 44 }, dimsSource: 'https://mysupport.razer.com/app/answers/detail/a_id/6124', why: 'Long body with a raised back for palm grips. Weighs 59 g.', alt: 'Long, for palm grips' , stockCheckedAt: '2026-10-17' },
       { id: 'ec2c', name: 'Razer DeathAdder V3 HyperSpeed', brand: 'Razer', model: 'RZ01-05140', asin: 'B0D4RF55QK', w: 64.8, d: 122.2, g: 55, grips: ['palm'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 64.8, d: 122.2, h: 41.3 }, dimsSource: 'https://mysupport.razer.com/app/answers/detail/a_id/14235', why: 'Right-handed, with a rear hump for a palm grip. At 55 g it is lighter than the wired DeathAdder.', alt: 'Ergo, for palm grips' , stockCheckedAt: '2026-10-17' },
       { id: 'vv2p', name: 'Razer Viper V2 Pro', brand: 'Razer', model: 'RZ01-04390100-R3U1', asin: 'B09VCR969M', w: 66.2, d: 126.5, g: 58, grips: ['claw', 'fingertip'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 66.2, d: 126.5, h: 37.8 }, dimsSource: 'https://www.razer.com/gaming-mice/razer-viper-v2-pro/RZ01-04390100-R3U1', why: 'Flat and low. Better for claw and fingertip grips.', alt: 'Flat, for claw and fingertip' , stockCheckedAt: '2026-10-17' },
       { id: 'gpx2', name: 'Logitech G Pro X Superlight 2', brand: 'Logitech G', model: '910-006628 (Black)', asin: 'B09NBWL8J5', w: 63.5, d: 125, g: 60, grips: ['palm', 'claw', 'fingertip'], hands: ['medium'], tagsSource: 'editorial', dims: { w: 63.5, d: 125, h: 40 }, dimsSource: 'https://support.logi.com/hc/en-us/articles/15235304069783-Specification-G-PRO-X-Superlight-2-Lightspeed-Gaming-Mouse', why: 'Light and symmetrical. Works for most grips and hand sizes.', alt: 'Symmetrical, all-round' , stockCheckedAt: '2026-10-17' },
@@ -81,9 +113,9 @@
       { id: 'bv3p35', name: 'Razer Basilisk V3 Pro 35K', brand: 'Razer', model: 'RZ01-05240100-R3U1 (Black)', asin: 'B0DG837JYP', w: 75.1, d: 130, g: 112, grips: ['palm'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 75.1, d: 130, h: 42.5 }, dimsSource: 'https://www.razer.com/gaming-mice/razer-basilisk-v3-pro-35k', why: 'A right-handed shape with a thumb rest and a tilt wheel. 112 g, so it is one of the heavier mice here.', alt: 'Ergo, lots of buttons', stockCheckedAt: '2026-10-17' },
       { id: 'm75air', name: 'Corsair M75 AIR WIRELESS', brand: 'Corsair', model: 'M75 AIR WIRELESS (Black)', asin: 'B0CHN2R8GY', w: 65, d: 128, g: 60, grips: ['palm', 'claw', 'fingertip'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 65, d: 128, h: 41.6 }, dimsSource: 'https://www.corsair.com/ca/fi/explorer/gamer/mice/corsair-m75-air-our-best-mouse-for-competitive-fps-gaming/', why: 'Symmetrical and 60 g. Works for most grips.', alt: 'Light, symmetrical', stockCheckedAt: '2026-10-17' },
       { id: 'harpeace', name: 'ASUS ROG Harpe Ace Aim Lab Edition', brand: 'ASUS', model: 'P713 (Black)', asin: 'B0BSKX9V7C', w: 63.7, d: 127.5, g: 54, grips: ['claw', 'fingertip'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 63.7, d: 127.5, h: 39.6 }, dimsSource: 'https://rog.asus.com/us/mice-mouse-pads/mice/wireless/rog-harpe-ace-aim-lab-edition-model/spec/', why: 'Low and light at 54 g, with a slight right-hand slope. Suits claw and fingertip grips.', alt: 'Light, low', stockCheckedAt: '2026-10-17' },
-      { id: 'gsm1pro', name: 'GravaStar Mercury M1 Pro', brand: 'GravaStar', model: 'Mercury M1 Pro (Gradient Pink)', asin: 'B0FRN2Z4JF', w: 64.5, d: 124, g: 88, grips: ['claw', 'fingertip'], hands: ['small', 'medium'], tagsSource: 'editorial', dims: { w: 64.5, d: 124, h: 39.5 }, dimsSource: 'https://www.gravastar.com/products/mercury-m1-pro-gunmetal-gray', why: 'A magnesium-shell symmetrical mouse. 88 g, the heaviest of the light shapes here.', alt: 'Metal shell', stockCheckedAt: '2026-10-17' },
+      { id: 'gsm1pro', name: 'GravaStar Mercury M1 Pro', brand: 'GravaStar', model: 'Mercury M1 Pro (Gradient Pink)', asin: 'B0FRN2Z4JF', w: 64.5, d: 124, g: 88, grips: ['claw', 'fingertip'], hands: ['small', 'medium'], tagsSource: 'editorial', dims: { w: 64.5, d: 124, h: 39.5 }, dimsSource: 'https://www.gravastar.com/products/mercury-m1-pro-gunmetal-gray', why: 'An 88 g mouse with a symmetrical magnesium shell.', alt: 'Metal shell', stockCheckedAt: '2026-10-17' },
       { id: 'beastxpro', name: 'WLMOUSE Beast X Pro', brand: 'WLMOUSE', model: 'MK x WLMOUSE Beast X Pro, side slits (Black Dot, Black)', asin: 'B0F1NJG2M5', w: 62, d: 122, g: 39, grips: ['claw', 'fingertip'], hands: ['medium'], tagsSource: 'editorial', dims: { w: 62, d: 122, h: 37 }, dimsSource: 'https://www.wlmouse.com/products/x-pro', why: 'A magnesium shell at 39 g, the lightest mouse here. Symmetrical and low.', alt: 'Ultralight, magnesium', stockCheckedAt: '2026-10-17' },
-      { id: 'a7v2u', name: 'MCHOSE A7 V2 Ultra', brand: 'MCHOSE', model: 'A7 V2 Ultra (White)', asin: 'B0FRF6NP21', w: 63.24, d: 125.84, g: 59, grips: ['palm', 'claw'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 63.24, d: 125.84, h: 39.78 }, dimsSource: 'https://www.mchose.store/products/mchose-a7-v2-series-lightweight-all-round-wireless-gaming-mouse', why: 'Symmetrical and 59 g, at a lower price than most mice here.', alt: 'Budget, symmetrical', stockCheckedAt: '2026-10-17' },
+      { id: 'a7v2u', name: 'MCHOSE A7 V2 Ultra', brand: 'MCHOSE', model: 'A7 V2 Ultra (White)', asin: 'B0FRF6NP21', w: 63.24, d: 125.84, g: 59, grips: ['palm', 'claw'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 63.24, d: 125.84, h: 39.78 }, dimsSource: 'https://www.mchose.store/products/mchose-a7-v2-series-lightweight-all-round-wireless-gaming-mouse', why: 'A symmetrical mouse weighing 59 g.', alt: '59 g, symmetrical', stockCheckedAt: '2026-10-17' },
       { id: 'op18kv2', name: 'Endgame Gear OP1 8k v2', brand: 'Endgame Gear', model: 'EGG-OP1-8K-V2-BLK', asin: 'B0FB8VWW8Y', w: 60.5, d: 118.2, g: 49.5, grips: ['claw', 'fingertip'], hands: ['small', 'medium'], tagsSource: 'editorial', dims: { w: 60.5, d: 118.2, h: 37.2 }, dimsSource: 'https://endgamegear.com/products/op1-8k-v2-wired-gaming-mouse', why: 'A small wired symmetrical mouse, 49.5 g.', alt: 'Small, wired', stockCheckedAt: '2026-10-17' },
       { id: 'gm41w', name: 'MSI Clutch GM41 Lightweight Wireless', brand: 'MSI', model: 'CLUTCH GM41 LIGHTWEIGHT WIRELESS', asin: 'B094N6J1WP', w: 67, d: 130.1, g: 74, grips: ['palm', 'claw'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 67, d: 130.1, h: 38.3 }, dimsSource: 'https://www.msi.com/Gaming-Gear/CLUTCH-GM41-LIGHTWEIGHT-WIRELESS/Specification', why: 'Symmetrical, with a charging dock included.', alt: 'With dock', stockCheckedAt: '2026-10-17' },
       { id: 'mobifold', name: 'Logitech Mobi Fold', brand: 'Logitech', model: 'Mobi Fold (Graphite)', asin: 'B0GSXLK8SC', w: 57, d: 122, g: 79, grips: ['palm', 'claw'], hands: ['small', 'medium'], tagsSource: 'editorial', dims: { w: 57, d: 122, h: 33 }, dimsSource: 'https://www.logitech.com/content/dam/support/mice/mobi-fold/mobi-fold-ww.pdf', why: 'A folding travel mouse, 79 g.', alt: 'Travel, foldable', stockCheckedAt: '2026-10-17' },
@@ -101,7 +133,7 @@
       { id: 'asx3', name: 'ATTACK SHARK X3', brand: 'ATTACK SHARK', model: 'X3 (Black)', asin: 'B0CCJR2Q2Q', w: 61, d: 118.5, g: 49, grips: ['claw', 'fingertip'], hands: ['small', 'medium'], tagsSource: 'editorial', dims: { w: 61, d: 118.5, h: 39.7 }, dimsSource: 'https://attackshark.com/products/attack-shark-x3-wireless-gaming-mouse-paw3395', why: 'A budget symmetrical mouse at 49 g, so it suits smaller hands.', alt: 'Budget, light', stockCheckedAt: '2026-10-17' },
       { id: 'asr1', name: 'ATTACK SHARK R1', brand: 'ATTACK SHARK', model: 'R1 (White), listed under MAMBASNAKE', asin: 'B0D4QNGC3S', w: 64, d: 123, g: 59, grips: ['palm', 'claw'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 64, d: 123, h: 41 }, dimsSource: 'https://attackshark.com/products/attack-shark-r1-mouse', why: 'A budget symmetrical mouse, 59 g.', alt: 'Budget', stockCheckedAt: '2026-10-17' },
       { id: 'gm340w', name: 'MSI Forge GM340 Wireless (White)', brand: 'MSI', model: 'FORGE GM340 WIRELESS (White)', asin: 'B0GHR5JSFJ', w: 61.5, d: 122, g: 57, grips: ['claw', 'fingertip'], hands: ['small', 'medium'], tagsSource: 'editorial', dims: { w: 61.5, d: 122, h: 38 }, dimsSource: 'https://uk.msi.com/Gaming-Gear/FORGE-GM340-WIRELESS/Specification', why: 'A budget symmetrical mouse, 57 g.', alt: 'Budget, light', stockCheckedAt: '2026-10-17' },
-      { id: 'versa300w', name: 'MSI Versa 300 Wireless (White)', brand: 'MSI', model: 'VERSA 300 WIRELESS (White)', asin: 'B0FBFZ3XF5', w: 64, d: 125, g: 60, grips: ['palm', 'claw'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 64, d: 125, h: 41 }, dimsSource: 'https://us.msi.com/Gaming-Gear/VERSA-300-WIRELESS/Specification', why: 'A budget symmetrical mouse at 60 g.', alt: 'Budget, symmetrical', stockCheckedAt: '2026-10-17' },
+      { id: 'versa300w', name: 'MSI Versa 300 Wireless (White)', brand: 'MSI', model: 'VERSA 300 WIRELESS (White)', asin: 'B0FBFZ3XF5', w: 64, d: 125, g: 60, grips: ['palm', 'claw'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 64, d: 125, h: 41 }, dimsSource: 'https://us.msi.com/Gaming-Gear/VERSA-300-WIRELESS/Specification', why: 'A budget symmetrical mouse at 60 g.', alt: '59 g, symmetrical', stockCheckedAt: '2026-10-17' },
       { id: 'gm08', name: 'MSI Clutch GM08', brand: 'MSI', model: 'CLUTCH GM08', asin: 'B08DDLMGCY', w: 68.5, d: 128, g: 92, grips: ['palm', 'claw'], hands: ['medium', 'large'], tagsSource: 'editorial', dims: { w: 68.5, d: 128, h: 40.5 }, dimsSource: 'https://us.msi.com/Gaming-Gear/CLUTCH-GM08/Specification', why: 'A wired budget mouse with adjustable weights.', alt: 'Budget, wired', stockCheckedAt: '2026-10-17' }
     ]
   };
@@ -189,7 +221,8 @@
   }
   function buyLine(item){
     if (!forSale(item)) return '<p class="unavail">Not currently available</p>';
-    return '<p class="paid">Paid link. We earn a commission if you buy, at no extra cost to you.</p><a class="amz" href="' + amazonLink(item.asin) + '" rel="sponsored nofollow noopener" target="_blank" aria-label="See today\'s price on Amazon (opens in a new tab)">See today\'s price on Amazon</a>';
+    if (!item.asin) return '<a class="amz" href="https://www.amazon.com/s?k=' + encodeURIComponent(item.name) + '" rel="noopener" target="_blank">Find this model on Amazon</a>';
+    return '<p class="paid">Paid link · We may earn a commission.</p><a class="amz" href="' + amazonLink(item.asin) + '" rel="sponsored nofollow noopener" target="_blank" aria-label="See today\'s price on Amazon (opens in a new tab)">See today\'s price on Amazon</a>';
   }
 
   function answers(){
@@ -445,21 +478,19 @@
       });
     });
     if (!blocked.length) return '';
-    var stand = blocked.filter(function(c){ return c !== 'monitor' && pick.monitor; });
-    var other = blocked.filter(function(c){ return stand.indexOf(c) < 0; });
-    var parts = [];
-    if (stand.length) parts.push('We left out ' + leftList(stand) + ': none fit in front of the monitor stand');
-    if (other.length) parts.push('We left out ' + leftList(other) + ': none fit on this desk');
-    return parts.join('. ');
+    return 'No room for ' + leftList(blocked) + ' in the suggested layout. Try moving a piece or choosing a smaller model.';
   }
   // one line on why a pick matches the answers, or '' when the answers don't say
   function matchReason(cat, s, a){
     if (cat !== 'mouse') return '';
-    var g = s.grips.indexOf(a.grip) >= 0 && gripWords[a.grip], h = s.hands.indexOf(a.hand) >= 0 && handWords[a.hand];
-    if (g && h) return 'Matches your ' + g + ' and ' + h + '.';
-    if (g) return 'Matches your ' + g + '.';
-    if (h) return 'Sized for ' + h + '.';
-    return '';
+    var notes = [];
+    if (gripWords[a.grip]) {
+      notes.push(s.grips.includes(a.grip) ? 'Matches your ' + gripWords[a.grip] + '.' : 'A different shape may suit your ' + gripWords[a.grip] + ' better.');
+    }
+    if (handWords[a.hand]) {
+      notes.push(s.hands.includes(a.hand) ? 'Sized for ' + handWords[a.hand] + '.' : 'Our size guide pairs this mouse with ' + s.hands.join(' or ') + ' hands.');
+    }
+    return notes.join(' ');
   }
 
   // default spots on the desk for each piece
@@ -704,20 +735,23 @@
     var padItem = has('pad') && get('pad', pick.pad);
     var kind = padItem && padItem.kind;
     if (has('keyboard') && has('pad') && overlap(rect('keyboard'), rect('pad'))) {
-      if (kind === 'glass') add(['keyboard', 'pad'], 2, { keyboard: 'on a glass pad', pad: 'keyboard on the glass' }, "Don't put a keyboard on a glass pad. It scratches the glass and slides. Move it off, or swap to a cloth desk mat.");
-      else if (isMat(padItem)) { if (!inside(rect('keyboard'), rect('pad'))) add(['keyboard', 'pad'], 1, { keyboard: 'half on the mat', pad: 'keyboard half on' }, 'The keyboard is half on the mat, so it can rock. Move it fully on or fully off.'); }
+      if (kind === 'glass') add(['keyboard', 'pad'], 2, { keyboard: 'on a glass pad', pad: 'keyboard on the glass' }, "Don't put a keyboard on a glass pad. It can scratch the glass. Move it off, or swap to a cloth desk mat.");
+      else if (isMat(padItem)) { if (!inside(rect('keyboard'), rect('pad'))) add(['keyboard', 'pad'], 1, { keyboard: 'partly on the mat', pad: 'keyboard partly on' }, 'The keyboard is partly on the mat, so it can rock. Move it fully on or fully off.'); }
       else add(['keyboard', 'pad'], 2, { keyboard: 'on the mouse pad', pad: 'keyboard on top' }, 'The keyboard is on the mouse pad and eats your mouse room. Move it off, or swap to an extended desk mat.');
     }
     if (has('mouse')) {
       if (has('keyboard') && overlap(rect('mouse'), rect('keyboard'))) add(['mouse', 'keyboard'], 2, { mouse: 'on the keyboard', keyboard: 'mouse on top' }, 'The mouse and keyboard overlap. Give the mouse its own space.');
-      else if (has('pad') && !inside(rect('mouse'), rect('pad'))) add(['mouse'], 1, 'off the pad', 'The mouse is off the pad. Drag it back on so it tracks well.');
+      else if (has('pad') && !inside(rect('mouse'), rect('pad'))) add(['mouse'], 1, 'off the pad', 'The mouse is off the pad. Drag it back on until the whole mouse is on it.');
     }
     if (has('monitor')) {
-      var r = rect('monitor'), b = get('monitor', pick.monitor).base, base = { x: r.x + (r.w - b[0])/2, y: r.y + r.d - b[1], w: b[0], d: b[1] };
+      var base = standBox(pick, setup.pos);
       ['keyboard', 'pad', 'mouse'].forEach(function(c){
         if (!has(c) || !overlap(base, rect(c))) return;
-        // A desk mat is allowed under the base. A mouse pad is not.
-        if (c === 'pad' && isMat(padItem)) return;
+        if (c === 'pad' && isMat(padItem)) {
+          add(['monitor', 'pad'], 1, { monitor: 'stand overlaps the desk mat', pad: 'under the monitor stand' },
+            'The monitor stand overlaps the desk mat. Move the mat or stand until their edges are clear.');
+          return;
+        }
         var msg = { monitor: labels[c].toLowerCase() + ' under the stand' }; msg[c] = 'under the monitor stand';
         var room = desk.d - (base.y + base.d) - 10, what = c === 'pad' ? 'mouse pad' : labels[c].toLowerCase();
         add([c, 'monitor'], 2, msg, rect(c).d > room
@@ -731,7 +765,7 @@
       var lvl = res[c].reduce(function(a, i){ return Math.max(a, i.lvl); }, 0);
       var top = res[c].filter(function(i){ return i.lvl === lvl; })[0];
       var msg = top ? top.msg : 'fits';
-      if (!top && c === 'mouse') msg = 'fits your grip';
+      if (!top && c === 'mouse') msg = 'fits on the desk';
       if (!top && onMat) { if (c === 'pad') msg = has('mouse') ? 'holds keyboard and mouse' : 'holds the keyboard'; if (c === 'keyboard') msg = 'sits on the mat'; }
       out[c] = { lvl: lvl, msg: msg, issues: res[c] };
     });
@@ -750,86 +784,11 @@
   var short = { monitor: 'm', keyboard: 'k', pad: 'p', mouse: 'o' };
   var shortCat = { m: 'monitor', k: 'keyboard', p: 'pad', o: 'mouse' };
   var SHARE_MAX = 4096;
-  var deskLimits = { wMin: 300, wMax: 4000, dMin: 200, dMax: 2000 };
-  var defaultDesk = { w: 1400, d: 700 };
-  var deskFallbackNotice = "We're showing a 55 × 28 in desk. Enter yours for a real fit check.";
   var POS_RIGHT = 1000;
   var gripOk = { '': 1, palm: 1, claw: 1, fingertip: 1, unsure: 1 };
   var handOk = { '': 1, small: 1, medium: 1, large: 1, unsure: 1 };
   var useOk = { '': 1, gaming: 1, work: 1, both: 1 };
   function hasOwn(obj, key){ return Object.prototype.hasOwnProperty.call(obj, key); }
-  function plain(o){ return !!o && typeof o === 'object' && !Array.isArray(o); }
-  function finiteNum(n){ return typeof n === 'number' && isFinite(n); }
-  function parseDeskInput(raw){
-    if (typeof raw === 'number') return isFinite(raw) ? raw : null;
-    if (typeof raw !== 'string') return null;
-    var s = raw.trim();
-    if (!s) return null;
-    var commas = 0;
-    for (var i = 0; i < s.length; i++) if (s.charAt(i) === ',') commas++;
-    if (commas > 1) return null;
-    if (commas === 1) {
-      if (s.indexOf('.') !== -1) return null;
-      s = s.replace(',', '.');
-    }
-    if (!/^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(s)) return null;
-    var n = Number(s);
-    return isFinite(n) ? n : null;
-  }
-  function deskMm(value, unit){
-    var n = typeof value === 'number' ? (isFinite(value) ? value : null) : parseDeskInput(value);
-    if (n == null) return null;
-    var mm = unit === 'cm' ? n * 10 : n * 25.4;
-    return isFinite(mm) ? mm : null;
-  }
-  function deskAxisOk(axis, mm){
-    if (!finiteNum(mm)) return false;
-    var min = axis === 'd' ? deskLimits.dMin : deskLimits.wMin;
-    var max = axis === 'd' ? deskLimits.dMax : deskLimits.wMax;
-    return mm >= min && mm <= max;
-  }
-  function deskOk(desk){ return plain(desk) && deskAxisOk('w', desk.w) && deskAxisOk('d', desk.d); }
-  function inchLimit(mm, edge){
-    var tenths = mm / 25.4 * 10;
-    var n = edge === 'min' ? Math.ceil(tenths - 1e-9) / 10 : Math.floor(tenths + 1e-9) / 10;
-    var s = n.toFixed(1);
-    return s.endsWith('.0') ? s.slice(0, -2) : s;
-  }
-  function cmLimit(mm){
-    var s = (mm / 10).toFixed(1);
-    return s.endsWith('.0') ? s.slice(0, -2) : s;
-  }
-  function deskRangeMessage(axis, unit){
-    var min = axis === 'd' ? deskLimits.dMin : deskLimits.wMin;
-    var max = axis === 'd' ? deskLimits.dMax : deskLimits.wMax;
-    if (unit === 'cm') return 'Enter a desk size between ' + cmLimit(min) + ' and ' + cmLimit(max) + ' cm.';
-    return 'Enter a desk size between ' + inchLimit(min, 'min') + ' and ' + inchLimit(max, 'max') + ' in.';
-  }
-  function deskField(raw, unit, axis){
-    var mm = deskMm(raw, unit);
-    var shown = mm == null ? '' : measureText(mm, unit);
-    var shownNumber = shown ? Number(shown) : NaN;
-    var shownMm = unit === 'cm' ? shownNumber * 10 : shownNumber * 25.4;
-    if (!shown || !deskAxisOk(axis, shownMm)) return { ok: false, message: deskRangeMessage(axis, unit) };
-    return { ok: true, mm: shownMm, message: '' };
-  }
-  function savedDesk(raw){
-    var desk = { w: defaultDesk.w, d: defaultDesk.d };
-    if (raw == null) return { desk: desk, fallback: false };
-    try {
-      var parsed = JSON.parse(raw);
-      if (deskOk(parsed)) return { desk: { w: parsed.w, d: parsed.d }, fallback: false };
-    } catch (e) {}
-    return { desk: desk, fallback: true };
-  }
-  function measureText(mm, unit){
-    if (!finiteNum(mm)) return '';
-    var v = unit === 'cm' ? mm / 10 : mm / 25.4;
-    if (!isFinite(v)) return '';
-    var s = v.toFixed(1);
-    if (s === 'NaN' || s === 'Infinity' || s === '-Infinity') return '';
-    return s.endsWith('.0') ? s.slice(0, -2) : s;
-  }
   function percentText(part, whole){
     if (!finiteNum(part) || !finiteNum(whole) || whole === 0) return '';
     var n = part / whole * 100;
@@ -889,7 +848,24 @@
     } catch (e) { return null; }
   }
 
-  window.SV = { catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
+  function monitorMeasurements(s, one, two){
+    return s.diagonalIn + "″ diagonal · " + one(s.dims.w) + " wide · " + one(s.d) + " deep with stand\nStand footprint (W × D): " + two(s.base[0], s.base[1]);
+  }
+
+  async function copySetupLink(button, url){
+    const original = button.dataset.copyLabel || button.textContent;
+    button.dataset.copyLabel = original;
+    try {
+      await navigator.clipboard.writeText(url);
+      button.textContent = 'Link copied';
+      clearTimeout(button.copyTimer);
+      button.copyTimer = setTimeout(function(){ button.textContent = original; }, 1800);
+    } catch {
+      window.prompt('Copy this setup link:', url);
+    }
+  }
+
+  window.SV = { copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
     recommend: recommend, omission: omission, matchReason: matchReason, place: place, layout: layout, settle: settle, retarget: retarget, previewSetup: previewSetup, overhang: overhang, overlap: overlap, check: check, encode: encode, decode: decode, usedArea: usedArea,
     deskLimits: deskLimits, defaultDesk: defaultDesk, deskFallbackNotice: deskFallbackNotice,
     parseDeskInput: parseDeskInput, deskMm: deskMm, deskAxisOk: deskAxisOk, deskOk: deskOk, deskField: deskField, savedDesk: savedDesk,

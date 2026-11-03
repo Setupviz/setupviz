@@ -19,25 +19,10 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/sv.css">
+<link rel="stylesheet" href="/questions.css">
 <style>
-body{margin:0;background:#121212;color:#EDEDED;font-family:var(--font)}
-a{color:#EDEDED;text-decoration:none}
-.wrap{min-height:100vh;display:flex;flex-direction:column}
-.hdr{width:100%;max-width:var(--sv-content);margin:0 auto;padding:14px 24px;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-end;gap:16px}
-.brand{display:flex;align-items:center;gap:9px;font-weight:500;font-size:15px;letter-spacing:-0.01em}
-.btn{height:40px;min-height:24px;padding:0 18px;display:inline-flex;align-items:center;border-radius:999px;font-size:14px;font-weight:400;cursor:pointer;border:0;font-family:inherit;transition:background-color .15s,color .15s}
-.btn-primary{background:#EDEDED;color:#121212}.btn-primary:hover{background:#FFFFFF;color:#121212}
-.btn-ghost{background:transparent;color:#8F8F8F}.btn-ghost:hover{color:#EDEDED}
-.btn-outline{background:#1C1C1C;border:1px solid rgba(255,255,255,0.08);color:#EDEDED;height:32px;min-height:24px;padding:0 14px;font-size:13px}.btn-outline:hover{background:#232323}
-.prog{width:100%;max-width:680px;margin:0 auto;padding:0 24px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px}
-.bars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.bars i{display:block;height:2px;border-radius:1px;background:#262626}.bars i.on{background:#EDEDED}
-.meta{display:flex;justify-content:space-between;font-size:12px;color:#8F8F8F;font-family:var(--mono)}
-main{flex:1;width:100%;max-width:680px;margin:0 auto;padding:64px 24px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px}
-h1{margin:0;font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:400;letter-spacing:-0.03em}
-.lead{margin:0;font-size:16px;line-height:25px;color:#8F8F8F}
-.seg{display:inline-flex;align-self:flex-start;padding:3px;border-radius:999px;background:#171717;border:1px solid rgba(255,255,255,0.08)}
-.seg button{height:28px;min-height:24px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:#8F8F8F;font:500 12px inherit;font-family:inherit;cursor:pointer}
+.seg{display:inline-flex;align-self:flex-start;padding:3px;border-radius:8px;background:#171717;border:1px solid rgba(255,255,255,0.08)}
+.seg button{height:28px;min-height:24px;padding:0 12px;border:0;border-radius:8px;background:transparent;color:#8F8F8F;font:500 12px inherit;font-family:inherit;cursor:pointer}
 .seg button[aria-pressed="true"]{background:#2A2A2A;color:#EDEDED}
 .cols{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
 .diagram{position:relative;width:100%;aspect-ratio:2/1;border-radius:16px;background:#171717;border:1px solid rgba(255,255,255,0.06)}
@@ -50,9 +35,8 @@ h1{margin:0;font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:400;lette
 .field-error:empty{visibility:hidden}
 .fallback{margin:0;padding:10px 16px;border-radius:16px;background:#171717;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:18px;color:#CFCFCF}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{height:30px;min-height:24px;padding:0 6px;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:#171717;color:#CFCFCF;font:500 12px inherit;font-family:inherit;cursor:pointer}
+.chip{height:30px;min-height:24px;padding:0 6px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:#171717;color:#CFCFCF;font:500 12px inherit;font-family:inherit;cursor:pointer}
 .chip:hover{border-color:rgba(255,255,255,0.25)}
-footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media (pointer:coarse){
   .btn,.btn-outline,.seg button,.chip{min-height:44px;min-width:44px;height:44px}
 }
@@ -117,21 +101,21 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
   <footer>
     <a href="/home" class="btn btn-ghost" style="padding:0 12px">Back</a>
     <div style="display:flex;gap:8px">
-      <a href="/hand" class="btn btn-ghost" style="padding:0 14px">Skip</a>
-      <a href="/hand" class="btn btn-primary">Continue</a>
+      <a href="/hand" class="btn btn-ghost" data-next>Help me pick gear</a>
+      <a href="/builder" class="btn btn-primary" data-next>See my desk</a>
     </div>
     <div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
   </footer>
 </div>
-<script src="data.js"></script>
+<script src="/desk-size.js"></script>
 <script>
 (function(){
-  var saved = SV.savedDesk(localStorage.getItem('sv-desk'));
+  var saved = SVDesk.savedDesk(localStorage.getItem('sv-desk'));
   var state = { unit: localStorage.getItem('sv-unit') || 'in', w: saved.desk.w, d: saved.desk.d };
   var deskFallback = saved.fallback;
   var presets = [[1200,600,'Small'],[1400,700,'Standard'],[1600,800,'Large'],[1800,800,'Extra large']];
   var $ = function(id){ return document.getElementById(id); };
-  function measure(mm){ return SV.measureText(mm, state.unit); }
+  function measure(mm){ return SVDesk.measureText(mm, state.unit); }
   function clearField(id){
     var input = $(id);
     input.setAttribute('aria-invalid', 'false');
@@ -148,13 +132,13 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
     var ratio = isFinite(state.w) ? Math.max(1.2, Math.min(3.2, state.w / depth)) : 2;
     document.querySelector('.diagram').style.aspectRatio = ratio + ' / 1';
     if ($('w').getAttribute('aria-invalid') !== 'true') $('w').value = measure(state.w);
-    else showField('w', SV.deskRangeMessage('w', state.unit));
+    else showField('w', SVDesk.deskRangeMessage('w', state.unit));
     if ($('d').getAttribute('aria-invalid') !== 'true') $('d').value = measure(state.d);
-    else showField('d', SV.deskRangeMessage('d', state.unit));
+    else showField('d', SVDesk.deskRangeMessage('d', state.unit));
     $('wLabel').textContent = 'width ' + measure(state.w) + ' ' + state.unit;
     $('dLabel').textContent = 'depth ' + measure(state.d) + ' ' + state.unit;
     var note = $('deskFallback');
-    note.textContent = SV.deskFallbackNotice;
+    note.textContent = SVDesk.deskFallbackNotice;
     note.hidden = !deskFallback;
     document.querySelectorAll('#units button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.unit === state.unit); });
     $('presets').innerHTML = '';
@@ -178,7 +162,7 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
       clearField(id);
       return;
     }
-    var field = SV.deskField($(id).value, state.unit, axis);
+    var field = SVDesk.deskField($(id).value, state.unit, axis);
     if (!field.ok) {
       showField(id, field.message);
       return;
@@ -189,11 +173,11 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
     save();
     render();
   }
-  document.querySelector('footer a.btn-primary').addEventListener('click', function(e){
+  function continueWithDesk(e){
     var first = null;
     [['w', 'w'], ['d', 'd']].forEach(function(pair){
       if ($(pair[0]).value === measure(state[pair[1]])) return;
-      var field = SV.deskField($(pair[0]).value, state.unit, pair[1]);
+      var field = SVDesk.deskField($(pair[0]).value, state.unit, pair[1]);
       if (!field.ok) {
         showField(pair[0], field.message);
         if (!first) first = $(pair[0]);
@@ -208,15 +192,16 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
       first.focus();
       return;
     }
-    if (deskFallback || !SV.deskOk(state)) {
+    if (deskFallback || !SVDesk.deskOk(state)) {
       e.preventDefault();
-      showField('w', SV.deskRangeMessage('w', state.unit));
-      showField('d', SV.deskRangeMessage('d', state.unit));
+      showField('w', SVDesk.deskRangeMessage('w', state.unit));
+      showField('d', SVDesk.deskRangeMessage('d', state.unit));
       $('w').focus();
       return;
     }
     save();
-  });
+  }
+  document.querySelectorAll('[data-next]').forEach(function(link){ link.addEventListener('click', continueWithDesk); });
   document.querySelectorAll('#units button').forEach(function(b){ b.onclick = function(){ state.unit = b.dataset.unit; save(); render(); }; });
   document.querySelectorAll('[data-which]').forEach(function(b){ b.onclick = function(){ document.querySelectorAll('[data-which]').forEach(function(x){ x.setAttribute('aria-pressed', x === b); }); }; });
   $('w').addEventListener('change', function(){ commit('w', 'w'); });

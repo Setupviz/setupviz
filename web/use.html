@@ -19,33 +19,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/sv.css">
-<style>
-body{margin:0;background:#121212;color:#EDEDED;font-family:var(--font)}
-a{color:#EDEDED;text-decoration:none}
-.wrap{min-height:100vh;display:flex;flex-direction:column}
-.hdr{width:100%;max-width:var(--sv-content);margin:0 auto;padding:14px 24px;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-end;gap:16px}
-.brand{display:flex;align-items:center;gap:9px;font-weight:500;font-size:15px;letter-spacing:-0.01em}
-.btn{height:40px;min-height:24px;padding:0 18px;display:inline-flex;align-items:center;border-radius:999px;font-size:14px;font-weight:400;cursor:pointer;border:0;font-family:inherit;transition:background-color .15s,color .15s}
-.btn-primary{background:#EDEDED;color:#121212}.btn-primary:hover{background:#FFFFFF;color:#121212}
-.btn-ghost{background:transparent;color:#8F8F8F}.btn-ghost:hover{color:#EDEDED}
-.btn-outline{background:#1C1C1C;border:1px solid rgba(255,255,255,0.08);color:#EDEDED;height:32px;min-height:24px;padding:0 14px;font-size:13px}.btn-outline:hover{background:#232323}
-.prog{width:100%;max-width:680px;margin:0 auto;padding:0 24px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px}
-.bars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.bars i{display:block;height:2px;border-radius:1px;background:#262626}.bars i.on{background:#EDEDED}
-.meta{display:flex;justify-content:space-between;font-size:12px;color:#8F8F8F;font-family:var(--mono)}
-main{flex:1;width:100%;max-width:680px;margin:0 auto;padding:64px 24px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px}
-h1{margin:0;font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:400;letter-spacing:-0.03em}
-.lead{margin:0;font-size:16px;line-height:25px;color:#8F8F8F}
-.opts{display:flex;flex-direction:column;gap:8px}
-.opt{width:100%;min-height:68px;text-align:left;padding:16px 18px;border-radius:14px;display:flex;align-items:center;gap:16px;font-family:inherit;color:#EDEDED;cursor:pointer;background:#171717;border:1px solid transparent;transition:background .15s,border-color .15s}
-.opt:hover{background:#1C1C1C}
-.opt[aria-pressed="true"]{background:#232323;border-color:rgba(255,255,255,0.28)}
-.opt .t{font-size:16px;font-weight:400}.opt .d{font-size:13px;line-height:20px;color:#8F8F8F}
-.ring{width:18px;height:18px;border-radius:50%;border:1.5px solid #3A3A3A;box-sizing:border-box;flex-shrink:0}
-.opt[aria-pressed="true"] .ring{border:5px solid #EDEDED}
-footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-@media (pointer:coarse){.btn,.btn-outline,.opt{min-height:44px;min-width:44px}.btn,.btn-outline{height:44px}}
-</style>
+<link rel="stylesheet" href="/questions.css">
 </head>
 <body>
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
@@ -68,32 +42,30 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
   <main>
     <div style="display:flex;flex-direction:column;gap:10px">
       <h1>What is the setup for?</h1>
-      <p class="lead">This decides how much room the mouse gets and whether a bigger screen is worth the space.</p>
+      <p class="lead">Choose what you do most at this desk.</p>
     </div>
-    <div class="opts" role="group" aria-label="Main use">
-      <button type="button" class="opt" data-v="gaming" aria-pressed="false"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Gaming</span><span class="d">Room for fast, wide mouse swings comes first.</span></span><span class="ring"></span></button>
-      <button type="button" class="opt" data-v="work" aria-pressed="false"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Work</span><span class="d">Screen space and a number pad matter more.</span></span><span class="ring"></span></button>
-      <button type="button" class="opt" data-v="both" aria-pressed="false"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Both</span><span class="d">A balance of the two.</span></span><span class="ring"></span></button>
+    <div class="opts" role="radiogroup" aria-label="Main use">
+      <label class="opt"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Gaming</span><span class="d">Room for fast, wide mouse swings comes first.</span></span><input type="radio" name="use" value="gaming"></label>
+      <label class="opt"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Work</span><span class="d">Screen space and a number pad matter more.</span></span><input type="radio" name="use" value="work"></label>
+      <label class="opt"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Both</span><span class="d">I use this desk for work and gaming.</span></span><input type="radio" name="use" value="both"></label>
     </div>
   </main>
   <footer>
     <a href="/grip" class="btn btn-ghost" style="padding:0 12px">Back</a>
     <div style="display:flex;gap:8px">
-      <a href="/builder" class="btn btn-ghost" style="padding:0 14px">Skip</a>
+      <a href="/builder" class="btn btn-ghost" style="padding:0 14px" id="skip">Skip</a>
       <a href="/builder" class="btn btn-primary">Continue</a>
     </div>
     <div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
   </footer>
 </div>
 <script>
-document.querySelectorAll('.opt').forEach(function(b){
-  b.onclick = function(){
-    document.querySelectorAll('.opt').forEach(function(x){ x.setAttribute('aria-pressed', x === b); });
-    localStorage.setItem('sv-use', b.dataset.v);
-  };
+document.getElementById('skip').onclick = function(){ localStorage.removeItem('sv-use'); };
+var saved = localStorage.getItem('sv-use');
+document.querySelectorAll('input[type="radio"]').forEach(function(input){
+  input.checked = input.value === saved;
+  input.addEventListener('change', function(){ localStorage.setItem('sv-use', input.value); });
 });
-var v = localStorage.getItem('sv-use');
-if (v) document.querySelectorAll('.opt').forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.v === v); });
 </script>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
 </body>

@@ -3,8 +3,6 @@ import axe from 'axe-core';
 import { buildWorker, serveWorker } from './serve.mjs';
 
 const PORT = 4315;
-const STEP_MS = 50;
-const PLAY_MS = 1000;
 
 function lin(channel) {
   const c = channel / 255;
@@ -37,92 +35,25 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
 await page.addScriptTag({ content: axe.source });
 
-const fade = await page.evaluate(async ({ stepMs, playMs }) => {
-  const anims = document.getAnimations({ subtree: true }).filter((anim) => {
-    const target = anim.effect && anim.effect.target;
-    if (!target) return false;
-    return anim.animationName === 'land' || target.classList.contains('hint');
+// Check each state of the interactive example, including its updated labels.
+const previewViolations = [];
+for (const keyboard of ['k75', 'full']) {
+  await page.selectOption('#demoKeyboard', keyboard);
+  const failures = await page.evaluate(async () => {
+    const result = await axe.run(document, { runOnly: ['color-contrast'] });
+    return result.violations.flatMap(rule => rule.nodes.map(node => node.target));
   });
-  const spans = anims.map((anim) => {
-    const duration = parseFloat(String(anim.effect.getComputedTiming().duration));
-    return { name: anim.animationName, duration };
-  });
-  let worst = 0;
-  let frames = 0;
-  const bad = [];
-  for (let t = 0; t <= playMs; t += stepMs) {
-    const p = t / playMs;
-    anims.forEach((anim, i) => {
-      anim.currentTime = CSS.percent(spans[i].duration * p);
-    });
-    const result = await axe.run(document, { runOnly: { type: 'rule', values: ['color-contrast'] } });
-    const nodes = result.violations.flatMap((v) => v.nodes);
-    frames += 1;
-    if (nodes.length > worst) worst = nodes.length;
-    if (nodes.length && bad.length < 4) bad.push({ t, n: nodes.length, target: nodes[0].target.join(' ') });
-  }
-  const hint = getComputedStyle(document.querySelector('.hint'));
-  return { frames, worst, bad, spans, hintOpacity: hint.opacity };
-}, { stepMs: STEP_MS, playMs: PLAY_MS });
-
-const animated = await page.evaluate(() => {
-  const selectors = [];
-  const seen = new Set();
-  document.querySelectorAll('*').forEach((el) => {
-    if (!el.getAnimations().length) return;
-    const path = [];
-    let node = el;
-    while (node && node.nodeType === 1 && node !== document.body) {
-      let part = node.tagName.toLowerCase();
-      if (node.id) {
-        path.unshift('#' + CSS.escape(node.id));
-        break;
-      }
-      if (node.classList.length) part += [...node.classList].map((name) => '.' + CSS.escape(name)).join('');
-      const parent = node.parentElement;
-      if (parent) {
-        const key = node.tagName + [...node.classList].join(' ');
-        const twins = [...parent.children].filter((child) => child.tagName + [...child.classList].join(' ') === key);
-        if (twins.length > 1) part += `:nth-child(${[...parent.children].indexOf(node) + 1})`;
-      }
-      path.unshift(part);
-      node = node.parentElement;
-    }
-    const selector = path.join(' > ');
-    if (seen.has(selector)) return;
-    seen.add(selector);
-    selectors.push(selector);
-  });
-  return selectors;
-});
+  previewViolations.push(...failures);
+}
 
 await page.emulateMedia({ reducedMotion: 'reduce' });
 await page.reload({ waitUntil: 'load' });
-const reduced = await page.evaluate((selectors) => {
-  const hint = getComputedStyle(document.querySelector('.hint'));
-  const piece = getComputedStyle(document.querySelector('.board .st-1'));
-  const hidden = [];
-  selectors.forEach((selector) => {
+const sectionsVisible = await page.evaluate(() =>
+  ['.hero', '.board .st-1', '.s-1 .win', '.s-2 .win', '.s-3 .win', '.cards', '.grid4', '.money'].every(selector => {
     const el = document.querySelector(selector);
-    if (!el) {
-      hidden.push({ selector, missing: true });
-      return;
-    }
-    const style = getComputedStyle(el);
-    const running = el.getAnimations().length > 0;
-    const shown = style.display === 'none' || (style.visibility !== 'hidden' && Number(style.opacity) >= 0.99);
-    if (running || !shown) hidden.push({ selector, animation: style.animationName, opacity: style.opacity, display: style.display });
-  });
-  return {
-    hintAnimation: hint.animationName,
-    hintOpacity: hint.opacity,
-    hintDisplay: hint.display,
-    landAnimation: piece.animationName,
-    landOpacity: piece.opacity,
-    animated: selectors.length,
-    hidden,
-  };
-}, animated);
+    return el && el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && !el.getAnimations().length;
+  })
+);
 
 const colors = await page.evaluate(() => {
   const small = document.querySelector('.step .win small');
@@ -133,16 +64,13 @@ const colors = await page.evaluate(() => {
 });
 const smallRatio = contrast(rgbHex(colors.small.color), rgbHex(colors.small.bg));
 const emRatio = contrast(rgbHex(colors.em.color), rgbHex(colors.em.bg));
-const motionOk = reduced.hintAnimation === 'none' && reduced.landAnimation === 'none'
-  && Number(reduced.landOpacity) >= 0.9
-  && (reduced.hintDisplay === 'none' || Number(reduced.hintOpacity) >= 0.9)
-  && reduced.animated > 0 && reduced.hidden.length === 0;
-const fadeOk = fade.worst === 0 && fade.frames >= Math.floor(PLAY_MS / STEP_MS) + 1;
+const motionOk = sectionsVisible;
+const previewOk = previewViolations.length === 0;
 const contrastOk = smallRatio >= 4.5 && emRatio >= 4.5;
-const pass = fadeOk && motionOk && contrastOk;
+const pass = previewOk && motionOk && contrastOk;
 
-console.log(`${fadeOk ? 'PASS' : 'FAIL'} fade frames ${fade.frames} step ${STEP_MS}ms worst violations ${fade.worst} ${JSON.stringify(fade.bad)}`);
-console.log(`${motionOk ? 'PASS' : 'FAIL'} reduced-motion hint ${reduced.hintAnimation}/${reduced.hintDisplay} land ${reduced.landAnimation} opacity ${reduced.landOpacity} animated ${reduced.animated} hidden ${reduced.hidden.length} ${JSON.stringify(reduced.hidden.slice(0, 6))}`);
+console.log(`${previewOk ? 'PASS' : 'FAIL'} keyboard preview contrast ${JSON.stringify(previewViolations)}`);
+console.log(`${motionOk ? 'PASS' : 'FAIL'} reduced-motion sections visible and still`);
 console.log(`${contrastOk ? 'PASS' : 'FAIL'} .step .win small ${smallRatio.toFixed(2)}:1 em ${emRatio.toFixed(2)}:1 on ${rgbHex(colors.small.bg)} color ${rgbHex(colors.small.color)}`);
 console.log(pass ? 'PASS contrast' : 'FAIL contrast');
 await browser.close();

@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SetupViz: Know it fits before it's on your desk</title>
+<title>SetupViz | Desk setup planner</title>
 <meta name="description" content="Plan your keyboard, mouse, pad and monitor on your desk, to scale. See what fits, what's tight and what won't before you buy.">
 <link rel="canonical" href="https://setupviz.com/home">
-<meta property="og:title" content="SetupViz: Know it fits before it's on your desk">
+<meta property="og:title" content="SetupViz | Desk setup planner">
 <meta property="og:description" content="Plan your keyboard, mouse, pad and monitor on your desk, to scale. See what fits, what's tight and what won't before you buy.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://setupviz.com/home">
 <meta property="og:site_name" content="SetupViz">
 <meta property="og:image" content="https://setupviz.com/og-desk.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SetupViz: Know it fits before it's on your desk">
+<meta name="twitter:title" content="SetupViz | Desk setup planner">
 <meta name="twitter:description" content="Plan your keyboard, mouse, pad and monitor on your desk, to scale. See what fits, what's tight and what won't before you buy.">
 <meta name="twitter:image" content="https://setupviz.com/og-desk.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -24,15 +24,14 @@
 section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 
 /* hero */
-.hero{padding:88px 0 40px;display:flex;flex-direction:column;align-items:flex-start;gap:28px}
-.hero h1{margin:0;max-width:880px;font-size:clamp(32px,4.2vw,56px);line-height:1.08;font-weight:400;letter-spacing:-0.035em}
+.hero{padding:40px 0 24px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
+.hero h1{margin:0;max-width:880px;font-size:clamp(32px,5vw,64px);line-height:1.08;font-weight:400;letter-spacing:-0.035em}
 .hero .row{display:flex;gap:10px;flex-wrap:wrap}
 /* 390px sits on the wrap: a few wider glyphs drop the second pill and push the story 56px. */
 @media (min-width:380px) and (max-width:520px){
   .hero .pill-lg{padding:0 12px}
   .hero .row{gap:8px}
 }
-.shot{padding:clamp(20px,5vw,72px) clamp(16px,5vw,72px) 0}
 
 /* product shot: builder in miniature */
 .mini{display:flex;min-height:380px}
@@ -42,7 +41,7 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .mini-side .h{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
 .mslot{padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
 .mslot.on{border-color:var(--line-3);background:var(--raise)}
-.mslot .c{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mslot .c{font-size:12px;letter-spacing:0;color:var(--muted)}
 .mslot .n{font-size:13px}
 .mslot .m{font-size:12px;color:var(--muted)}
 .mini-side .h a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
@@ -54,50 +53,15 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .board .drag{cursor:grabbing}
 .b-mon .n{height:24%}
 .b-mon .b{width:34%;height:62%}
-.b-tag{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(18,18,18,0.9);border:1px solid var(--line-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;pointer-events:none}
+.b-tag{font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(18,18,18,0.9);border:1px solid var(--line-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;pointer-events:none}
 .b-tag .dot,.caps .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
 .caps .cap-b{display:inline-flex;align-items:center;gap:6px}
 .demo-verdicts{display:none}
 
-/* scroll story: the shot pins while pieces land on the desk */
-.story{position:relative;height:auto}
-.pin{display:flex;flex-direction:column;gap:14px}
-.hint{margin:0;text-align:center;font-size:13px;opacity:0}
-.shot{padding-bottom:0}
-.shot .win{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:0}
-.caps{position:relative}
-.caps .cap-a{position:absolute;left:0;top:0}
-@keyframes land{from{opacity:.92;transform:translateY(-14%) scale(1.05)}to{opacity:1;transform:none}}
-@keyframes hint-out{to{visibility:hidden}}
-@keyframes slot{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes show{to{opacity:1}}
-@keyframes hide{to{opacity:0}}
-@supports (animation-timeline:view()){
-  .story{height:300vh;view-timeline-name:--build;view-timeline-axis:block}
-  .pin{position:sticky;top:0;height:100vh;box-sizing:border-box;padding-top:64px;justify-content:flex-start}
-  .pin .stage{flex:0 1 auto;max-height:calc(100vh - 118px);overflow:hidden;padding-top:clamp(16px,3vw,40px)}
-  .hint{opacity:1;animation:hint-out linear both;animation-timeline:--build;animation-range:cover 27% cover 31%}
-  .board .st-1,.board .st-2,.board .st-3,.board .st-4{animation:land ease-out both;animation-timeline:--build}
-  .board .st-1{animation-range:cover 30% cover 37%}
-  .board .st-2{animation-range:cover 39% cover 46%}
-  .board .st-3{animation-range:cover 48% cover 55%}
-  .board .st-4{animation-range:cover 57% cover 64%}
-  @keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
-  .board .b-tag{transform-origin:left center;animation:pop ease-out both;animation-timeline:--build}
-  .board .tg-1{animation-range:cover 37% cover 40%}
-  .board .tg-2{animation-range:cover 46% cover 49%}
-  .board .tg-3{animation-range:cover 55% cover 58%}
-  .board .tg-4{animation-range:cover 64% cover 67%}
-  .mslot.st-1,.mslot.st-2,.mslot.st-3,.mslot.st-4{animation:slot ease-out both;animation-timeline:--build}
-  .mslot.st-1{animation-range:cover 31% cover 38%}
-  .mslot.st-2{animation-range:cover 40% cover 47%}
-  .mslot.st-3{animation-range:cover 49% cover 56%}
-  .mslot.st-4{animation-range:cover 58% cover 65%}
-  .caps .st-5{opacity:0;animation:show linear both;animation-timeline:--build;animation-range:cover 66% cover 71%}
-  .caps .cap-a{animation:hide linear both;animation-timeline:--build;animation-range:cover 66% cover 71%}
-}
-@supports not (animation-timeline:view()){.caps .cap-a{display:none}}
-@media (prefers-reduced-motion: reduce){.story{height:auto}.pin{position:static;height:auto;padding-top:0}.board [class*=st-],.board .b-tag,.mslot,.caps .st-5,.caps .cap-a,.hint{animation:none!important;opacity:1}.caps .cap-a,.hint{display:none}}
+.pin{display:flex;flex-direction:column}
+.shot{padding:clamp(8px,1vw,16px)}
+.demo-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.demo-controls select{font:inherit;color:var(--text);background:var(--panel-2);border:1px solid var(--line-3);border-radius:8px;padding:8px}
 @media (max-width:760px){
   .story{height:auto}.pin{position:static;height:auto;padding-top:0}
   .pin .stage{max-height:none;overflow:visible}
@@ -110,7 +74,7 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
   .caps .cap-a,.hint{display:none}
 }
 
-/* pinned scenes: each one holds the screen while the scroll drives it */
+/* Walkthrough */
 .pin2{display:flex;flex-direction:column;gap:28px;justify-content:center}
 .steps-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-rows:auto auto auto auto;column-gap:clamp(24px,5vw,80px);row-gap:28px;align-items:center;border-radius:20px;background:var(--panel);padding:clamp(20px,3vw,40px)}
 .steps-in .eyebrow{grid-column:1;grid-row:1;margin:0}
@@ -130,7 +94,7 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .q .f{flex:1;display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
 .q .f b{height:38px;padding:0 12px;border-radius:9px;border:1px solid var(--line-2);background:var(--bg);display:flex;align-items:center;font-weight:400;font-size:14px;color:var(--text)}
 .q .ps{display:flex;gap:6px;flex-wrap:wrap}
-.q .ps span{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);display:flex;align-items:center;font-size:12px;color:var(--muted)}
+.q .ps span{height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;font-size:12px;color:var(--muted)}
 .q .ps span.on{border-color:var(--line-3);background:var(--raise);color:var(--text)}
 .picks{padding:16px;display:flex;flex-direction:column;gap:6px}
 .pk{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;border:1px solid var(--line)}
@@ -158,7 +122,7 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .grid4 .d{font-size:14px;line-height:21px;color:var(--muted)}
 
 .money{padding:140px 24px 160px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
-.money .lede{font-size:clamp(32px,4.2vw,56px);line-height:1.08;letter-spacing:-0.035em}
+.money .lede{font-size:clamp(32px,5vw,64px);line-height:1.08;letter-spacing:-0.035em}
 .money p.g{margin:0;max-width:640px;font-size:16px;line-height:25px}
 
 @media (max-width:820px){
@@ -177,61 +141,12 @@ footer{border-top:1px solid var(--line)}
 .foot .col{display:flex;flex-direction:column;gap:10px}
 .foot .col a{display:inline-flex;align-items:center;min-height:24px;color:var(--muted)}.foot .col a:hover{color:var(--text)}
 
-/* quiet entrance */
-/* scroll experience, top to bottom: every scene is driven by scroll position, nothing runs on a timer */
-@keyframes rise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
-@keyframes lift{from{opacity:0;transform:translateY(90px) scale(.92)}to{opacity:1;transform:none}}
-@keyframes sink{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-40px) scale(.98)}}
-@keyframes win-in{from{opacity:0;transform:translateY(60px) scale(.94)}to{opacity:1;transform:none}}
-@keyframes win-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-60px) scale(.94)}}
-@keyframes dim{from{opacity:1}to{opacity:.28}}
-@keyframes lit{from{opacity:.28;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-@keyframes pulse{0%{opacity:.28;transform:translateY(10px)}24%{opacity:1;transform:none}76%{opacity:1;transform:none}100%{opacity:.28;transform:none}}
-@keyframes win-thru{0%{opacity:0;transform:translateY(60px) scale(.94)}32%{opacity:1;transform:none}74%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-60px) scale(.94)}}
-@keyframes tick{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
-@supports (animation-timeline:view()){
-  .hero{animation:sink linear both;animation-timeline:scroll(root);animation-range:0 420px}
-
-  /* how it works: three steps, one pinned screen; text lights up as the window swaps */
-  .steps{height:340vh;view-timeline-name:--steps}
-  .start{height:220vh;view-timeline-name:--start}
-  .checks{height:300vh;view-timeline-name:--checks}
-  .pin2{position:sticky;top:0;height:100vh;box-sizing:border-box;padding-top:64px}
-  .step .copy{animation:dim linear both;animation-timeline:--steps}
-  .s-1 .copy{animation-range:cover 42% cover 47%}
-  .s-2 .copy{animation:pulse linear both;animation-timeline:--steps;animation-range:cover 42% cover 63%}
-  .s-3 .copy{opacity:.28;animation:lit linear both;animation-timeline:--steps;animation-range:cover 58% cover 63%}
-  .v-1{animation:win-out cubic-bezier(.4,0,.6,1) both;animation-timeline:--steps;animation-range:cover 42% cover 47%}
-  .v-2{animation:win-thru linear both;animation-timeline:--steps;animation-range:cover 44% cover 63%}
-  .v-3{opacity:0;animation:win-in cubic-bezier(.2,.7,.2,1) both;animation-timeline:--steps;animation-range:cover 60% cover 66%}
-  .steps-in{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:--steps;animation-range:cover 18% cover 30%}
-
-  /* where to start: the three cards slide up one after another and hold */
-  .start .lede{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:--start;animation-range:cover 30% cover 40%}
-  .cards .card{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:--start}
-  .cards .c-1{animation-range:cover 36% cover 48%}
-  .cards .c-2{animation-range:cover 44% cover 56%}
-  .cards .c-3{animation-range:cover 52% cover 64%}
-
-  /* what we check: the grid draws itself alongside the verdict labels */
-  .checks .lede{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:--checks;animation-range:cover 30% cover 38%}
-  .verdicts .b-tag{transform-origin:left center;animation:tick cubic-bezier(.2,.7,.2,1) both;animation-timeline:--checks}
-  .verdicts .k-1{animation-range:cover 48% cover 52%}.verdicts .k-2{animation-range:cover 53% cover 57%}.verdicts .k-3{animation-range:cover 58% cover 62%}
-  .grid4{animation:wipe linear both;animation-timeline:--checks;animation-range:cover 40% cover 50%}
-  .grid4 > div .t,.grid4 > div .d{opacity:1}
-  .grid4 > div{animation:none}
-
-  /* the close: headline, then the why, then the button, as the page bottoms out */
-  .m-1{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% entry 90%}
-  .m-2{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 35%}
-  .m-3{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 60%}
-  .foot > *{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% entry 100%}
-  .foot .col:nth-child(2){animation-range:entry 20% cover 20%}
+/* Pair each example with its instructions in reading order. */
+.pin2{padding-block:clamp(32px,5vw,72px)}
+@media(min-width:821px){
+  .s-1 .win{grid-row:2}.s-2 .win{grid-row:3}.s-3 .win{grid-row:4}
 }
-@media (max-width:820px){.steps,.start,.checks{height:auto;view-timeline-name:none}.pin2{position:static;height:auto;padding:40px 0}.step .copy,.v-1,.v-2,.v-3,.steps-in,.start .lede,.cards .card,.checks .lede,.verdicts .b-tag,.grid4,.grid4 > div .t,.grid4 > div .d{animation:none!important;opacity:1!important;transform:none!important;clip-path:none!important}}
-@media (pointer:coarse){.step .copy a,.foot .col a{min-height:44px;min-width:44px}}
-@media (prefers-reduced-motion: reduce){.hero,.step .copy,.v-1,.v-2,.v-3,.steps-in,.start .lede,.cards .card,.checks .lede,.verdicts .b-tag,.grid4,.grid4 > div .t,.grid4 > div .d,.m-1,.m-2,.m-3,.foot > *{animation:none!important;opacity:1!important;transform:none!important;clip-path:none!important}.steps,.start,.checks{height:auto}.pin2{position:static;height:auto;padding:40px 0}}
+@media(pointer:coarse){.step .copy a,.foot .col a{min-height:44px;min-width:44px}}
 </style>
 </head>
 <body>
@@ -249,21 +164,22 @@ footer{border-top:1px solid var(--line)}
 <main>
   <div class="wrap">
     <section class="hero">
-      <h1>See it on your desk<br><span class="g subhead">Know it fits before it's on your desk.</span></h1>
-      <p class="g" style="margin:0;max-width:520px;font-size:17px;line-height:26px">We pick a keyboard, mouse, pad and monitor for your desk and your hands, then show them on your desk, to scale.</p>
+      <h1>Will it fit on your desk?</h1>
+      <p class="g" style="margin:0;max-width:520px;font-size:17px;line-height:26px">Try real gear on a scale drawing of your desk before you buy.</p>
       <div class="row">
-        <a href="/desk" class="pill pill-light pill-lg">Find my setup <span class="arrow">→</span></a>
-        <a href="/builder" class="pill pill-dark pill-lg">I know what I want</a>
+        <a href="/desk" class="pill pill-light pill-lg">Enter my desk size <span class="arrow">→</span></a>
+        <a href="/builder" class="pill pill-dark pill-lg">Open builder</a>
       </div>
     </section>
 
-    <section class="story" aria-label="How a setup comes together, as you scroll">
+    <section class="story" aria-label="Try a keyboard on the example desk">
       <div class="pin">
         <div class="stage shot">
           <div class="win">
             <div class="win-bar"><i></i><i></i><i></i><span>Your setup · desk 55.1 × 27.6 in</span></div>
             <div class="mini">
               <div class="mini-desk">
+                <label class="demo-controls">Try a keyboard <select id="demoKeyboard"><option value="k75">Compact · MX Mechanical Mini</option><option value="full">Full size · MX Keys S</option></select></label>
                 <div class="cap"><span>Width 55.1 in</span><span>Depth 27.6 in</span></div>
                 <div class="board desk-dots" id="demoBoard" role="group" aria-label="Desk from above. Drag a piece, or use the arrow keys.">
                   <button type="button" class="piece b-mon st-1" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><span class="s"><i></i></span><span class="n"></span><span class="b"></span></button>
@@ -273,15 +189,15 @@ footer{border-top:1px solid var(--line)}
                   <span class="b-tag tg-1" data-tag="monitor" style="left:28.21%;top:4.86%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Monitor fits</span></span>
                   <span class="b-tag tg-2" data-tag="keyboard" style="left:27.14%;top:54.86%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Keyboard fits</span></span>
                   <span class="b-tag tg-3" data-tag="pad" style="left:58.57%;top:30.57%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Pad fits</span></span>
-                  <span class="b-tag tg-4" data-tag="mouse" style="left:62.00%;top:53.43%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits your grip</span></span>
+                  <span class="b-tag tg-4" data-tag="mouse" style="left:62.00%;top:53.43%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits on the desk</span></span>
                 </div>
                 <div class="demo-verdicts" role="list" aria-label="Fit checks">
                   <span class="b-tag" data-tag="monitor" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Monitor fits</span></span>
                   <span class="b-tag" data-tag="keyboard" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Keyboard fits</span></span>
                   <span class="b-tag" data-tag="pad" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Pad fits</span></span>
-                  <span class="b-tag" data-tag="mouse" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits your grip</span></span>
+                  <span class="b-tag" data-tag="mouse" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits on the desk</span></span>
                 </div>
-                <div class="cap caps"><span class="cap-a">An empty desk, to scale</span><span class="cap-b st-5" id="demoSum"><i class="dot" style="background:#5BE38A"></i><span class="tx">4 fit</span></span><span class="st-5" id="demoUsed">27% of the desk used</span></div>
+                <div class="cap caps"><span class="cap-b st-5" id="demoSum"><i class="dot" style="background:#5BE38A"></i><span class="tx">4 fit</span></span><span class="st-5" id="demoUsed">27% of the desk used</span></div>
               </div>
               <div class="mini-side" id="demoSide">
                 <div class="h"><span>Your setup</span><a id="demoTry" href="/builder?s=eyJ2IjoxLCJkIjpbMTQwMCw3MDBdLCJwIjp7Im0iOiJtb24yNyIsImsiOiJrNzUiLCJwIjoiY2xvdGgiLCJvIjoiZGEzIn0sIngiOnsibSI6WzM5NSwyMF0sImsiOlszODAsNDQwXSwicCI6WzgyMCwyNzBdLCJvIjpbOTQwLDQzMF19LCJhIjpbIiIsIiIsIiJdfQ">Try it in the builder</a></div>
@@ -293,7 +209,7 @@ footer{border-top:1px solid var(--line)}
             </div>
           </div>
         </div>
-        <p class="hint g">Scroll to build the desk</p>
+
       </div>
     </section>
   <section id="story" class="steps wrap" aria-label="How it works">
@@ -301,7 +217,7 @@ footer{border-top:1px solid var(--line)}
       <div class="steps-in">
         <p class="eyebrow">How it works</p>
         <div class="step s-1">
-          <div class="copy"><span class="n">01</span><p class="lede">Tell us about your space.</p><p class="g">Desk size, hand size, how you hold a mouse and what the setup is for. Skip anything you don't know.</p><a href="/desk">Start with your desk →</a></div>
+          <div class="copy"><span class="n">01</span><p class="lede">Start with your desk size.</p><p class="g">Enter the width and depth of your desktop. If you want help choosing a mouse, add your hand size and grip.</p><a href="/desk">Start with your desk →</a></div>
           <div class="win v-1"><div class="win-bar"><i></i><i></i><i></i><span>Question 1 of 4</span></div>
             <div class="q">
               <span class="t">How big is the desk?</span>
@@ -311,17 +227,17 @@ footer{border-top:1px solid var(--line)}
           </div>
         </div>
         <div class="step s-2">
-          <div class="copy"><span class="n">02</span><p class="lede">Get picks that fit you.</p><p class="g">We match real product sizes against yours and explain every pick in a sentence, so you know why it made the list.</p><a href="/hand">Measure your hand →</a></div>
+          <div class="copy"><span class="n">02</span><p class="lede">Choose a mouse.</p><p class="g">Compare mice by shape, weight and how you hold them.</p><a href="/hand">Measure your hand →</a></div>
           <div class="win v-2"><div class="win-bar"><i></i><i></i><i></i><span>Mice for a palm grip, large hands</span></div>
             <div class="picks">
-              <div class="pk on"><div><b>Razer DeathAdder V3</b><small>Long, rear hump. Rests your palm.</small></div><em>59 g</em></div>
-              <div class="pk"><div><b>Logitech G Pro X Superlight 2</b><small>Light and symmetrical. Works for most grips.</small></div><em>60 g</em></div>
-              <div class="pk"><div><b>Zowie EC2-C</b><small>Shorter, for smaller hands.</small></div><em>73 g</em></div>
+              <div class="pk on"><div><b>Razer DeathAdder V3</b><small>Long body with a raised back.</small></div><em>59 g</em></div>
+              <div class="pk"><div><b>Logitech G Pro X Superlight 2</b><small>Symmetrical shape, with buttons on the left.</small></div><em>60 g</em></div>
+              <div class="pk"><div><b>DeathAdder V3 HyperSpeed</b><small>Shorter palm-grip option.</small></div><em>55 g</em></div>
             </div>
           </div>
         </div>
         <div class="step s-3">
-          <div class="copy"><span class="n">03</span><p class="lede">See it on your desk.</p><p class="g">Everything lands on a to-scale drawing of your desk. Drag pieces around, swap them, and watch the fit update.</p><a href="/builder">Open the builder →</a></div>
+          <div class="copy"><span class="n">03</span><p class="lede">Try the layout.</p><p class="g">Drag the keyboard or swap the monitor to see how much room you have left.</p><a href="/builder">Open the builder →</a></div>
           <div class="win v-3"><div class="win-bar"><i></i><i></i><i></i><span>Desk from above</span></div>
             <div style="padding:16px">
               <div class="board desk-dots">
@@ -342,31 +258,31 @@ footer{border-top:1px solid var(--line)}
     <div class="pin2">
       <p class="lede">Where do you want to start? <span class="g">Answer a few questions, or go straight to the parts.</span></p>
       <div class="cards">
-        <a href="/desk" class="card light c-1"><span class="k">Recommended</span><span class="t">Help me pick</span><span class="d">A few quick questions, one at a time. Skip any you like.</span></a>
+        <a href="/desk" class="card light c-1"><span class="k">Recommended</span><span class="t">Help me pick</span><span class="d">Start with your desk size, then choose whether to answer the mouse questions.</span></a>
         <a href="/builder" class="card c-2"><span class="t">I know what I want</span><span class="d">Search for your products and check how they fit.</span></a>
-        <a href="/builder" class="card c-3"><span class="t">Start from a setup I like</span><span class="d">Pick a finished setup, then swap any piece.</span></a>
+        <a href="#demoBoard" class="card c-3"><span class="t">Try the example desk</span><span class="d">Open the example desk, then swap any piece.</span></a>
       </div>
     </div>
   </section>
 
   <section id="checks" class="checks wrap" aria-label="What we check">
     <div class="pin2">
-      <p class="lede">Fit, in plain words. <span class="g">Every piece gets a verdict. Each one tells you why.</span></p>
+      <p class="lede">What does the builder check? <span class="g">Move a piece to see where it overlaps or hangs off the desk.</span></p>
       <div class="verdicts">
         <span class="b-tag k-1"><i class="dot" style="background:#5BE38A"></i>Fits</span><span class="b-tag k-2"><i class="dot" style="background:#F5C542"></i>Tight</span><span class="b-tag k-3"><i class="dot" style="background:#FF6B5B"></i>Won't fit</span>
       </div>
       <div class="grid4">
-        <div class="g-1"><span class="t">Everything fits on the desk</span><span class="d">Width and depth, with room left to move.</span></div>
-        <div class="g-2"><span class="t">The mouse fits your hand</span><span class="d">Length and width against your hand, hump against your grip.</span></div>
-        <div class="g-3"><span class="t">The pad gives the mouse room</span><span class="d">Enough space beside the keyboard to swing your arm.</span></div>
-        <div class="g-4"><span class="t">The monitor suits the desk</span><span class="d">Its width and stand footprint, measured in inches.</span></div>
+        <div class="g-1"><span class="t">Desk edges</span><span class="d">See when a piece sits close to the edge or hangs over it.</span></div>
+        <div class="g-2"><span class="t">Mouse size and grip</span><span class="d">See which hand sizes and grips our guide pairs with each mouse.</span></div>
+        <div class="g-3"><span class="t">Mouse pad space</span><span class="d">Check whether the mouse sits fully on the pad and where the keyboard overlaps it.</span></div>
+        <div class="g-4"><span class="t">Monitor stand</span><span class="d">See whether the stand overlaps your keyboard or pad.</span></div>
       </div>
     </div>
   </section>
 
   <section class="money wrap">
-    <p class="lede m-1">Free for you, <span class="g">and honest about it.</span></p>
-    <p class="g m-2">When you buy through our links, the store may pay us a small commission. Fit decides the ranking, not the commission. If a product you need isn't in our list yet, ask us to add it.</p>
+    <p class="lede m-1">SetupViz is free to use.</p>
+    <p class="g m-2">If you buy through an Amazon product link, we may earn a commission. You pay the same price.</p>
     <a href="/desk" class="pill pill-light pill-lg m-3">Find my setup <span class="arrow">→</span></a>
   </section>
 </main>
@@ -380,6 +296,7 @@ footer{border-top:1px solid var(--line)}
 <div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
 </div>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer>
+<script src="/desk-size.js"></script>
 <script src="/data.js"></script>
 <script>
 (function(){
@@ -426,7 +343,7 @@ footer{border-top:1px solid var(--line)}
     document.querySelector('#demoSum .dot').style.background = colors[bad ? 2 : tight ? 1 : 0];
     document.querySelector('#demoSum .tx').textContent = bad ? bad + " won't fit" : fit + ' fit' + (tight ? ', ' + tight + ' tight' : '');
     document.getElementById('demoUsed').textContent = SV.usedPercent(SV.usedArea({ pick: pick, pos: pos }), desk.w * desk.d) + '% of the desk used';
-    document.getElementById('demoTry').href = '/builder?s=' + SV.encode({ desk: desk, pick: pick, pos: pos }, { grip: '', hand: '', use: '' });
+    document.getElementById('demoTry').href = document.querySelector('.card.c-3').href = '/builder?s=' + SV.encode({ desk: desk, pick: pick, pos: pos }, { grip: '', hand: '', use: '' });
   }
   board.addEventListener('pointerdown', function(e){
     var el = e.target.closest('.piece'); if (!el) return;
@@ -447,6 +364,12 @@ footer{border-top:1px solid var(--line)}
     if (!el || !n) return;
     e.preventDefault(); var c = el.dataset.cat; state.sel = c; pos[c].x += n[0]; pos[c].y += n[1]; park(c); paint();
   });
+  document.getElementById('demoKeyboard').onchange = function(){
+    pick.keyboard = this.value;
+    pos = SV.layout(desk, pick);
+    state.sel = 'keyboard';
+    paint();
+  };
   paint();
 })();
 </script>

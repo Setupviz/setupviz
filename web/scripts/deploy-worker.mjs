@@ -35,7 +35,7 @@ if (built.status !== 0) process.exit(built.status || 1);
 const code = readFileSync(workerPath, 'utf8');
 let boundary = 'F' + Date.now();
 while (code.includes(boundary)) boundary += 'x';
-const meta = { main_module: 'worker.js', compatibility_date: '2026-10-01' };
+const meta = { main_module: 'worker.js', compatibility_date: '2026-10-01', keep_bindings: ['secret_text', 'plain_text'] };
 const body = [
   `--${boundary}`,
   'Content-Disposition: form-data; name="metadata"',

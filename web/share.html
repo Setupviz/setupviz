@@ -30,7 +30,7 @@ a{color:#EDEDED;text-decoration:none}a:hover{color:#FFFFFF}
 .deskframe{overflow:clip;padding:28px 32px 32px;min-width:0}
 #desk{position:relative;width:100%;aspect-ratio:2/1;border-radius:14px;background:#141414;border:1px solid rgba(255,255,255,0.08);background-image:radial-gradient(rgba(255,255,255,0.09) 1px,transparent 1.2px);background-size:16px 16px;background-position:8px 8px;overflow:visible}
 .left > .muted:first-child{min-height:24px}
-.fallback{margin:0;padding:10px 16px;border-radius:999px;background:#141414;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:18px;color:#CFCFCF}
+.fallback{margin:0;padding:10px 16px;border-radius:8px;background:#141414;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:18px;color:#CFCFCF}
 .p{position:absolute;box-sizing:border-box}
 .p-keyboard{border-radius:8px;background-color:#262626;background-image:linear-gradient(90deg,#171717 1px,transparent 1px),linear-gradient(#171717 1px,transparent 1px);background-size:12px 12px;border:1px solid rgba(255,255,255,0.18)}
 .p-pad{border-radius:12px;background:#161616;border:1px solid rgba(255,255,255,0.12)}
@@ -52,11 +52,12 @@ h1{margin:0 0 8px;font-size:34px;line-height:1.1;font-weight:400;letter-spacing:
 a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.btn{height:40px;min-height:24px;padding:0 18px;display:inline-flex;align-items:center;border-radius:999px;font-size:14px;font-weight:400;cursor:pointer;border:0;font-family:inherit}
+.btn{height:40px;min-height:24px;padding:0 18px;display:inline-flex;align-items:center;border-radius:8px;font-size:14px;font-weight:400;cursor:pointer;border:0;font-family:inherit}
 .btn-primary{background:#EDEDED;color:#121212}.btn-primary:hover{color:#121212;background:#FFFFFF}
 .btn-outline{background:#1C1C1C;border:1px solid rgba(255,255,255,0.08);color:#EDEDED}.btn-outline:hover{background:#232323;color:#EDEDED}
 @media (max-width:640px){.card{padding:20px;gap:24px}h1{font-size:26px}}
 @media (pointer:coarse){.btn,.amz{min-height:44px;min-width:44px;height:44px}}
+.item span{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -86,6 +87,8 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
     </div>
   </div>
   <div class="acts">
+    <p id="priceSummary" hidden></p>
+    <details id="priceTerms" hidden><summary>About Amazon prices</summary><p>Product prices and availability are accurate as of the date/time indicated and are subject to change. Any price and availability information displayed on Amazon.com at the time of purchase will apply to the purchase of this product.</p><p>CERTAIN CONTENT THAT APPEARS ON THIS SITE COMES FROM AMAZON. THIS CONTENT IS PROVIDED “AS IS” AND IS SUBJECT TO CHANGE OR REMOVAL AT ANY TIME.</p></details>
     <p class="sv-disclosure buy-note">As an Amazon Associate I earn from qualifying purchases.</p>
     <a class="btn btn-primary" id="buyAll" rel="sponsored nofollow noopener" target="_blank" aria-label="Buy this whole setup (opens in a new tab)" aria-disabled="true">Buy this whole setup</a>
     <p class="paid">Paid link. We earn a commission if you buy, at no extra cost to you.</p>
@@ -95,7 +98,9 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
   </div>
 </main>
 
+<script src="/desk-size.js"></script>
 <script src="/data.js"></script>
+<script src="/prices.js"></script>
 <script>
 (function(){
   var unit = localStorage.getItem('sv-unit') || 'in';
@@ -139,7 +144,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
   var deskEl = document.getElementById('desk');
   if (isFinite(S.desk.w) && isFinite(S.desk.d) && S.desk.d > 0) deskEl.style.aspectRatio = S.desk.w + ' / ' + S.desk.d;
   var note = document.getElementById('deskFallback');
-  note.textContent = SV.deskFallbackNotice;
+  note.textContent = hasLink && deskFallback ? SV.invalidShareNotice : SV.deskFallbackNotice;
   note.hidden = !deskFallback;
   on.forEach(function(c){
     var s = SV.get(c, S.pick[c]), p = S.pos[c], el = document.createElement('div');
@@ -153,36 +158,33 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
   var names = on.map(function(c){ return SV.get(c, S.pick[c]).name; });
   deskEl.setAttribute('aria-label', 'Desk from above with ' + (names.length ? names.join(', ') : 'nothing on it yet'));
 
-  var area = 0;
-  on.forEach(function(c){ var s = SV.get(c, S.pick[c]); if (c === 'monitor') area += s.base[0]*s.base[1]; else if (c !== 'mouse') area += s.w*s.d; });
-  if (S.pick.keyboard && S.pick.pad && on.indexOf('keyboard') >= 0 && on.indexOf('pad') >= 0) {
-    var k = SV.get('keyboard', S.pick.keyboard), pd = SV.get('pad', S.pick.pad);
-    area -= SV.overlap({ x: S.pos.keyboard.x, y: S.pos.keyboard.y, w: k.w, d: k.d }, { x: S.pos.pad.x, y: S.pos.pad.y, w: pd.w, d: pd.d });
-  }
   document.getElementById('deskLine').textContent = 'Desk · ' + two(S.desk.w, S.desk.d);
-  var usedN = SV.usedPercent(area, S.desk.w * S.desk.d);
+  var usedN = SV.usedPercent(SV.usedArea(S), S.desk.w * S.desk.d);
   document.getElementById('used').textContent = usedN == null ? '' : usedN + '% used';
 
   var fits = on.filter(function(c){ return st[c].lvl === 0; }).length, tight = on.filter(function(c){ return st[c].lvl === 1; }).length, bad = on.length - fits - tight;
   var title = !on.length ? 'An empty desk.' : fits === on.length ? on.length + ' of ' + on.length + ' fit.' : [fits ? fits + ' fit' : '', tight ? tight + ' tight' : '', bad ? bad + " won't fit" : ''].filter(Boolean).join(', ') + '.';
   document.getElementById('title').textContent = title;
   var at = SV.answerText(A);
-  document.getElementById('sub').textContent = at ? at.charAt(0).toUpperCase() + at.slice(1).replace(/ · /g, ', ') + '.' : 'Checked to scale.';
+  document.getElementById('sub').textContent = at ? at.charAt(0).toUpperCase() + at.slice(1).replace(/ · /g, ', ') + '.' : 'Desk size: ' + two(S.desk.w, S.desk.d);
   document.getElementById('items').innerHTML = ['monitor', 'keyboard', 'mouse', 'pad'].filter(function(c){ return on.indexOf(c) >= 0; }).map(function(c){
     var s = SV.get(c, S.pick[c]);
-    var dims = c === 'monitor' ? 'Stand ' + two(s.base[0], s.base[1]) : two(s.w, s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + SV.padLabels[s.kind].toLowerCase() : '');
+    var dims = c === 'monitor' ? SV.monitorMeasurements(s, one, two) : two(s.w, s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + SV.padLabels[s.kind].toLowerCase() : '');
     var note = st[c].issues.map(function(i){ return i.fix; }).join(' ') || st[c].msg;
-    return '<div class="item"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">' + esc(s.name) + '</span><span style="font-size:12px;color:#8F8F8F">' + esc(dims) + '</span>' + (st[c].lvl ? '<span style="font-size:12px;color:#CFCFCF">' + esc(note) + '</span>' : '') + SV.buyLine(s) + '</div><span class="dot" style="background:' + colors[st[c].lvl] + '" title="' + esc(st[c].msg) + '"></span></div>';
+    return '<div class="item"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">' + esc(s.name) + '</span><span style="font-size:12px;color:#8F8F8F">' + esc(dims) + '</span>' + (st[c].lvl ? '<span style="font-size:12px;color:#CFCFCF">' + esc(note) + '</span>' : '') + SVPrices.label(s) + SV.buyLine(s) + '</div><span class="dot" style="background:' + colors[st[c].lvl] + '" title="' + esc(st[c].msg) + '"></span></div>';
   }).join('');
+  SVPrices.update(on.map(function(c){ return SV.get(c, S.pick[c]); }));
   var buy = document.getElementById('buyAll');
   var asins = ['monitor', 'keyboard', 'mouse', 'pad'].filter(function(c){ return on.indexOf(c) >= 0 && SV.forSale(SV.get(c, S.pick[c])); }).map(function(c){ return SV.get(c, S.pick[c]).asin; });
-  if (asins.length) { buy.href = SV.cartLink(asins); buy.removeAttribute('aria-disabled'); }
+  var complete = asins.length && asins.every(Boolean);
+    buy.textContent = complete ? "Buy this whole setup" : "Use individual product links";
+    buy.setAttribute("aria-label", buy.textContent);
+    if (complete) { buy.href = SV.cartLink(asins); buy.removeAttribute('aria-disabled'); }
 
   var url = new URL('/share?s=' + code, location.href).href;
   document.getElementById('open').href = '/builder?s=' + code;
   document.getElementById('copy').onclick = function(){
-    var b = this;
-    if (navigator.clipboard) navigator.clipboard.writeText(url).then(function(){ b.textContent = 'Link copied'; setTimeout(function(){ b.textContent = 'Copy link'; }, 1800); });
+    SV.copySetupLink(this, url);
   };
 })();
 </script>

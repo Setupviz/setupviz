@@ -19,33 +19,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/sv.css">
-<style>
-body{margin:0;background:#121212;color:#EDEDED;font-family:var(--font)}
-a{color:#EDEDED;text-decoration:none}
-.wrap{min-height:100vh;display:flex;flex-direction:column}
-.hdr{width:100%;max-width:var(--sv-content);margin:0 auto;padding:14px 24px;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-end;gap:16px}
-.brand{display:flex;align-items:center;gap:9px;font-weight:500;font-size:15px;letter-spacing:-0.01em}
-.btn{height:40px;min-height:24px;padding:0 18px;display:inline-flex;align-items:center;border-radius:999px;font-size:14px;font-weight:400;cursor:pointer;border:0;font-family:inherit;transition:background-color .15s,color .15s}
-.btn-primary{background:#EDEDED;color:#121212}.btn-primary:hover{background:#FFFFFF;color:#121212}
-.btn-ghost{background:transparent;color:#8F8F8F}.btn-ghost:hover{color:#EDEDED}
-.btn-outline{background:#1C1C1C;border:1px solid rgba(255,255,255,0.08);color:#EDEDED;height:32px;min-height:24px;padding:0 14px;font-size:13px}.btn-outline:hover{background:#232323}
-.prog{width:100%;max-width:680px;margin:0 auto;padding:0 24px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px}
-.bars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.bars i{display:block;height:2px;border-radius:1px;background:#262626}.bars i.on{background:#EDEDED}
-.meta{display:flex;justify-content:space-between;font-size:12px;color:#8F8F8F;font-family:var(--mono)}
-main{flex:1;width:100%;max-width:680px;margin:0 auto;padding:64px 24px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px}
-h1{margin:0;font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:400;letter-spacing:-0.03em}
-.lead{margin:0;font-size:16px;line-height:25px;color:#8F8F8F}
-.opts{display:flex;flex-direction:column;gap:8px}
-.opt{width:100%;min-height:68px;text-align:left;padding:16px 18px;border-radius:14px;display:flex;align-items:center;gap:16px;font-family:inherit;color:#EDEDED;cursor:pointer;background:#171717;border:1px solid transparent;transition:background .15s,border-color .15s}
-.opt:hover{background:#1C1C1C}
-.opt[aria-pressed="true"]{background:#232323;border-color:rgba(255,255,255,0.28)}
-.opt .t{font-size:16px;font-weight:400}.opt .d{font-size:13px;line-height:20px;color:#8F8F8F}
-.ring{width:18px;height:18px;border-radius:50%;border:1.5px solid #3A3A3A;box-sizing:border-box;flex-shrink:0}
-.opt[aria-pressed="true"] .ring{border:5px solid #EDEDED}
-footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-@media (pointer:coarse){.btn,.btn-outline,.opt{min-height:44px;min-width:44px}.btn,.btn-outline{height:44px}}
-</style>
+<link rel="stylesheet" href="/questions.css">
 </head>
 <body>
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
@@ -68,33 +42,31 @@ footer{width:100%;max-width:680px;margin:0 auto;padding:24px 24px 40px;box-sizin
   <main>
     <div style="display:flex;flex-direction:column;gap:10px">
       <h1>How do you hold your mouse?</h1>
-      <p class="lead">Pick the closest one. Your grip decides how long the mouse should be and where its hump sits.</p>
+      <p class="lead">Rest your hand on your mouse. Which picture looks closest?</p>
     </div>
-    <div class="opts" role="group" aria-label="Grip style">
-      <button type="button" class="opt" data-grip="palm" aria-pressed="false"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Palm</span><span class="d">Your whole hand rests on the mouse.</span></span><span class="ring"></span></button>
-      <button type="button" class="opt" data-grip="claw" aria-pressed="false"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Claw</span><span class="d">Palm on the back, fingers arched.</span></span><span class="ring"></span></button>
-      <button type="button" class="opt" data-grip="fingertip" aria-pressed="false"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Fingertip</span><span class="d">Only your fingertips touch it.</span></span><span class="ring"></span></button>
-      <button type="button" class="opt" data-grip="unsure" aria-pressed="false"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Not sure</span><span class="d">We will go by your hand size alone.</span></span><span class="ring"></span></button>
+    <div class="opts" role="radiogroup" aria-label="Grip style">
+      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#484848"/><path d="M6 27 Q9 18 15 17 Q24 12 32 17 L43 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Palm</span><span class="d">Your whole hand rests on the mouse.</span></span><input type="radio" name="grip" value="palm"></label>
+      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#484848"/><path d="M6 27 L12 23 Q18 14 25 9 Q28 7 31 11 L41 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Claw</span><span class="d">Palm on the back, fingers arched.</span></span><input type="radio" name="grip" value="claw"></label>
+      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#484848"/><path d="M5 18 Q14 9 24 10 Q32 10 41 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Fingertip</span><span class="d">Only your fingertips touch it.</span></span><input type="radio" name="grip" value="fingertip"></label>
+      <label class="opt"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Not sure</span><span class="d">Skip the grip question.</span></span><input type="radio" name="grip" value="unsure"></label>
     </div>
   </main>
   <footer>
     <a href="/hand" class="btn btn-ghost" style="padding:0 12px">Back</a>
     <div style="display:flex;gap:8px">
-      <a href="/use" class="btn btn-ghost" style="padding:0 14px">Skip</a>
+      <a href="/use" class="btn btn-ghost" style="padding:0 14px" id="skip">Skip</a>
       <a href="/use" class="btn btn-primary">Continue</a>
     </div>
     <div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
   </footer>
 </div>
 <script>
-document.querySelectorAll('.opt').forEach(function(b){
-  b.onclick = function(){
-    document.querySelectorAll('.opt').forEach(function(x){ x.setAttribute('aria-pressed', x === b); });
-    localStorage.setItem('sv-grip', b.dataset.grip);
-  };
+document.getElementById('skip').onclick = function(){ localStorage.removeItem('sv-grip'); };
+var saved = localStorage.getItem('sv-grip');
+document.querySelectorAll('input[type="radio"]').forEach(function(input){
+  input.checked = input.value === saved;
+  input.addEventListener('change', function(){ localStorage.setItem('sv-grip', input.value); });
 });
-var g = localStorage.getItem('sv-grip');
-if (g) document.querySelectorAll('.opt').forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.grip === g); });
 </script>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
 </body>

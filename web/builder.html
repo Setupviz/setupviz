@@ -27,10 +27,10 @@ button{font-family:inherit}
 nav{position:sticky;top:0;z-index:5;background:rgba(18,18,18,0.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06)}
 .navin{max-width:var(--sv-content);margin:0 auto;padding:12px 24px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:9px;font-weight:500;font-size:15px;letter-spacing:-0.01em}
-.seg{display:inline-flex;padding:3px;border-radius:999px;background:#171717;border:1px solid rgba(255,255,255,0.08)}
-.seg button{height:26px;min-height:24px;min-width:40px;border:0;border-radius:999px;background:transparent;color:#8F8F8F;font-size:12px;font-weight:500;cursor:pointer}
+.seg{display:inline-flex;padding:3px;border-radius:8px;background:#171717;border:1px solid rgba(255,255,255,0.08)}
+.seg button{height:26px;min-height:24px;min-width:40px;border:0;border-radius:8px;background:transparent;color:#8F8F8F;font-size:12px;font-weight:500;cursor:pointer}
 .seg button[aria-pressed="true"]{background:#2A2A2A;color:#EDEDED}
-.btn-outline{height:32px;min-height:24px;padding:0 14px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:0;background:#EDEDED;color:#121212;font-size:13px;font-weight:400}.btn-outline:hover{background:#FFFFFF;color:#121212}
+.btn-outline{height:32px;min-height:24px;padding:0 14px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:0;background:#EDEDED;color:#121212;font-size:13px;font-weight:400}.btn-outline:hover{background:#FFFFFF;color:#121212}
 main{flex:1;width:100%;max-width:var(--sv-content);margin:0 auto;padding:28px 24px 40px;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
 .deskwrap{flex:999 1 600px;min-width:0;display:flex;flex-direction:column;gap:12px}
 .deskframe{overflow:visible;padding:32px 0 32px;min-width:0}
@@ -43,8 +43,10 @@ main{flex:1;width:100%;max-width:var(--sv-content);margin:0 auto;padding:28px 24
 .piece-pad.glass{background:linear-gradient(135deg,#222222 0%,#181818 55%,#202020 100%);border-color:rgba(255,255,255,0.26)}
 .piece-pad .lbl{position:absolute;left:10px;bottom:8px;font-size:12px;color:#A3A3A3;pointer-events:none}
 .piece-monitor{background:transparent}
+.piece-caption{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:0 3px;background:#252525;color:#eee;border-radius:3px;font-size:11px;pointer-events:none}
+@media(max-width:480px){.piece-caption{font-size:9px}}
 .mon{position:absolute;inset:0;pointer-events:none}
-.tag{position:absolute;font-size:12px;font-weight:400;padding:5px 10px;border-radius:999px;background:rgba(18,18,18,0.92);border:1px solid rgba(255,255,255,0.12);white-space:normal;max-width:calc(100% - 16px);box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
+.tag{position:absolute;font-size:12px;font-weight:400;padding:5px 10px;border-radius:8px;background:rgba(18,18,18,0.92);border:1px solid rgba(255,255,255,0.12);white-space:normal;max-width:calc(100% - 16px);box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
 .legend{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .legend .k{display:flex;gap:14px;align-items:center}.legend .k span{display:inline-flex;align-items:center;gap:6px}
@@ -66,20 +68,20 @@ aside{flex:1 1 340px;min-width:0;border-radius:16px;background:#171717;border:0;
 .slot.sel{background:#232323;border-color:rgba(255,255,255,0.22)}
 .slot.empty{cursor:default;border:1px dashed rgba(255,255,255,0.14);background:transparent}
 .slot .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.slot .cat{font-size:12px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:#A3A3A3}
+.slot .cat{font-size:12px;font-weight:500;letter-spacing:0;color:#A3A3A3}
 .slot .name{font-size:15px;font-weight:400}
 .slot .why{margin:2px 0 0;font-size:13px;line-height:19px;color:#A8A8A8}
 .slot .acts{display:flex;align-items:center;gap:8px;margin-top:4px}
-.slot .acts button{height:28px;min-height:24px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.1);background:#121212;color:#EDEDED;font-size:12px;font-weight:400;cursor:pointer}
+.slot .acts button{height:28px;min-height:24px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:#121212;color:#EDEDED;font-size:12px;font-weight:400;cursor:pointer}
 .slot .acts button:hover{background:#2A2A2A}
 .slot .acts button.rm{background:transparent;color:#8F8F8F}
 .slot .acts button.rm:hover{color:#EDEDED}
 .slot .acts a{margin-left:auto;display:inline-flex;align-items:center;min-height:24px;font-size:12px;color:#8F8F8F}
-.slot .add{height:36px;min-height:24px;border-radius:999px;border:1px solid rgba(255,255,255,0.12);background:#121212;color:#EDEDED;font-size:13px;font-weight:400;cursor:pointer}
+.slot .add{height:36px;min-height:24px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:#121212;color:#EDEDED;font-size:13px;font-weight:400;cursor:pointer}
 .slot .add:hover{background:#202020}
-.chip{font-size:12px;font-weight:400;padding:3px 9px;border-radius:999px;background:#121212;border:1px solid rgba(255,255,255,0.12);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{font-size:12px;font-weight:400;padding:3px 9px;border-radius:8px;background:#121212;border:1px solid rgba(255,255,255,0.12);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .menu{margin-top:10px;display:flex;flex-direction:column;gap:10px;padding:10px;border-radius:12px;background:#121212;border:1px solid rgba(255,255,255,0.12);cursor:default}
-.menu input{width:100%;min-width:0;box-sizing:border-box;height:40px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.1);background:#171717;color:#EDEDED;font-size:13px;font-family:inherit;outline:none}
+.menu input{width:100%;min-width:0;box-sizing:border-box;height:40px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:#171717;color:#EDEDED;font-size:13px;font-family:inherit;outline:none}
 .menu input:focus{border-color:rgba(255,255,255,0.3)}
 .opts{display:flex;flex-direction:column;gap:8px;max-height:420px;max-height:min(420px,60svh);overflow-y:auto;overscroll-behavior:contain}
 .opt{display:flex;flex:0 0 auto;flex-direction:column;align-items:flex-start;gap:6px;min-height:72px;width:100%;box-sizing:border-box;padding:12px;border-radius:9px;border:1px solid rgba(255,255,255,0.08);background:#171717;color:#EDEDED;text-align:left;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
@@ -88,18 +90,12 @@ aside{flex:1 1 340px;min-width:0;border-radius:16px;background:#171717;border:0;
 .opt .opt-name{font-size:14px;font-weight:500;line-height:20px}
 .opt .opt-detail,.opt .opt-dims{font-size:12px;line-height:18px;color:#A3A3A3}
 .opt .opt-dims{color:#CFCFCF}
-.keep{height:32px;margin-top:2px;border:0;border-radius:999px;background:#EDEDED;color:#121212;font-size:13px;cursor:pointer}
+.keep{height:32px;margin-top:2px;border:0;border-radius:8px;background:#EDEDED;color:#121212;font-size:13px;cursor:pointer}
 .opt .on{font-size:12px;line-height:18px;color:#5BE38A}
-.buyall{height:42px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#EDEDED;color:#121212;font-size:14px;font-weight:400}
+.buyall{height:42px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#EDEDED;color:#121212;font-size:14px;font-weight:400}
 .buyall:hover{color:#121212}
 .req{border-top:1px solid rgba(255,255,255,0.08);padding-top:16px;display:flex;flex-direction:column;gap:10px}
-.req .open{display:inline-flex;align-items:center;text-align:left;min-height:24px;padding:4px 0;border:0;background:transparent;color:#8F8F8F;font-size:13px;cursor:pointer}
-.req .open u{color:#EDEDED;text-underline-offset:3px}
-.req input{height:36px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.1);background:#121212;color:#EDEDED;font:400 13px inherit;font-family:inherit;outline:none}
-.req input:focus{border-color:rgba(255,255,255,0.3)}
-.req .acts{display:flex;gap:8px;justify-content:flex-end}
-.req .acts button{height:32px;min-height:24px;padding:0 12px;border-radius:999px;border:0;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:#8F8F8F}
-.req .acts button.send{background:#EDEDED;color:#121212;padding:0 14px}
+
 [hidden]{display:none!important}
 button.buyall,a.buyall{width:100%;border:0;box-sizing:border-box;cursor:pointer;font-family:inherit;text-decoration:none}
 button.buyall:hover,a.buyall:hover{background:#FFFFFF;color:#121212}
@@ -109,9 +105,9 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
 .slot .amz:hover{color:#EDEDED}
 .buy-note.sv-disclosure{max-width:none;margin:0;padding:0;text-align:left;line-height:18px}
 .setup-error{margin:0;font-size:14px;line-height:20px;color:#EDEDED}
-.banner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 16px;border-radius:999px;background:#171717;border:1px solid rgba(255,255,255,0.1);font-size:13px;color:#CFCFCF}
+.banner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 16px;border-radius:8px;background:#171717;border:1px solid rgba(255,255,255,0.1);font-size:13px;color:#CFCFCF}
 /* WebKit's Geist line is ~2px wider than the 320px content box, so keep the notice on one line. */
-.shared-note{margin:0;font-size:13px;line-height:24px;color:#8F8F8F;white-space:nowrap}
+.shared-note{margin:0;font-size:13px;line-height:24px;color:#8F8F8F}
 .shared-note a{display:inline-block;text-decoration:underline;text-underline-offset:3px}
 .sizes{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
 .size{display:flex;flex-direction:column;gap:4px;min-width:0;font-size:13px;color:#8F8F8F}
@@ -148,7 +144,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   .deskwrap{gap:0}
   .deskframe{padding-top:0}
 }
-.slot .match{font-size:12px;color:#5BE38A}
+.slot .match{font-size:14px;line-height:1.45;color:var(--text)}
 .setup-h{margin:0;font-size:15px;font-weight:600;line-height:24px}
 .skel{position:absolute;inset:0;pointer-events:none}
 .skel-piece{position:absolute;border-radius:8px;background:#222;overflow:hidden}
@@ -162,6 +158,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
 @media (max-width:479px){#vList{min-height:38px}}
 @media (max-width:374px){#answers{min-height:48px}}
 @media (prefers-reduced-motion:reduce){.skel-piece::after,.skel-slot::after{animation:none}}
+.opt-dims,.slot[data-id="monitor"] .muted{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -187,7 +184,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
 
   <main>
     <section class="deskwrap" aria-label="Desk, seen from above">
-      <p class="shared-note" id="sharedBanner" hidden>Shared view. Your setup is safe.<span id="backMineWrap" hidden> · <a href="/builder" id="backMine">Back to mine</a></span></p>
+      <p class="shared-note" id="sharedBanner" hidden>Editing a copy of a shared setup.<span id="backMineWrap" hidden> · <a href="/builder" id="backMine">Back to mine</a></span></p>
       <p class="banner" id="deskFallback" hidden>We're showing a 55 × 28 in desk. Enter yours for a real fit check.</p>
       <div class="sizes">
         <div class="size"><label for="deskW">Width<span class="row"><input id="deskW" type="text" inputmode="decimal" autocomplete="off" aria-invalid="false"><span class="unit">in</span></span></label><span class="field-error" id="deskWErr" aria-live="polite"></span></div>
@@ -195,7 +192,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       </div>
       <div class="deskframe"><div id="desk" aria-busy="true"><div class="skel" id="skel" aria-hidden="true"><span class="skel-piece" style="left:28.07%;top:2.86%;width:43.86%;height:32.86%"></span><span class="skel-piece" style="left:17.86%;top:37.14%;width:64.29%;height:57.14%"></span><span class="skel-piece" style="left:27.14%;top:62.86%;width:25.71%;height:20%"></span><span class="skel-piece" style="left:64.29%;top:61.43%;width:4.57%;height:17.86%"></span></div></div></div>
       <div class="legend muted">
-        <span>Click a piece to see why we picked it. Drag to move it.</span>
+        <span>Select a piece for details. Drag it to move it.</span>
         <span class="k"><span><i class="dot" style="background:#5BE38A"></i>Fits</span><span><i class="dot" style="background:#F5C542"></i>Tight</span><span><i class="dot" style="background:#FF6B5B"></i>Won't fit</span><button type="button" class="linkbtn" id="reset">Reset to our picks</button></span>
       </div>
       <div class="status">
@@ -208,6 +205,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
           <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:13px"><span style="font-weight:500">Desk space used</span><span class="muted" id="usedPct"></span></div>
           <div class="bar"><i id="usedBar"></i></div>
           <div class="muted" id="usedNote"></div>
+          <div id="keyboardRoom" class="muted"></div>
         </div>
       </div>
     </section>
@@ -219,26 +217,24 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       </div>
       <div class="slots" id="items" aria-busy="true"><div class="skel-slot" aria-hidden="true"></div><div class="skel-slot" aria-hidden="true"></div><div class="skel-slot tall" aria-hidden="true"></div><div class="skel-slot" aria-hidden="true"></div></div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <p class="sv-disclosure buy-note">As an Amazon Associate I earn from qualifying purchases.</p>
+        <p id="priceSummary" hidden></p>
+    <details id="priceTerms" hidden><summary>About Amazon prices</summary><p>Product prices and availability are accurate as of the date/time indicated and are subject to change. Any price and availability information displayed on Amazon.com at the time of purchase will apply to the purchase of this product.</p><p>CERTAIN CONTENT THAT APPEARS ON THIS SITE COMES FROM AMAZON. THIS CONTENT IS PROVIDED “AS IS” AND IS SUBJECT TO CHANGE OR REMOVAL AT ANY TIME.</p></details>
+    <p class="sv-disclosure buy-note">As an Amazon Associate I earn from qualifying purchases.</p>
         <a class="buyall" id="buyAll" rel="sponsored nofollow noopener" target="_blank" aria-label="Buy this whole setup (opens in a new tab)" aria-disabled="true">Buy this whole setup</a>
         <p class="paid">Paid link. We earn a commission if you buy, at no extra cost to you.</p>
         <button type="button" class="buyall" id="shareBtn">Copy share link</button>
       </div>
       <div class="req" id="request">
-        <button type="button" class="open" id="reqOpen">Don't see your product? <u>Tell us and we'll add it.</u></button>
-        <div id="reqForm" hidden style="display:flex;flex-direction:column;gap:8px">
-          <span style="font-size:13px;font-weight:500">Request a product</span>
-          <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:#8F8F8F">Product name<input type="text" id="reqName" placeholder="Keychron Q1 Max"></label>
-          <span class="muted" style="font-size:12px">Just the name. We'll find the measurements.</span>
-          <div class="acts"><button type="button" id="reqCancel">Cancel</button><button type="button" class="send" id="reqSend">Send</button></div>
-        </div>
-        <span id="reqDone" hidden class="muted">Thanks. We'll measure it and let you know when it's in.</span>
+        <strong>Missing a product?</strong>
+        <span>Email the brand and model to <a class="sv-mail" href="mailto:hello@setupviz.com?subject=SetupViz%20product%20request">hello@setupviz.com</a>.</span>
       </div>
     </aside>
   </main>
 </div>
 
+<script src="/desk-size.js"></script>
 <script src="/data.js"></script>
+<script src="/prices.js"></script>
 <script>
 (function(){
   try {
@@ -341,7 +337,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   function pct(v,t){ return SV.percentText(v, t) || '0%'; }
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function withUnits(text){ return esc(String(text).replace(/\{(\d+(?:\.\d+)?)\}/g, function(_, mm){ return one(+mm); })); }
-  function dims(id, s){ return id === 'monitor' ? 'Stand ' + two(s.base[0], s.base[1]) : two(s.w, s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + padLabels[s.kind].toLowerCase() : ''); }
+  function dims(id, s){ return id === 'monitor' ? SV.monitorMeasurements(s, one, two) : two(s.w, s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + padLabels[s.kind].toLowerCase() : ''); }
   function rect(id){ var p = draw.pos[id], s = spec(id); return { x: p.x, y: p.y, w: s.w, d: s.d }; }
   function shareUrl(){ return new URL('/share?s=' + SV.encode({ desk: DESK, pick: state.pick, pos: state.pos }, A), location.href).href; }
 
@@ -350,6 +346,8 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   order.forEach(function(id){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'piece piece-' + id; b.dataset.cat = id;
     if (id === 'monitor') { b.innerHTML = '<span class="mon"><span class="scr"><i></i></span><span class="neck"></span><span class="base"></span></span>'; monEl.neck = b.querySelector('.neck'); monEl.base = b.querySelector('.base'); }
+    if (id === 'keyboard') b.innerHTML = '<span class="piece-caption">Keyboard</span>';
+    if (id === 'monitor') monEl.base.innerHTML = '<span class="piece-caption">Stand</span>';
     if (id === 'pad') b.innerHTML = '<span class="lbl"></span>';
     b.addEventListener('pointerdown', function(e){
       endPreview();
@@ -409,8 +407,11 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   function menuHtml(id){
     return '<div class="menu"><input type="search" placeholder="Search ' + cats[id][2] + '" aria-label="Search ' + cats[id][2] + '"><div class="opts">' +
       SV.catalog[id].filter(SV.forSale).map(function(s){
-        return '<button type="button" class="opt" data-pid="' + s.id + '"><span class="opt-name">' + esc(s.name) + '</span><span class="opt-detail">' + withUnits(s.alt) + '</span><span class="opt-dims">' + esc(dims(id, s)) + '</span>' + (s.id === state.pick[id] ? '<span class="on">In your setup</span>' : s.id === rec[id] ? '<span class="rec">Our pick for you</span>' : '') + '</button>';
-      }).join('') + '</div><button type="button" class="keep" hidden>Keep</button></div>';
+        var current = SV.get(id, state.pick[id]);
+        var delta = current && s.w - current.w;
+        var difference = id === 'keyboard' && delta ? ' · ' + one(Math.abs(delta)) + (delta < 0 ? ' narrower' : ' wider') : '';
+        return '<button type="button" class="opt" data-pid="' + s.id + '"><span class="opt-name">' + esc(s.name) + '</span>' + SVPrices.label(s) + '<span class="opt-detail">' + withUnits(s.alt) + (id === 'mouse' ? ' ' + esc(SV.matchReason(id, s, A)) : '') + '</span><span class="opt-dims">' + esc(dims(id, s) + difference) + '</span>' + (s.id === state.pick[id] ? '<span class="on">In your setup</span>' : s.id === rec[id] ? '<span class="rec">Our pick for you</span>' : '') + '</button>';
+      }).join('') + '</div><p class="muted no-matches" role="status" hidden>No matches. Try a brand or model name.</p><button type="button" class="keep" hidden>Keep</button></div>';
   }
 
   function render(deskOnly){
@@ -424,7 +425,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     });
     document.querySelectorAll('.size .unit').forEach(function(el){ el.textContent = state.unit; });
     var note = $('deskFallback');
-    note.textContent = SV.deskFallbackNotice;
+    note.textContent = hasLink && !fromLink ? SV.invalidShareNotice : SV.deskFallbackNotice;
     note.hidden = !deskFallback;
     document.querySelectorAll('#units button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.unit === state.unit); });
     $('sharedBanner').hidden = !state.shared;
@@ -438,12 +439,12 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       var over = SV.overhang(DESK, rect(id));
       b.classList.toggle('hang', !!over);
       if (over) { b.style.setProperty('--ol', over.l + '%'); b.style.setProperty('--or', over.r + '%'); b.style.setProperty('--ot', over.t + '%'); b.style.setProperty('--ob', over.b + '%'); }
-      var visible = id === 'pad' ? padLabels[s.kind] : '';
+      var visible = id === 'pad' ? (s.kind === 'mat' ? 'Desk mat' : 'Mouse pad') : id === 'monitor' ? 'Monitor stand' : cats[id][0];
       b.setAttribute('aria-label', (visible ? visible + ', ' : '') + s.name + ', ' + words[st[id].lvl].toLowerCase() + '. Drag to move.');
     });
     if (has('monitor')) { var mon = spec('monitor'), bh = mon.d ? mon.base[1]/mon.d*100 : 0; if (!isFinite(bh)) bh = 0;
       monEl.base.style.width = pct(mon.base[0], mon.w); monEl.base.style.height = bh + '%'; monEl.neck.style.height = Math.max(0, 86 - bh) + '%'; }
-    if (has('pad')) { pieceEl.pad.classList.toggle('glass', spec('pad').kind === 'glass'); pieceEl.pad.firstChild.textContent = padLabels[spec('pad').kind]; }
+    if (has('pad')) { pieceEl.pad.classList.toggle('glass', spec('pad').kind === 'glass'); pieceEl.pad.firstChild.textContent = spec('pad').kind === 'mat' ? 'Desk mat' : 'Mouse pad'; }
 
     // tags only for the selected or hovered piece, plus anything that won't fit
     var dw = desk.clientWidth, dh = desk.clientHeight, placed = [];
@@ -467,7 +468,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     var bad = on.filter(function(id){ return st[id].lvl === 2; }).length, tight = on.filter(function(id){ return st[id].lvl === 1; }).length;
     var missed = SV.omission(DESK, state.pick);
     $('vDot').style.background = bad ? colors[2] : missed ? colors[1] : on.length ? colors[tight ? 1 : 0] : '#3A3A3A';
-    $('vTitle').textContent = bad ? bad + (bad === 1 ? " piece won't fit" : " pieces won't fit") : missed ? missed : !on.length ? 'Your desk is empty' : tight ? 'It all fits, ' + tight + (tight === 1 ? ' piece is tight' : ' pieces are tight') : 'Everything fits';
+    $('vTitle').textContent = bad ? bad + (bad === 1 ? " piece won't fit" : " pieces won't fit") : missed ? missed : !on.length ? 'Your desk is empty' : tight ? 'Tight fit · ' + tight + (tight === 1 ? ' piece' : ' pieces') : 'Everything fits on the desk';
     var seen = {}, fixes = [];
     on.forEach(function(id){ st[id].issues.forEach(function(i){ if (!seen[i.fix]) { seen[i.fix] = 1; fixes.push(i); } }); });
     fixes.sort(function(a,b){ return b.lvl - a.lvl; });
@@ -478,6 +479,10 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     var used = SV.usedPercent(SV.usedArea({ pick: draw.pick, pos: draw.pos }), DESK.w * DESK.d);
     $('usedPct').textContent = used == null ? '' : used + '%'; $('usedBar').style.width = (used == null ? 0 : Math.min(used, 100)) + '%';
     $('usedNote').textContent = used == null ? '' : used < 35 ? 'Plenty of room left for a lamp or speakers.' : used < 55 ? 'Comfortable, with room for one small extra.' : 'Getting full. Skip extras, or pick a smaller piece.';
+    var keyboard = spec('keyboard');
+    var clearance = keyboard && DESK.w - draw.pos.keyboard.x - keyboard.w;
+    $('keyboardRoom').textContent = keyboard && clearance >= 0 ? one(clearance) + ' from keyboard to right desk edge.' : '';
+
     // redraw the desk under an open list without replacing that list
     if (deskOnly) {
       var chip = state.open && document.querySelector('.slot[data-id="' + state.open + '"] .chip');
@@ -488,7 +493,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
 
     // parts list, one slot per product type
     var at = SV.answerText(A);
-    $('answers').innerHTML = at ? 'Picked for ' + esc(at) + ' · <a href="/hand">Edit answers</a>' : 'Answer 3 quick questions for picks that fit you. <a href="/hand">Start</a>';
+    $('answers').innerHTML = at ? 'Your preferences: ' + esc(at) + ' · <a href="/hand">Edit answers</a>' : '<a href="/hand">Help me choose a mouse</a> · Three optional questions';
     $('count').textContent = on.length + (on.length === 1 ? ' piece' : ' pieces');
     $('items').innerHTML = listOrder.map(function(id){
       var s = spec(id), c = cats[id], open = state.open === id;
@@ -499,15 +504,19 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
         '<span class="name">' + esc(s.name) + '</span><span class="muted" style="font-size:12px">' + esc(dims(id, s)) + '</span>' +
         (match ? '<span class="match">' + esc(match) + '</span>' : '') +
         (sel ? '<p class="why">' + withUnits(s.why) + '</p>' : '') +
-        SV.buyLine(s) +
+        SVPrices.label(s) + SV.buyLine(s) +
         '<div class="acts"><button type="button" data-act="change" aria-expanded="' + open + '">Change</button><button type="button" class="rm" data-act="remove">Remove</button></div>' +
         (open ? menuHtml(id) : '') + '</div>';
     }).join('');
     var mi = document.querySelector('.menu input'); if (mi && document.activeElement !== mi && state.focusMenu) { mi.focus({ preventScroll: true }); state.focusMenu = false; }
     $('navShare').href = shareUrl();
+    SVPrices.update(listOrder.filter(has).map(spec));
     var picked = listOrder.filter(has).map(spec).filter(SV.forSale);
     var buy = $('buyAll');
-    if (picked.length) { buy.href = SV.cartLink(picked.map(function(s){ return s.asin; })); buy.removeAttribute('aria-disabled'); }
+    var complete = picked.length && picked.every(function(item){ return !!item.asin; });
+    buy.textContent = complete ? "Buy this whole setup" : "Use individual product links";
+    buy.setAttribute("aria-label", buy.textContent);
+    if (complete) { buy.href = SV.cartLink(picked.map(function(s){ return s.asin; })); buy.removeAttribute('aria-disabled'); }
     else { buy.removeAttribute('href'); buy.setAttribute('aria-disabled', 'true'); }
   }
 
@@ -546,6 +555,8 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     if (!e.target.matches('.menu input')) return;
     var q = e.target.value.trim().toLowerCase();
     e.target.parentNode.querySelectorAll('.opt').forEach(function(o){ o.hidden = q && o.textContent.toLowerCase().indexOf(q) < 0; });
+    var menu = e.target.parentNode;
+    menu.querySelector('.no-matches').hidden = !!menu.querySelector('.opt:not([hidden])');
   });
   $('items').addEventListener('pointerover', function(e){ if (coarse) return; var o = e.target.closest('.opt'); if (o) preview(o.closest('.slot').dataset.id, o.dataset.pid); });
   $('items').addEventListener('pointerout', function(e){ if (coarse || !e.target.closest('.opt')) return; var to = e.relatedTarget; if (!to || !to.closest || !(to.closest('.opt') || to.closest('.keep'))) clearGhost(); });
@@ -556,9 +567,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   $('reset').onclick = function(){ endPreview(); state.open = null; state.pick = SV.recommend(A, DESK); state.pos = SV.layout(DESK, state.pick); state.sel = 'mouse'; save(); render(); };
   $('shareBtn').onclick = function(){
     var b = $('shareBtn'), url = shareUrl();
-    function done(t){ b.textContent = t; setTimeout(function(){ b.textContent = 'Copy share link'; }, 1800); }
-    if (navigator.clipboard) navigator.clipboard.writeText(url).then(function(){ done('Link copied'); }, function(){ window.open(url); });
-    else window.open(url);
+    SV.copySetupLink(b, url);
   };
   window.addEventListener('resize', render);
   function clearSize(id){
@@ -604,12 +613,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     if ((active === $('deskW') || active === $('deskD')) && !active.closest('label').contains(e.target)) active.blur();
   }, true);
   document.querySelectorAll('#units button').forEach(function(b){ b.onclick = function(){ state.unit = b.dataset.unit; localStorage.setItem('sv-unit', state.unit); render(); }; });
-  function openReq(){ $('reqOpen').hidden = true; $('reqForm').hidden = false; $('reqName').focus(); }
-  $('reqOpen').onclick = openReq;
-  $('reqCancel').onclick = function(){ $('reqForm').hidden = true; $('reqOpen').hidden = false; };
-  $('reqSend').onclick = function(){ $('reqForm').hidden = true; $('reqDone').hidden = false; };
   render();
-  if (location.hash === '#request') { $('request').scrollIntoView(); openReq(); }
   } catch (e) {
     var err = document.getElementById('setupError');
     if (err) {

@@ -35,6 +35,7 @@ const files = [
   'setupviz-logo.png',
   'favicon.svg',
   'favicon.ico',
+  'favicon-rounded.png',
   'apple-touch-icon.png',
   'og-desk.png',
   'sitemap.xml',

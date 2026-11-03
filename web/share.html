@@ -36,11 +36,6 @@ a{color:#EDEDED;text-decoration:none}a:hover{color:#FFFFFF}
 .p-pad{border-radius:12px;background:#161616;border:1px solid rgba(255,255,255,0.12)}
 .p-pad.glass{background:linear-gradient(135deg,#222222 0%,#181818 55%,#202020 100%);border-color:rgba(255,255,255,0.26)}
 .p-mouse{border-radius:40% 40% 45% 45%;background:#EDEDED}
-.p-monitor{display:flex;flex-direction:column;align-items:center}
-.p-monitor .scr{width:100%;height:14%;border-radius:4px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.25);box-sizing:border-box;display:flex;align-items:flex-end;overflow:hidden}
-.p-monitor .scr i{width:100%;height:45%;background:#EDEDED}
-.p-monitor .neck{width:5%;background:#3A3A3A}
-.p-monitor .base{border-radius:50%/70%;background:#1A1A1A;border:1px solid rgba(255,255,255,0.16);box-sizing:border-box}
 h1{margin:0 0 8px;font-size:34px;line-height:1.1;font-weight:400;letter-spacing:-0.03em;min-height:2.2em}
 #items{min-height:590px} /* four parts, each with a price link and the paid line, held until data.js fills them */
 .item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#1C1C1C;border:0}
@@ -152,7 +147,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
     el.style.left = pct(p.x, S.desk.w); el.style.top = pct(p.y, S.desk.d); el.style.width = pct(s.w, S.desk.w); el.style.height = pct(s.d, S.desk.d);
     var over = SV.overhang(S.desk, { x: p.x, y: p.y, w: s.w, d: s.d });
     if (over) { el.className += ' hang'; el.style.setProperty('--ol', over.l + '%'); el.style.setProperty('--or', over.r + '%'); el.style.setProperty('--ot', over.t + '%'); el.style.setProperty('--ob', over.b + '%'); }
-    if (c === 'monitor') { var bh = s.d ? s.base[1]/s.d*100 : 0; if (!isFinite(bh)) bh = 0; el.innerHTML = '<div class="scr"><i></i></div><div class="neck" style="height:' + Math.max(0, 86 - bh) + '%"></div><div class="base" style="width:' + pct(s.base[0], s.w) + ';height:' + bh + '%"></div>'; }
+    if (c === 'monitor') SV.drawMonitor(el, s);
     deskEl.appendChild(el);
   });
   var names = on.map(function(c){ return SV.get(c, S.pick[c]).name; });

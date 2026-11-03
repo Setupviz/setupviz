@@ -19,41 +19,41 @@
   const { deskLimits, defaultDesk, deskFallbackNotice, plain, finiteNum, parseDeskInput, deskMm, deskAxisOk, deskOk, deskRangeMessage, deskField, savedDesk, measureText } = window.SVDesk;
   var catalog = {
     monitor: [
-      { id: 'mon27', diagonalIn: 27, name: 'Dell 27 Plus QHD (S2725DS)', brand: 'Dell', model: 'S2725DS', asin: 'B0D3FGFPPB', w: 611, d: 200, base: [248, 180], dims: { w: 611.34, d: 200.38, h: 388.63 }, dimsSource: 'https://dl.dell.com/content/manual2557420-dell-s2725ds-monitor-outline-dimensions.pdf?language=en-us', why: 'Sharp at desk distance, and the stand base is compact.', alt: 'All-round pick' , stockCheckedAt: '2026-10-17' },
-      { id: 'mon24', diagonalIn: 23.8, name: 'Dell 24 Plus (S2425HSM)', brand: 'Dell', model: 'S2425HSM', asin: 'B0G49SZ24N', w: 537.64, d: 201.34, base: [242, 180], dims: { w: 537.64, d: 58.72, h: 313.73 }, dimsSource: 'https://dl.dell.com/content/manual79158351-dell-24-plus-monitor-s2425hsm-outline-dimension.pdf?language=en-us', why: 'A smaller screen. The stand still needs about {201.34} of depth.', alt: 'Smaller screen' , stockCheckedAt: '2026-10-17' },
-      { id: 'mon34', diagonalIn: 34, name: 'Dell 34 Plus USB-C curved (S3425DW)', brand: 'Dell', model: 'S3425DW', asin: 'B0F1H325FN', w: 807, d: 222, base: [259, 201.5], dims: { w: 807.32, d: 221.85, h: 411.53 }, dimsSource: 'https://dl.dell.com/content/manual6669801-dell-34-plus-usb-c-monitor-s3425dw-outline-dimension.pdf?language=en-us', why: 'Two windows side by side. It needs a long desk.', alt: 'Wider, needs a long desk' , stockCheckedAt: '2026-10-17' },
-      { id: 'xg27acs', diagonalIn: 27, name: 'ASUS ROG Strix 27" QHD (XG27ACS)', brand: 'ASUS', model: 'XG27ACS', asin: 'B0CV24GQ9W', w: 614.81, d: 218.82, base: [266.49, 218.82], dims: { w: 614.81, d: 60.12, h: 367.08 }, dimsSource: 'https://dlcdnets.asus.com/pub/ASUS/LCD%20Monitors/XG27ACS/ASUS_XG27ACS_English.pdf?model=XG27ACS', why: 'A QHD IPS screen at 180 Hz. Its base is hexagonal.', alt: 'QHD · 180 Hz', stockCheckedAt: '2026-10-17' },
-      {"id": "msig27c4x", "name": "MSI G27C4X", "brand": "MSI", "model": "G27C4X", "diagonalIn": 27, "w": 611.5, "d": 225.4, "base": [452.8, 225.4], "dims": {"w": 611.5, "d": 225.4, "h": 457.9}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G27C4X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
-      {"id": "msig32c4x", "name": "MSI G32C4X", "brand": "MSI", "model": "G32C4X", "diagonalIn": 31.5, "w": 709.4, "d": 248.7, "base": [452.8, 248.7], "dims": {"w": 709.4, "d": 248.7, "h": 509.4}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G32C4X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
-      {"id": "msig32c4xs", "name": "MSI G32C4XS", "brand": "MSI", "model": "G32C4XS", "diagonalIn": 31.5, "w": 709.4, "d": 248.7, "base": [452.8, 248.7], "dims": {"w": 709.4, "d": 248.7, "h": 509.4}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G32C4XS.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
-      {"id": "msimag255pxf", "name": "MSI MAG 255PXF", "brand": "MSI", "model": "MAG 255PXF", "diagonalIn": 24.5, "w": 557.1, "d": 227.9, "base": [308.5, 227.9], "dims": {"w": 557.1, "d": 227.9, "h": 511.9}, "dimsSource": "https://storage-asset.msi.com/specSheet/in/monitor/MAG%20255PXF.pdf", "maxRefreshHz": 300, "alt": "1080p · 300 Hz", "why": "1080p · 300 Hz."},
-      {"id": "msimag255xf", "name": "MSI MAG 255XF", "brand": "MSI", "model": "MAG 255XF", "diagonalIn": 24.5, "asin": "B0DY14C946", "w": 557.1, "d": 220.1, "base": [318.0, 220.1], "dims": {"w": 557.1, "d": 220.1, "h": 418.5}, "dimsSource": "https://storage-asset.msi.com/specSheet/es/monitor/MAG%20255XF.pdf", "maxRefreshHz": 300, "alt": "1080p · 300 Hz", "why": "1080p · 300 Hz."},
-      {"id": "msimag255xfv", "name": "MSI MAG 255XFV", "brand": "MSI", "model": "MAG 255XFV", "diagonalIn": 24.5, "w": 557.1, "d": 220.1, "base": [318.0, 220.1], "dims": {"w": 557.1, "d": 220.1, "h": 418.5}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20255XFV.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
-      {"id": "msimag271qpqdoledx28", "name": "MSI MAG 271QP QD-OLED X28", "brand": "MSI", "model": "MAG 271QP QD-OLED X28", "diagonalIn": 26.5, "w": 609.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 609.0, "d": 242.0, "h": 416.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20271QP%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "1440p · 280 Hz", "why": "1440p · 280 Hz."},
-      {"id": "msimag271qpxqdoled", "name": "MSI MAG 271QPX QD-OLED", "brand": "MSI", "model": "MAG 271QPX QD-OLED", "diagonalIn": 26.5, "asin": "B0CWPXVQJN", "w": 609.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 609.0, "d": 242.0, "h": 416.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20271QPX%20QD-OLED.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
-      {"id": "msimag272qpqdoledx50", "name": "MSI MAG 272QP QD-OLED X50", "brand": "MSI", "model": "MAG 272QP QD-OLED X50", "diagonalIn": 26.5, "w": 610.31, "d": 241.9, "base": [308.67, 241.9], "dims": {"w": 610.31, "d": 241.9, "h": 532.03}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272QP%20QD-OLED%20X50.pdf", "maxRefreshHz": 500, "alt": "1440p · 500 Hz", "why": "1440p · 500 Hz."},
-      {"id": "msimag272qpwqdoledx28", "name": "MSI MAG 272QPW QD-OLED X28", "brand": "MSI", "model": "MAG 272QPW QD-OLED X28", "diagonalIn": 26.5, "w": 611.1, "d": 241.9, "base": [308.67, 241.9], "dims": {"w": 611.1, "d": 241.9, "h": 532.84}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272QPW%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "1440p · 280 Hz", "why": "1440p · 280 Hz."},
-      {"id": "msimag272urdfe16", "name": "MSI MAG 272URDF E16", "brand": "MSI", "model": "MAG 272URDF E16", "diagonalIn": 27, "asin": "B0FG5ZTC6P", "w": 613.5, "d": 227.9, "base": [308.52, 227.9], "dims": {"w": 613.5, "d": 227.9, "h": 536.3}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272URDF%20E16.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
-      {"id": "msimag274cqpdfx32", "name": "MSI MAG 274CQPDF X32", "brand": "MSI", "model": "MAG 274CQPDF X32", "diagonalIn": 27, "w": 613.5, "d": 278.3, "base": [549.9, 278.3], "dims": {"w": 613.5, "d": 278.3, "h": 403.7}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274CQPDF%20X32.pdf", "maxRefreshHz": 400, "alt": "1440p 320 Hz / 720p 400 Hz", "why": "1440p 320 Hz / 720p 400 Hz."},
-      {"id": "msimag274cxf", "name": "MSI MAG 274CXF", "brand": "MSI", "model": "MAG 274CXF", "diagonalIn": 27, "w": 614.0, "d": 250.0, "base": [340.0, 250.0], "dims": {"w": 614.0, "d": 250.0, "h": 438.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274CXF.pdf", "maxRefreshHz": 280, "alt": "1080p · 280 Hz", "why": "1080p · 280 Hz."},
-      {"id": "msimag274qpfx30mv", "name": "MSI MAG 274QPF X30MV", "brand": "MSI", "model": "MAG 274QPF X30MV", "diagonalIn": 27, "w": 613.1, "d": 227.9, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 227.9, "h": 423.53}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QPF%20X30MV.pdf", "maxRefreshHz": 300, "alt": "1440p · 300 Hz", "why": "1440p · 300 Hz."},
-      {"id": "msimag274qpfx32", "name": "MSI MAG 274QPF X32", "brand": "MSI", "model": "MAG 274QPF X32", "diagonalIn": 27, "w": 613.5, "d": 227.9, "base": [308.6, 227.89], "dims": {"w": 613.5, "d": 227.9, "h": 405.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QPF%20X32.pdf", "maxRefreshHz": 320, "alt": "1440p · 320 Hz", "why": "1440p · 320 Hz."},
-      {"id": "msimag274qrfwx32", "name": "MSI MAG 274QRFW X32", "brand": "MSI", "model": "MAG 274QRFW X32", "diagonalIn": 27, "w": 613.5, "d": 227.9, "base": [308.6, 227.89], "dims": {"w": 613.5, "d": 227.9, "h": 405.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QRFW%20X32.pdf", "maxRefreshHz": 320, "alt": "1440p · 320 Hz", "why": "1440p · 320 Hz."},
-      {"id": "msimag274updfe16m", "name": "MSI MAG 274UPDF E16M", "brand": "MSI", "model": "MAG 274UPDF E16M", "diagonalIn": 27, "w": 613.1, "d": 227.9, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 227.9, "h": 423.53}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274UPDF%20E16M.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
-      {"id": "msimag275upde14", "name": "MSI MAG 275UPD E14", "brand": "MSI", "model": "MAG 275UPD E14", "diagonalIn": 27, "asin": "B0F6VGYB2Z", "w": 613.3, "d": 227.9, "base": [308.6, 227.9], "dims": {"w": 613.3, "d": 227.9, "h": 534.2}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20275UPD%20E14.pdf", "maxRefreshHz": 288, "alt": "4K 144 Hz / 1080p 288 Hz", "why": "4K 144 Hz / 1080p 288 Hz."},
-      {"id": "msimag276cxf", "name": "MSI MAG 276CXF", "brand": "MSI", "model": "MAG 276CXF", "diagonalIn": 27, "w": 610.5, "d": 249.8, "base": [339.8, 249.7], "dims": {"w": 610.5, "d": 249.8, "h": 451.6}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20276CXF.pdf", "maxRefreshHz": 280, "alt": "1080p · 280 Hz", "why": "1080p · 280 Hz."},
-      {"id": "msimag27c6x", "name": "MSI MAG 27C6X", "brand": "MSI", "model": "MAG 27C6X", "diagonalIn": 27, "w": 610.5, "d": 249.8, "base": [339.8, 249.7], "dims": {"w": 610.5, "d": 249.8, "h": 451.6}, "dimsSource": "https://fr.msi.com/Monitor/MAG-27C6X/Specification", "maxRefreshHz": 250, "alt": "1080p · 250 Hz (OC)", "why": "1080p · 250 Hz (OC)."},
-      {"id": "msimag321cupdf", "name": "MSI MAG 321CUPDF", "brand": "MSI", "model": "MAG 321CUPDF", "diagonalIn": 31.5, "w": 711.0, "d": 267.0, "base": [470.0, 267.0], "dims": {"w": 711.0, "d": 267.0, "h": 534.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20321CUPDF.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
-      {"id": "msimag321upde14", "name": "MSI MAG 321UPD E14", "brand": "MSI", "model": "MAG 321UPD E14", "diagonalIn": 31.5, "w": 713.94, "d": 261.89, "base": [308.65, 261.89], "dims": {"w": 713.94, "d": 261.89, "h": 563.85}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20321UPD%20E14.pdf", "maxRefreshHz": 288, "alt": "4K 144 Hz / 1080p 288 Hz", "why": "4K 144 Hz / 1080p 288 Hz."},
-      {"id": "msimag322urdfe16", "name": "MSI MAG 322URDF E16", "brand": "MSI", "model": "MAG 322URDF E16", "diagonalIn": 31.5, "w": 714.08, "d": 227.9, "base": [308.52, 227.9], "dims": {"w": 714.08, "d": 227.76, "h": 564.48}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20322URDF%20E16.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
-      {"id": "msimag32c6x", "name": "MSI MAG 32C6X", "brand": "MSI", "model": "MAG 32C6X", "diagonalIn": 31.5, "w": 709.4, "d": 249.8, "base": [339.8, 249.8], "dims": {"w": 709.4, "d": 249.8, "h": 507.2}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%2032C6X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
-      {"id": "msimag341cqpqdoledx28", "name": "MSI MAG 341CQP QD-OLED X28", "brand": "MSI", "model": "MAG 341CQP QD-OLED X28", "diagonalIn": 34.18, "asin": "B0GVZKCD2F", "w": 811.7, "d": 229.9, "base": [275.5, 229.9], "dims": {"w": 811.7, "d": 229.9, "h": 430.4}, "dimsSource": "https://storage-asset.msi.com/specSheet/uk/monitor/MAG%20341CQP%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "Ultrawide 1440p · 280 Hz", "why": "Ultrawide 1440p · 280 Hz."},
-      {"id": "msimegx", "name": "MSI MEG X", "brand": "MSI", "model": "MEG X", "diagonalIn": 34.18, "w": 811.7, "d": 237.4, "base": [330.7, 237.4], "dims": {"w": 811.7, "d": 237.4, "h": 548.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/de/monitor/MEG%20X.pdf", "maxRefreshHz": 360, "alt": "Ultrawide 1440p · 360 Hz", "why": "Ultrawide 1440p · 360 Hz."},
-      {"id": "msimpg271qrqdoledx50", "name": "MSI MPG 271QR QD-OLED X50", "brand": "MSI", "model": "MPG 271QR QD-OLED X50", "diagonalIn": 26.5, "w": 609.3, "d": 241.9, "base": [308.7, 241.9], "dims": {"w": 609.3, "d": 241.9, "h": 416.1}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20271QR%20QD-OLED%20X50.pdf", "maxRefreshHz": 500, "alt": "1440p · 500 Hz", "why": "1440p · 500 Hz."},
-      {"id": "msimpg271qrxqdoled", "name": "MSI MPG 271QRX QD-OLED", "brand": "MSI", "model": "MPG 271QRX QD-OLED", "diagonalIn": 26.5, "asin": "B0CTS1RQ6Y", "w": 610.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 610.0, "d": 242.0, "h": 422.0}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20271QRX%20QD-OLED.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
-      {"id": "msimpg272qrfx36", "name": "MSI MPG 272QRF X36", "brand": "MSI", "model": "MPG 272QRF X36", "diagonalIn": 27, "w": 614.3, "d": 227.9, "base": [308.6, 227.9], "dims": {"w": 614.3, "d": 227.9, "h": 422.2}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20272QRF%20X36.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
-      {"id": "msimpg274urdfwe16m", "name": "MSI MPG 274URDFW E16M", "brand": "MSI", "model": "MPG 274URDFW E16M", "diagonalIn": 27, "asin": "B0FVPX9LFN", "w": 613.1, "d": 202.38, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 202.38, "h": 400.85}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20274URDFW%20E16M.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
-      {"id": "msimpg341cqrqdoledx36", "name": "MSI MPG 341CQR QD-OLED X36", "brand": "MSI", "model": "MPG 341CQR QD-OLED X36", "diagonalIn": 34, "asin": "B0GL9NWNTQ", "w": 812.83, "d": 228.3, "base": [235.48, 228.3], "dims": {"w": 812.83, "d": 228.3, "h": 543.08}, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20341CQR%20QD-OLED%20X36.pdf", "maxRefreshHz": 360, "alt": "Ultrawide 1440p · 360 Hz", "why": "Ultrawide 1440p · 360 Hz."}
+      { id: 'mon27', diagonalIn: 27, name: 'Dell 27 Plus QHD (S2725DS)', brand: 'Dell', model: 'S2725DS', asin: 'B0D3FGFPPB', w: 611, d: 200, base: [248, 180], dims: { w: 611.34, d: 200.38, h: 388.63 }, standShape: 'dell', panelDepth: 58.81, panelFrontPct: 70, dimsSource: 'https://dl.dell.com/content/manual2557420-dell-s2725ds-monitor-outline-dimensions.pdf?language=en-us', why: 'Sharp at desk distance, and the stand base is compact.', alt: 'All-round pick' , stockCheckedAt: '2026-10-17' },
+      { id: 'mon24', diagonalIn: 23.8, name: 'Dell 24 Plus (S2425HSM)', brand: 'Dell', model: 'S2425HSM', asin: 'B0G49SZ24N', w: 537.64, d: 201.34, base: [242, 180], dims: { w: 537.64, d: 58.72, h: 313.73 }, standShape: 'dell', panelDepth: 58.72, panelFrontPct: 79, dimsSource: 'https://dl.dell.com/content/manual79158351-dell-24-plus-monitor-s2425hsm-outline-dimension.pdf?language=en-us', why: 'A smaller screen. The stand still needs about {201.34} of depth.', alt: 'Smaller screen' , stockCheckedAt: '2026-10-17' },
+      { id: 'mon34', diagonalIn: 34, name: 'Dell 34 Plus USB-C curved (S3425DW)', brand: 'Dell', model: 'S3425DW', asin: 'B0F1H325FN', w: 807, d: 222, base: [259, 201.5], dims: { w: 807.32, d: 221.85, h: 411.53 }, standShape: 'dell', panelDepth: 116.89, panelFrontPct: 92, curveRadius: 3800, dimsSource: 'https://dl.dell.com/content/manual6669801-dell-34-plus-usb-c-monitor-s3425dw-outline-dimension.pdf?language=en-us', why: 'Two windows side by side. It needs a long desk.', alt: 'Wider, needs a long desk' , stockCheckedAt: '2026-10-17' },
+      { id: 'xg27acs', diagonalIn: 27, name: 'ASUS ROG Strix 27" QHD (XG27ACS)', brand: 'ASUS', model: 'XG27ACS', asin: 'B0CV24GQ9W', w: 614.81, d: 218.82, base: [266.49, 218.82], dims: { w: 614.81, d: 60.12, h: 367.08 }, standShape: 'rog', panelDepth: 60.12, panelFrontPct: 82, dimsSource: 'https://dlcdnets.asus.com/pub/ASUS/LCD%20Monitors/XG27ACS/ASUS_XG27ACS_English.pdf?model=XG27ACS', why: 'A QHD IPS screen at 180 Hz. Its base is hexagonal.', alt: 'QHD · 180 Hz', stockCheckedAt: '2026-10-17' },
+      {"id": "msig27c4x", "name": "MSI G27C4X", "brand": "MSI", "model": "G27C4X", "diagonalIn": 27, "w": 611.5, "d": 225.4, "base": [452.8, 225.4], "dims": {"w": 611.5, "d": 225.4, "h": 457.9}, standShape: 'tripod', panelDepth: 75.9, panelFrontPct: 70, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G27C4X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msig32c4x", "name": "MSI G32C4X", "brand": "MSI", "model": "G32C4X", "diagonalIn": 31.5, "w": 709.4, "d": 248.7, "base": [452.8, 248.7], "dims": {"w": 709.4, "d": 248.7, "h": 509.4}, standShape: 'tripod', panelDepth: 92, panelFrontPct: 72, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G32C4X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msig32c4xs", "name": "MSI G32C4XS", "brand": "MSI", "model": "G32C4XS", "diagonalIn": 31.5, "w": 709.4, "d": 248.7, "base": [452.8, 248.7], "dims": {"w": 709.4, "d": 248.7, "h": 509.4}, standShape: 'tripod', panelDepth: 92, panelFrontPct: 72, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/G32C4XS.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msimag255pxf", "name": "MSI MAG 255PXF", "brand": "MSI", "model": "MAG 255PXF", "diagonalIn": 24.5, "w": 557.1, "d": 227.9, "base": [308.5, 227.9], "dims": {"w": 557.1, "d": 227.9, "h": 511.9}, standShape: 'shield', panelDepth: 66.4, panelFrontPct: 88, "dimsSource": "https://storage-asset.msi.com/specSheet/in/monitor/MAG%20255PXF.pdf", "maxRefreshHz": 300, "alt": "1080p · 300 Hz", "why": "1080p · 300 Hz."},
+      {"id": "msimag255xf", "name": "MSI MAG 255XF", "brand": "MSI", "model": "MAG 255XF", "diagonalIn": 24.5, "asin": "B0DY14C946", "w": 557.1, "d": 220.1, "base": [318.0, 220.1], "dims": {"w": 557.1, "d": 220.1, "h": 418.5}, standShape: 'fork', panelDepth: 66.4, panelFrontPct: 62, "dimsSource": "https://storage-asset.msi.com/specSheet/es/monitor/MAG%20255XF.pdf", "maxRefreshHz": 300, "alt": "1080p · 300 Hz", "why": "1080p · 300 Hz."},
+      {"id": "msimag255xfv", "name": "MSI MAG 255XFV", "brand": "MSI", "model": "MAG 255XFV", "diagonalIn": 24.5, "w": 557.1, "d": 220.1, "base": [318.0, 220.1], "dims": {"w": 557.1, "d": 220.1, "h": 418.5}, standShape: 'fork', panelDepth: 66.4, panelFrontPct: 65, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20255XFV.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msimag271qpqdoledx28", "name": "MSI MAG 271QP QD-OLED X28", "brand": "MSI", "model": "MAG 271QP QD-OLED X28", "diagonalIn": 26.5, "w": 609.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 609.0, "d": 242.0, "h": 416.0}, standShape: 'shield', panelDepth: 72, panelFrontPct: 78, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20271QP%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "1440p · 280 Hz", "why": "1440p · 280 Hz."},
+      {"id": "msimag271qpxqdoled", "name": "MSI MAG 271QPX QD-OLED", "brand": "MSI", "model": "MAG 271QPX QD-OLED", "diagonalIn": 26.5, "asin": "B0CWPXVQJN", "w": 609.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 609.0, "d": 242.0, "h": 416.0}, standShape: 'shield', panelDepth: 72, panelFrontPct: 78, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20271QPX%20QD-OLED.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
+      {"id": "msimag272qpqdoledx50", "name": "MSI MAG 272QP QD-OLED X50", "brand": "MSI", "model": "MAG 272QP QD-OLED X50", "diagonalIn": 26.5, "w": 610.31, "d": 241.9, "base": [308.67, 241.9], "dims": {"w": 610.31, "d": 241.9, "h": 532.03}, standShape: 'shield', panelDepth: 69.15, panelFrontPct: 82, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272QP%20QD-OLED%20X50.pdf", "maxRefreshHz": 500, "alt": "1440p · 500 Hz", "why": "1440p · 500 Hz."},
+      {"id": "msimag272qpwqdoledx28", "name": "MSI MAG 272QPW QD-OLED X28", "brand": "MSI", "model": "MAG 272QPW QD-OLED X28", "diagonalIn": 26.5, "w": 611.1, "d": 241.9, "base": [308.67, 241.9], "dims": {"w": 611.1, "d": 241.9, "h": 532.84}, standShape: 'shield', panelDepth: 69.3, panelFrontPct: 82, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272QPW%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "1440p · 280 Hz", "why": "1440p · 280 Hz."},
+      {"id": "msimag272urdfe16", "name": "MSI MAG 272URDF E16", "brand": "MSI", "model": "MAG 272URDF E16", "diagonalIn": 27, "asin": "B0FG5ZTC6P", "w": 613.5, "d": 227.9, "base": [308.52, 227.9], "dims": {"w": 613.5, "d": 227.9, "h": 536.3}, standShape: 'bevel', panelDepth: 54.6, panelFrontPct: 83, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20272URDF%20E16.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag274cqpdfx32", "name": "MSI MAG 274CQPDF X32", "brand": "MSI", "model": "MAG 274CQPDF X32", "diagonalIn": 27, "w": 613.5, "d": 278.3, "base": [549.9, 278.3], "dims": {"w": 613.5, "d": 278.3, "h": 403.7}, standShape: 'tripod', panelDepth: 78.3, panelFrontPct: 74, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274CQPDF%20X32.pdf", "maxRefreshHz": 400, "alt": "1440p 320 Hz / 720p 400 Hz", "why": "1440p 320 Hz / 720p 400 Hz."},
+      {"id": "msimag274cxf", "name": "MSI MAG 274CXF", "brand": "MSI", "model": "MAG 274CXF", "diagonalIn": 27, "w": 614.0, "d": 250.0, "base": [340.0, 250.0], "dims": {"w": 614.0, "d": 250.0, "h": 438.0}, standShape: 'fork', panelDepth: 77, panelFrontPct: 75, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274CXF.pdf", "maxRefreshHz": 280, "alt": "1080p · 280 Hz", "why": "1080p · 280 Hz."},
+      {"id": "msimag274qpfx30mv", "name": "MSI MAG 274QPF X30MV", "brand": "MSI", "model": "MAG 274QPF X30MV", "diagonalIn": 27, "w": 613.1, "d": 227.9, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 227.9, "h": 423.53}, standShape: 'bevel', panelDepth: 68.77, panelFrontPct: 88, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QPF%20X30MV.pdf", "maxRefreshHz": 300, "alt": "1440p · 300 Hz", "why": "1440p · 300 Hz."},
+      {"id": "msimag274qpfx32", "name": "MSI MAG 274QPF X32", "brand": "MSI", "model": "MAG 274QPF X32", "diagonalIn": 27, "w": 613.5, "d": 227.9, "base": [308.6, 227.89], "dims": {"w": 613.5, "d": 227.9, "h": 405.0}, standShape: 'bevel', panelDepth: 62, panelFrontPct: 85, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QPF%20X32.pdf", "maxRefreshHz": 320, "alt": "1440p · 320 Hz", "why": "1440p · 320 Hz."},
+      {"id": "msimag274qrfwx32", "name": "MSI MAG 274QRFW X32", "brand": "MSI", "model": "MAG 274QRFW X32", "diagonalIn": 27, "w": 613.5, "d": 227.9, "base": [308.6, 227.89], "dims": {"w": 613.5, "d": 227.9, "h": 405.0}, standShape: 'bevel', panelDepth: 62, panelFrontPct: 85, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274QRFW%20X32.pdf", "maxRefreshHz": 320, "alt": "1440p · 320 Hz", "why": "1440p · 320 Hz."},
+      {"id": "msimag274updfe16m", "name": "MSI MAG 274UPDF E16M", "brand": "MSI", "model": "MAG 274UPDF E16M", "diagonalIn": 27, "w": 613.1, "d": 227.9, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 227.9, "h": 423.53}, standShape: 'bevel', panelDepth: 68.77, panelFrontPct: 88, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20274UPDF%20E16M.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag275upde14", "name": "MSI MAG 275UPD E14", "brand": "MSI", "model": "MAG 275UPD E14", "diagonalIn": 27, "asin": "B0F6VGYB2Z", "w": 613.3, "d": 227.9, "base": [308.6, 227.9], "dims": {"w": 613.3, "d": 227.9, "h": 534.2}, standShape: 'bevel', panelDepth: 57.9, panelFrontPct: 85, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20275UPD%20E14.pdf", "maxRefreshHz": 288, "alt": "4K 144 Hz / 1080p 288 Hz", "why": "4K 144 Hz / 1080p 288 Hz."},
+      {"id": "msimag276cxf", "name": "MSI MAG 276CXF", "brand": "MSI", "model": "MAG 276CXF", "diagonalIn": 27, "w": 610.5, "d": 249.8, "base": [339.8, 249.7], "dims": {"w": 610.5, "d": 249.8, "h": 451.6}, standShape: 'fork', panelDepth: 90.4, panelFrontPct: 80, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20276CXF.pdf", "maxRefreshHz": 280, "alt": "1080p · 280 Hz", "why": "1080p · 280 Hz."},
+      {"id": "msimag27c6x", "name": "MSI MAG 27C6X", "brand": "MSI", "model": "MAG 27C6X", "diagonalIn": 27, "w": 610.5, "d": 249.8, "base": [339.8, 249.7], "dims": {"w": 610.5, "d": 249.8, "h": 451.6}, standShape: 'fork', panelDepth: 90.4, panelFrontPct: 80, curveRadius: 1500, "dimsSource": "https://fr.msi.com/Monitor/MAG-27C6X/Specification", "maxRefreshHz": 250, "alt": "1080p · 250 Hz (OC)", "why": "1080p · 250 Hz (OC)."},
+      {"id": "msimag321cupdf", "name": "MSI MAG 321CUPDF", "brand": "MSI", "model": "MAG 321CUPDF", "diagonalIn": 31.5, "w": 711.0, "d": 267.0, "base": [470.0, 267.0], "dims": {"w": 711.0, "d": 267.0, "h": 534.0}, standShape: 'tripod', panelDepth: 99, panelFrontPct: 83, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20321CUPDF.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag321upde14", "name": "MSI MAG 321UPD E14", "brand": "MSI", "model": "MAG 321UPD E14", "diagonalIn": 31.5, "w": 713.94, "d": 261.89, "base": [308.65, 261.89], "dims": {"w": 713.94, "d": 261.89, "h": 563.85}, standShape: 'shield', panelDepth: 61.09, panelFrontPct: 82, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20321UPD%20E14.pdf", "maxRefreshHz": 288, "alt": "4K 144 Hz / 1080p 288 Hz", "why": "4K 144 Hz / 1080p 288 Hz."},
+      {"id": "msimag322urdfe16", "name": "MSI MAG 322URDF E16", "brand": "MSI", "model": "MAG 322URDF E16", "diagonalIn": 31.5, "w": 714.08, "d": 227.9, "base": [308.52, 227.9], "dims": {"w": 714.08, "d": 227.76, "h": 564.48}, standShape: 'bevel', panelDepth: 72.93, panelFrontPct: 78, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%20322URDF%20E16.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimag32c6x", "name": "MSI MAG 32C6X", "brand": "MSI", "model": "MAG 32C6X", "diagonalIn": 31.5, "w": 709.4, "d": 249.8, "base": [339.8, 249.8], "dims": {"w": 709.4, "d": 249.8, "h": 507.2}, standShape: 'fork', panelDepth: 107.2, panelFrontPct: 74, curveRadius: 1500, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MAG%2032C6X.pdf", "maxRefreshHz": 250, "alt": "1080p · 250 Hz", "why": "1080p · 250 Hz."},
+      {"id": "msimag341cqpqdoledx28", "name": "MSI MAG 341CQP QD-OLED X28", "brand": "MSI", "model": "MAG 341CQP QD-OLED X28", "diagonalIn": 34.18, "asin": "B0GVZKCD2F", "w": 811.7, "d": 229.9, "base": [275.5, 229.9], "dims": {"w": 811.7, "d": 229.9, "h": 430.4}, standShape: 'compact', panelDepth: 131.3, panelFrontPct: 99, curveRadius: 1800, "dimsSource": "https://storage-asset.msi.com/specSheet/uk/monitor/MAG%20341CQP%20QD-OLED%20X28.pdf", "maxRefreshHz": 280, "alt": "Ultrawide 1440p · 280 Hz", "why": "Ultrawide 1440p · 280 Hz."},
+      {"id": "msimegx", "name": "MSI MEG X", "brand": "MSI", "model": "MEG X", "diagonalIn": 34.18, "w": 811.7, "d": 237.4, "base": [330.7, 237.4], "dims": {"w": 811.7, "d": 237.4, "h": 548.0}, standShape: 'rectangle', panelDepth: 118.1, panelFrontPct: 96, curveRadius: 1800, "dimsSource": "https://storage-asset.msi.com/specSheet/de/monitor/MEG%20X.pdf", "maxRefreshHz": 360, "alt": "Ultrawide 1440p · 360 Hz", "why": "Ultrawide 1440p · 360 Hz."},
+      {"id": "msimpg271qrqdoledx50", "name": "MSI MPG 271QR QD-OLED X50", "brand": "MSI", "model": "MPG 271QR QD-OLED X50", "diagonalIn": 26.5, "w": 609.3, "d": 241.9, "base": [308.7, 241.9], "dims": {"w": 609.3, "d": 241.9, "h": 416.1}, standShape: 'shield', panelDepth: 72.3, panelFrontPct: 79, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20271QR%20QD-OLED%20X50.pdf", "maxRefreshHz": 500, "alt": "1440p · 500 Hz", "why": "1440p · 500 Hz."},
+      {"id": "msimpg271qrxqdoled", "name": "MSI MPG 271QRX QD-OLED", "brand": "MSI", "model": "MPG 271QRX QD-OLED", "diagonalIn": 26.5, "asin": "B0CTS1RQ6Y", "w": 610.0, "d": 242.0, "base": [309.0, 242.0], "dims": {"w": 610.0, "d": 242.0, "h": 422.0}, standShape: 'shield', panelDepth: 69, panelFrontPct: 78, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20271QRX%20QD-OLED.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
+      {"id": "msimpg272qrfx36", "name": "MSI MPG 272QRF X36", "brand": "MSI", "model": "MPG 272QRF X36", "diagonalIn": 27, "w": 614.3, "d": 227.9, "base": [308.6, 227.9], "dims": {"w": 614.3, "d": 227.9, "h": 422.2}, standShape: 'shield', panelDepth: 75.1, panelFrontPct: 88, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20272QRF%20X36.pdf", "maxRefreshHz": 360, "alt": "1440p · 360 Hz", "why": "1440p · 360 Hz."},
+      {"id": "msimpg274urdfwe16m", "name": "MSI MPG 274URDFW E16M", "brand": "MSI", "model": "MPG 274URDFW E16M", "diagonalIn": 27, "asin": "B0FVPX9LFN", "w": 613.1, "d": 202.38, "base": [312.53, 202.38], "dims": {"w": 613.1, "d": 202.38, "h": 400.85}, standShape: 'bevel', panelDepth: 68.77, panelFrontPct: 98, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20274URDFW%20E16M.pdf", "maxRefreshHz": 320, "alt": "4K 160 Hz / 1080p 320 Hz", "why": "4K 160 Hz / 1080p 320 Hz."},
+      {"id": "msimpg341cqrqdoledx36", "name": "MSI MPG 341CQR QD-OLED X36", "brand": "MSI", "model": "MPG 341CQR QD-OLED X36", "diagonalIn": 34, "asin": "B0GL9NWNTQ", "w": 812.83, "d": 228.3, "base": [235.48, 228.3], "dims": {"w": 812.83, "d": 228.3, "h": 543.08}, standShape: 'insetPlate', panelDepth: 118.54, panelFrontPct: 100, curveRadius: 1800, "dimsSource": "https://storage-asset.msi.com/specSheet/us/monitor/MPG%20341CQR%20QD-OLED%20X36.pdf", "maxRefreshHz": 360, "alt": "Ultrawide 1440p · 360 Hz", "why": "Ultrawide 1440p · 360 Hz."}
     ],
     keyboard: [
       { id: 'tkl', name: 'Logitech G PRO X TKL LIGHTSPEED', brand: 'Logitech G', model: 'PRO X TKL LIGHTSPEED', asin: 'B0BQBSH6NQ', w: 352, d: 150, dims: { w: 352, d: 150, h: 34 }, dimsSource: 'https://www.logitechg.com/en-ca/products/gaming-keyboards/pro-x-tkl-wireless-keyboard.html', why: 'No number pad, so the mouse gets more room.', alt: 'All-round pick' , stockCheckedAt: '2026-10-17' },
@@ -433,7 +433,7 @@
       past = rect.x >= pos.keyboard.x + kb.w - 1e-6;
       if (overlap(rect, { x: pos.keyboard.x, y: pos.keyboard.y, w: kb.w, d: kb.d })) return true;
     }
-    if (pick.monitor && pos.monitor && overlap(rect, standBox(pick, pos))) return true;
+    if (pick.monitor && pos.monitor && standOverlap(standBox(pick, pos), rect)) return true;
     if (Math.min(rect.x, desk.w - rect.x - rect.w, desk.d - rect.y - rect.d, rect.y) < 30) return true;
     if (!past) return true;
     if (!pick.mouse || !pos.mouse) return true;
@@ -496,26 +496,86 @@
   // default spots on the desk for each piece
   function size(cat, pick){ return (pick[cat] && get(cat, pick[cat])) || catalog[cat][0]; }
   function onDesk(desk, rect){ return rect.x >= 0 && rect.y >= 0 && rect.x + rect.w <= desk.w + 1e-6 && rect.y + rect.d <= desk.d + 1e-6; }
+  // Stand outlines are percentages of the manufacturer's stand W × D. Top is the back of the desk.
+  // Model assignments use the photos in dimsSource and MSI's model galleries. Panel offsets
+  // are read from neutral side/top views, estimated from related hardware for oblique-only views.
+  var outlines = {
+    dell: [[5,0],[95,0],[99,3],[100,8],[100,92],[99,97],[95,100],[5,100],[1,97],[0,92],[0,8],[1,3]],
+    rog: [[7,0],[93,0],[100,18],[92,100],[8,100],[0,18]],
+    shield: [[14,0],[86,0],[100,17],[94,90],[53,100],[47,100],[6,90],[0,17]],
+    bevel: [[10,0],[90,0],[100,17],[96,82],[84,98],[50,100],[16,98],[4,82],[0,17]],
+    compact: [[18,0],[82,0],[100,20],[94,88],[65,100],[35,100],[6,88],[0,20]],
+    insetPlate: [[23,10],[77,10],[100,21],[94,85],[63,93],[37,93],[6,85],[0,21]],
+    rectangle: [[2,0],[98,0],[100,3],[100,97],[98,100],[2,100],[0,97],[0,3]],
+    tripod: [[48,0],[52,0],[55,39],[100,96],[99,100],[52,56],[48,56],[1,100],[0,96],[45,39]],
+    fork: [[39,0],[61,0],[72,43],[100,94],[99,100],[54,49],[46,49],[1,100],[0,94],[28,43]]
+  };
+  function polygonArea(points){
+    var sum = 0;
+    for (var i = 0, j = points.length - 1; i < points.length; j = i++)
+      sum += points[j][0] * points[i][1] - points[i][0] * points[j][1];
+    return Math.abs(sum) / 2;
+  }
+  function standOverlap(base, rect){
+    if (!overlap(base, rect)) return false;
+    // Clip the footprint to the item's four edges. A shared edge has zero area.
+    var points = base.shape;
+    function clip(axis, limit, direction){
+      var result = [];
+      for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
+        var a = points[j], b = points[i];
+        var insideA = direction * (a[axis] - limit) >= 0, insideB = direction * (b[axis] - limit) >= 0;
+        if (insideA !== insideB) {
+          var t = (limit - a[axis]) / (b[axis] - a[axis]);
+          result.push([a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]);
+        }
+        if (insideB) result.push(b);
+      }
+      points = result;
+    }
+    clip(0, (rect.x - base.x) * 100 / base.w, 1);
+    clip(0, (rect.x + rect.w - base.x) * 100 / base.w, -1);
+    clip(1, (rect.y - base.y) * 100 / base.d, 1);
+    clip(1, (rect.y + rect.d - base.y) * 100 / base.d, -1);
+    return polygonArea(points) > 1e-8;
+  }
+  function drawMonitor(el, m){
+    if (el.dataset.drawnMonitor === m.id) return;
+    el.dataset.drawnMonitor = m.id;
+    var w = m.w, d = m.d, half = w / 2, front = d * m.panelFrontPct / 100;
+    var back = front - m.panelDepth;
+    var sag = m.curveRadius ? m.curveRadius - Math.sqrt(m.curveRadius * m.curveRadius - half * half) : 0;
+    var face = 'M0 ' + front + ' Q' + half + ' ' + (front - 2 * sag) + ' ' + w + ' ' + front;
+    var housing = face + ' l0 -7 Q' + (w * .77) + ' ' + back + ' ' + half + ' ' + back +
+      ' Q' + (w * .23) + ' ' + back + ' 0 ' + (front - 7) + ' Z';
+    var stand = outlines[m.standShape].map(function(p){
+      return [(w - m.base[0]) / 2 + p[0] * m.base[0] / 100, d - m.base[1] + p[1] * m.base[1] / 100].join(',');
+    }).join(' ');
+    var mount = d - m.base[1] + m.base[1] * (m.standShape === 'tripod' || m.standShape === 'fork' ? .42 : .18);
+    el.innerHTML = '<svg class="monitor-plan" aria-hidden="true" viewBox="0 0 ' + w + ' ' + d + '" preserveAspectRatio="none">' +
+      '<polygon class="stand-outline" points="' + stand + '"/><path class="stand-post" d="M' + half + ' ' + mount + ' V' + (front - sag) + '"/>' +
+      '<path class="panel-housing" d="' + housing + '"/><path class="panel-face" d="' + face + '"/></svg>';
+  }
   function standBox(pick, pos){
     var m = size('monitor', pick), front = pos.monitor.y + m.d;
-    return { x: pos.monitor.x + (m.w - m.base[0]) / 2, y: front - m.base[1], w: m.base[0], d: m.base[1], front: front };
+    return { x: pos.monitor.x + (m.w - m.base[0]) / 2, y: front - m.base[1], w: m.base[0], d: m.base[1], shape: outlines[m.standShape], front: front };
   }
   // Right of the stand, then left, then one step in front. Exact millimetres, no rounding.
   function besideStand(desk, pick, pos, rect){
     if (!pos.monitor || !pick.monitor) return { x: rect.x, y: rect.y };
     var base = standBox(pick, pos);
-    if (!overlap(base, rect)) return { x: rect.x, y: rect.y };
+    if (!standOverlap(base, rect)) return { x: rect.x, y: rect.y };
     var spots = [{ x: base.x + base.w, y: rect.y }, { x: base.x - rect.w, y: rect.y }];
     var best = null, shift = Infinity;
     spots.forEach(function(spot){
       var next = { x: spot.x, y: spot.y, w: rect.w, d: rect.d };
       var moved = Math.abs(spot.x - rect.x);
-      if (onDesk(desk, next) && !overlap(base, next) && moved < shift) { best = spot; shift = moved; }
+      if (onDesk(desk, next) && !standOverlap(base, next) && moved < shift) { best = spot; shift = moved; }
     });
     if (best) return best;
     var y = base.front + 10;
     var fwd = { x: rect.x, y: y, w: rect.w, d: rect.d };
-    if (rect.d <= desk.d - y && onDesk(desk, fwd) && !overlap(base, fwd)) return { x: rect.x, y: y };
+    if (rect.d <= desk.d - y && onDesk(desk, fwd) && !standOverlap(base, fwd)) return { x: rect.x, y: y };
     return { x: rect.x, y: rect.y };
   }
   // mode 'front' puts any keyboard in front of the monitor. 'beside' keeps it off the stand.
@@ -546,13 +606,13 @@
         var at = { x: x0, y: y0 };
         if (mon) {
           var base = standBox(pick, pos);
-          if (overlap(base, { x: x0, y: y0, w: pad.w, d: pad.d })) {
+          if (standOverlap(base, { x: x0, y: y0, w: pad.w, d: pad.d })) {
             var right = { x: base.x + base.w, y: y0, w: pad.w, d: pad.d };
-            if (onDesk(desk, right) && !overlap(base, right)) at = { x: right.x, y: right.y };
+            if (onDesk(desk, right) && !standOverlap(base, right)) at = { x: right.x, y: right.y };
             else {
               var fy = base.y + base.d + 10;
               var fwd = { x: x0, y: fy, w: pad.w, d: pad.d };
-              if (pad.d <= desk.d - fy && onDesk(desk, fwd) && !overlap(base, fwd)) at = { x: x0, y: fy };
+              if (pad.d <= desk.d - fy && onDesk(desk, fwd) && !standOverlap(base, fwd)) at = { x: x0, y: fy };
             }
           }
         }
@@ -661,7 +721,7 @@
     var pick = setup.pick, pos = setup.pos, area = 0;
     function item(c){ return pick[c] && get(c, pick[c]); }
     var mon = item('monitor'), kb = item('keyboard'), pad = item('pad'), mouse = item('mouse');
-    if (mon) area += mon.base[0] * mon.base[1];
+    if (mon) area += polygonArea(outlines[mon.standShape]) / 10000 * mon.base[0] * mon.base[1];
     if (kb) area += kb.w * kb.d;
     if (pad) area += pad.w * pad.d;
     if (kb && pad) area -= overlap({ x: pos.keyboard.x, y: pos.keyboard.y, w: kb.w, d: kb.d }, { x: pos.pad.x, y: pos.pad.y, w: pad.w, d: pad.d });
@@ -746,7 +806,7 @@
     if (has('monitor')) {
       var base = standBox(pick, setup.pos);
       ['keyboard', 'pad', 'mouse'].forEach(function(c){
-        if (!has(c) || !overlap(base, rect(c))) return;
+        if (!has(c) || !standOverlap(base, rect(c))) return;
         if (c === 'pad' && isMat(padItem)) {
           add(['monitor', 'pad'], 1, { monitor: 'stand overlaps the desk mat', pad: 'under the monitor stand' },
             'The monitor stand overlaps the desk mat. Move the mat or stand until their edges are clear.');
@@ -849,7 +909,7 @@
   }
 
   function monitorMeasurements(s, one, two){
-    return s.diagonalIn + "″ diagonal · " + one(s.dims.w) + " wide · " + one(s.d) + " deep with stand\nStand footprint (W × D): " + two(s.base[0], s.base[1]);
+    return s.diagonalIn + "″ diagonal · " + one(s.dims.w) + " wide · " + one(s.d) + " deep with stand\nStand span (W × D): " + two(s.base[0], s.base[1]) + "\nTop view shows the stock stand at neutral tilt. Outline and panel position are approximate.";
   }
 
   async function copySetupLink(button, url){
@@ -865,7 +925,7 @@
     }
   }
 
-  window.SV = { copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
+  window.SV = { drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
     recommend: recommend, omission: omission, matchReason: matchReason, place: place, layout: layout, settle: settle, retarget: retarget, previewSetup: previewSetup, overhang: overhang, overlap: overlap, check: check, encode: encode, decode: decode, usedArea: usedArea,
     deskLimits: deskLimits, defaultDesk: defaultDesk, deskFallbackNotice: deskFallbackNotice,
     parseDeskInput: parseDeskInput, deskMm: deskMm, deskAxisOk: deskAxisOk, deskOk: deskOk, deskField: deskField, savedDesk: savedDesk,

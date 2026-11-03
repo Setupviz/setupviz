@@ -114,14 +114,6 @@ button{font-family:inherit}
 .piece-keyboard,.b-kb{border-radius:3% / 8%;background-color:#454545;background-image:linear-gradient(90deg,#171717 1px,transparent 1px),linear-gradient(#171717 1px,transparent 1px);background-size:6.25% 20%;border:1px solid rgba(255,255,255,0.18);box-shadow:0 12px 30px rgba(0,0,0,0.5)}
 .piece-pad,.b-pad{border-radius:3%;background:#272727;border:1px solid #787878}
 .piece-mouse,.b-mouse{border-radius:40% 40% 45% 45%;background:#EDEDED;box-shadow:0 12px 30px rgba(0,0,0,0.6)}
-.mon,.b-mon{display:flex;flex-direction:column;align-items:center}
-.mon .scr,.b-mon .s{width:100%;height:14%;border-radius:4px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.25);box-sizing:border-box;display:flex;align-items:flex-end;overflow:hidden}
-.mon .scr i,.b-mon .s i{display:block;width:100%;height:45%;background:#EDEDED}
-.mon .neck,.b-mon .n{width:5%;background:#3A3A3A}
-.mon .base,.b-mon .b{border-radius:50%/70%;background:#363636;border:1px solid #808080;box-sizing:border-box}
-/* Anchor the actual stand footprint beneath the decorative screen. */
-.mon .base,.b-mon .b,.p-monitor .base{position:absolute;bottom:0;left:0;right:0;margin:0 auto}
-.mon .scr,.b-mon .s,.p-monitor .scr{position:relative;z-index:1;flex-shrink:0}
 .piece-monitor.hang::after,.b-mon.hang::after,.p-monitor.hang::after{z-index:2}
 .hang::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg,transparent,transparent 3px,rgba(255,107,91,.75) 3px,rgba(255,107,91,.75) 5px);-webkit-mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000);-webkit-mask-position:left,right,top,bottom;-webkit-mask-size:var(--ol,0) 100%,var(--or,0) 100%,100% var(--ot,0),100% var(--ob,0);-webkit-mask-repeat:no-repeat;mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000);mask-position:left,right,top,bottom;mask-size:var(--ol,0) 100%,var(--or,0) 100%,100% var(--ot,0),100% var(--ob,0);mask-repeat:no-repeat}
 
@@ -149,3 +141,9 @@ main.legal h1{margin:0;font-size:clamp(32px,4vw,48px);line-height:1.1;font-weigh
 main.legal h2{margin:20px 0 0;font-size:18px;font-weight:500}
 main.legal p{margin:0;font-size:16px;line-height:26px}
 main.legal h1 + p{color:var(--muted);font-size:14px}
+
+.monitor-plan{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.monitor-plan .stand-outline{fill:#52565a;stroke:#afb5b9;stroke-width:.85;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.monitor-plan .stand-post{fill:none;stroke:#737a80;stroke-width:30;stroke-linecap:round}
+.monitor-plan .panel-housing{fill:#303439;stroke:#9ca3aa;stroke-width:.8;vector-effect:non-scaling-stroke}
+.monitor-plan .panel-face{fill:none;stroke:#ededed;stroke-width:1.4;vector-effect:non-scaling-stroke}

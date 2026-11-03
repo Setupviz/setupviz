@@ -51,8 +51,6 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .board > *{position:absolute;box-sizing:border-box}
 :where(.board .piece){padding:0;border:0;background:transparent;font:inherit;color:inherit;cursor:grab;touch-action:none;appearance:none}
 .board .drag{cursor:grabbing}
-.b-mon .n{height:24%}
-.b-mon .b{width:34%;height:62%}
 .b-tag{font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(18,18,18,0.9);border:1px solid var(--line-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;pointer-events:none}
 .b-tag .dot,.caps .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
 .caps .cap-b{display:inline-flex;align-items:center;gap:6px}
@@ -272,7 +270,7 @@ footer{border-top:1px solid var(--line)}
                 <label class="demo-controls">Try a keyboard <select id="demoKeyboard"><option value="k75">Compact · MX Mechanical Mini</option><option value="full">Full size · MX Keys S</option></select></label>
                 <div class="cap"><span>Width 55.1 in</span><span>Depth 27.6 in</span></div>
                 <div class="board desk-dots" id="demoBoard" role="group" aria-label="Desk from above. Drag a piece, or use the arrow keys.">
-                  <button type="button" class="piece b-mon st-1" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><span class="s"><i></i></span><span class="n"></span><span class="b"></span></button>
+                  <button type="button" class="piece b-mon st-1" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></button>
                   <button type="button" class="piece b-pad st-3" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%" aria-label="SteelSeries QcK Heavy Large, fits. Drag to move."></button>
                   <button type="button" class="piece b-kb st-2" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%" aria-label="Logitech MX Mechanical Mini, fits. Drag to move."></button>
                   <button type="button" class="piece b-mouse st-4" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%" aria-label="Razer DeathAdder V3, fits. Drag to move."></button>
@@ -331,7 +329,7 @@ footer{border-top:1px solid var(--line)}
           <div class="win v-3"><div class="win-bar"><i></i><i></i><i></i><span>Desk from above</span></div>
             <div style="padding:16px">
               <div class="board desk-dots">
-                <div class="b-mon" style="left:28.07%;top:8%;width:43.86%;height:30%"><div class="s"><i></i></div><div class="n"></div><div class="b"></div></div>
+                <div class="b-mon" style="left:28.07%;top:8%;width:43.86%;height:30%"><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></div>
                 <div class="b-pad" style="left:61%;top:42%;width:32%;height:50%"></div>
                 <div class="b-kb" style="left:30%;top:66%;width:26%;height:20%"></div>
                 <div class="b-mouse" style="left:74%;top:60%;width:5%;height:18%"></div>
@@ -409,12 +407,7 @@ footer{border-top:1px solid var(--line)}
       var s = SV.get(c, pick[c]), p = pos[c], el = board.querySelector('[data-cat="' + c + '"]'), f = st[c];
       el.style.left = SV.percentText(p.x, desk.w); el.style.top = SV.percentText(p.y, desk.d); el.style.width = SV.percentText(s.w, desk.w); el.style.height = SV.percentText(s.d, desk.d);
       el.classList.toggle('sel', state.sel === c);
-      if (c === 'monitor') {
-        var bh = s.base[1] / s.d * 100;
-        el.querySelector('.b').style.width = SV.percentText(s.base[0], s.w);
-        el.querySelector('.b').style.height = bh + '%';
-        el.querySelector('.n').style.height = Math.max(0, 86 - bh) + '%';
-      }
+      if (c === 'monitor') SV.drawMonitor(el, s);
       var over = SV.overhang(desk, { x: p.x, y: p.y, w: s.w, d: s.d });
       el.classList.toggle('hang', !!over); el.classList.toggle('drag', state.drag === c);
       if (over) { el.style.setProperty('--ol', over.l + '%'); el.style.setProperty('--or', over.r + '%'); el.style.setProperty('--ot', over.t + '%'); el.style.setProperty('--ob', over.b + '%'); }

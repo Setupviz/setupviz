@@ -45,7 +45,6 @@ main{flex:1;width:100%;max-width:var(--sv-content);margin:0 auto;padding:28px 24
 .piece-monitor{background:transparent}
 .piece-caption{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:0 3px;background:#252525;color:#eee;border-radius:3px;font-size:11px;pointer-events:none}
 @media(max-width:480px){.piece-caption{font-size:9px}}
-.mon{position:absolute;inset:0;pointer-events:none}
 .tag{position:absolute;font-size:12px;font-weight:400;padding:5px 10px;border-radius:8px;background:rgba(18,18,18,0.92);border:1px solid rgba(255,255,255,0.12);white-space:normal;max-width:calc(100% - 16px);box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
 .legend{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -342,12 +341,10 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   function shareUrl(){ return new URL('/share?s=' + SV.encode({ desk: DESK, pick: state.pick, pos: state.pos }, A), location.href).href; }
 
   // build pieces and tags once
-  var pieceEl = {}, tagEl = {}, monEl = {};
+  var pieceEl = {}, tagEl = {};
   order.forEach(function(id){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'piece piece-' + id; b.dataset.cat = id;
-    if (id === 'monitor') { b.innerHTML = '<span class="mon"><span class="scr"><i></i></span><span class="neck"></span><span class="base"></span></span>'; monEl.neck = b.querySelector('.neck'); monEl.base = b.querySelector('.base'); }
     if (id === 'keyboard') b.innerHTML = '<span class="piece-caption">Keyboard</span>';
-    if (id === 'monitor') monEl.base.innerHTML = '<span class="piece-caption">Stand</span>';
     if (id === 'pad') b.innerHTML = '<span class="lbl"></span>';
     b.addEventListener('pointerdown', function(e){
       endPreview();
@@ -442,8 +439,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       var visible = id === 'pad' ? (s.kind === 'mat' ? 'Desk mat' : 'Mouse pad') : id === 'monitor' ? 'Monitor stand' : cats[id][0];
       b.setAttribute('aria-label', (visible ? visible + ', ' : '') + s.name + ', ' + words[st[id].lvl].toLowerCase() + '. Drag to move.');
     });
-    if (has('monitor')) { var mon = spec('monitor'), bh = mon.d ? mon.base[1]/mon.d*100 : 0; if (!isFinite(bh)) bh = 0;
-      monEl.base.style.width = pct(mon.base[0], mon.w); monEl.base.style.height = bh + '%'; monEl.neck.style.height = Math.max(0, 86 - bh) + '%'; }
+    if (has('monitor')) SV.drawMonitor(pieceEl.monitor, spec('monitor'));
     if (has('pad')) { pieceEl.pad.classList.toggle('glass', spec('pad').kind === 'glass'); pieceEl.pad.firstChild.textContent = spec('pad').kind === 'mat' ? 'Desk mat' : 'Mouse pad'; }
 
     // tags only for the selected or hovered piece, plus anything that won't fit

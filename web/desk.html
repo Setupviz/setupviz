@@ -41,6 +41,7 @@
   .btn,.btn-outline,.seg button,.chip{min-height:44px;min-width:44px;height:44px}
 }
 </style>
+<script src="/desk-size.js"></script>
 </head>
 <body>
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
@@ -91,8 +92,8 @@
       <div style="flex:1 1 240px;display:flex;flex-direction:column;gap:12px">
         <div class="seg" id="units"><button type="button" data-unit="in" aria-pressed="true">in</button><button type="button" data-unit="cm" aria-pressed="false">cm</button></div>
         <p class="fallback" id="deskFallback" hidden>We're showing a 55 × 28 in desk. Enter yours for a real fit check.</p>
-        <div class="field"><label for="w">Width</label><input type="text" inputmode="decimal" id="w" autocomplete="off" aria-invalid="false"><span class="field-error" id="wErr" aria-live="polite"></span></div>
-        <div class="field"><label for="d">Depth</label><input type="text" inputmode="decimal" id="d" autocomplete="off" aria-invalid="false"><span class="field-error" id="dErr" aria-live="polite"></span></div>
+        <div class="field"><label for="w">Width</label><input type="text" inputmode="decimal" id="w" disabled autocomplete="off" aria-invalid="false"><span class="field-error" id="wErr" aria-live="polite"></span></div>
+        <div class="field"><label for="d">Depth</label><input type="text" inputmode="decimal" id="d" disabled autocomplete="off" aria-invalid="false"><span class="field-error" id="dErr" aria-live="polite"></span></div>
         <div class="field">Common sizes<div class="chips" id="presets"></div></div>
       </div>
     </div>
@@ -107,7 +108,6 @@
     <div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
   </footer>
 </div>
-<script src="/desk-size.js"></script>
 <script>
 (function(){
   var saved = SVDesk.savedDesk(localStorage.getItem('sv-desk'));
@@ -207,6 +207,7 @@
   $('w').addEventListener('change', function(){ commit('w', 'w'); });
   $('d').addEventListener('change', function(){ commit('d', 'd'); });
   render();
+  $('w').disabled = $('d').disabled = false;
 })();
 </script>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>

@@ -32,6 +32,7 @@ const files = [
   'data.js',
   'desk-size.js',
   'prices.js',
+  'setupviz-logo.png',
   'favicon.svg',
   'favicon.ico',
   'apple-touch-icon.png',

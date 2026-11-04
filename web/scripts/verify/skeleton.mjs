@@ -6,8 +6,10 @@ const PORT = 4317;
 await buildWorker();
 const server = await serveWorker(PORT);
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
+let allPassed = true;
+for (const asset of ['data.js', 'builder-init.js']) {
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-await page.route('**/data.js', (route) => route.abort());
+await page.route(`**/${asset}`, (route) => route.abort());
 const errors = [];
 page.on('pageerror', (err) => errors.push(String(err)));
 await page.goto(`http://127.0.0.1:${PORT}/builder`, { waitUntil: 'load' });
@@ -38,8 +40,11 @@ const state = await page.evaluate(() => {
 });
 const pass = !state.skel && state.slots === 0 && state.deskBusy === null && state.itemsBusy === null
   && state.error && state.shareDisabled && state.resetDisabled && state.barEmpty;
-console.log(`${pass ? 'PASS' : 'FAIL'} data.js aborted skel=${state.skel} slots=${state.slots} desk-busy=${state.deskBusy} items-busy=${state.itemsBusy} error=${state.error} role=${state.role} share-disabled=${state.shareDisabled} reset-disabled=${state.resetDisabled} bar-empty=${state.barEmpty} errors=${errors.length}`);
+console.log(`${pass ? 'PASS' : 'FAIL'} ${asset} aborted skel=${state.skel} slots=${state.slots} desk-busy=${state.deskBusy} items-busy=${state.itemsBusy} error=${state.error} role=${state.role} share-disabled=${state.shareDisabled} reset-disabled=${state.resetDisabled} bar-empty=${state.barEmpty} errors=${errors.length}`);
+allPassed &&= pass;
+await page.close();
+}
 await browser.close();
 server.close();
-console.log(pass ? 'PASS skeleton' : 'FAIL skeleton');
-process.exit(pass ? 0 : 1);
+console.log(allPassed ? 'PASS skeleton' : 'FAIL skeleton');
+process.exit(allPassed ? 0 : 1);

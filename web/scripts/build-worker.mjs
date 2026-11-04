@@ -57,25 +57,38 @@ const mime = {
   '.woff2': 'font/woff2',
 };
 
+const startupScripts = new Map();
 const sharedStyles = readFileSync(join(root, 'sv.css'), 'utf8');
 
 // Paint the static heading/desk skeleton before parsing the catalog and running
 // interactive layout. Keep dependency order and the builder's existing error path.
-function afterFirstFrame(html) {
+function afterFirstFrame(html, name) {
   const scripts = /<script src="\/data.js"><\/script>\s*(?:<script src="\/prices.js"><\/script>\s*)?<script>([\s\S]*?)<\/script>/;
   if (!scripts.test(html)) throw new Error('interactive startup block missing');
   return html.replace(scripts, (block, initialize) => {
     const urls = [...block.matchAll(/<script src="([^"]+)">/g)].map(match => match[1]);
+    const startupName = name.replace('.html', '-init.js');
+    startupScripts.set(startupName, Buffer.from(initialize));
+    urls.push('/' + startupName);
     return `<script>
 (function () {
   var urls = ${JSON.stringify(urls)};
-  function initialize() {${initialize}
-}
+  function failedStartup() {
+    var error = document.getElementById('setupError');
+    if (!error) { error = document.createElement('p'); error.setAttribute('role', 'alert'); document.querySelector('main').prepend(error); }
+    error.hidden = false;
+    error.textContent = "Couldn't load setup data. Refresh to try again.";
+    document.querySelectorAll('#skel, .skel-slot').forEach(function (el) { el.remove(); });
+    document.querySelectorAll('[aria-busy]').forEach(function (el) { el.removeAttribute('aria-busy'); });
+    ['shareBtn', 'reset'].forEach(function (id) { var el = document.getElementById(id); if (el) el.disabled = true; });
+    var bar = document.getElementById('usedBar'); if (bar) bar.style.width = '0';
+  }
   function load(index) {
-    if (index === urls.length) { initialize(); return; }
+    if (index === urls.length) return;
     var script = document.createElement('script');
     script.src = urls[index];
-    script.onload = script.onerror = function () { load(index + 1); };
+    script.onload = function () { load(index + 1); };
+    script.onerror = function () { if (index === urls.length - 1) failedStartup(); else load(index + 1); };
     document.body.appendChild(script);
   }
   requestAnimationFrame(function () { setTimeout(function () { load(0); }, 0); });
@@ -95,7 +108,7 @@ const entries = files.map((name) => {
     '<link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
     '<style data-shared-styles>' + sharedStyles + '</style>'));
 
-  if (name === 'index.html' || name === 'builder.html') body = Buffer.from(afterFirstFrame(body.toString()));
+  if (name === 'index.html' || name === 'builder.html') body = Buffer.from(afterFirstFrame(body.toString(), name));
 
   const type = mime[extname(name)];
   if (!type) throw new Error('no content type for ' + name);
@@ -105,6 +118,14 @@ const entries = files.map((name) => {
     type, text, etag, body: body.toString(text ? 'utf8' : 'base64'),
   });
 });
+
+for (const [name, body] of startupScripts) {
+  entries.push(JSON.stringify('/' + name) + ': ' + JSON.stringify({
+    type: 'application/javascript', text: true,
+    etag: createHash('sha256').update(body).digest('hex').slice(0, 24),
+    body: body.toString('utf8'),
+  }));
+}
 
 const runtime = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'worker-runtime.js'), 'utf8');
 
@@ -123,4 +144,4 @@ ${runtime.endsWith('\n') ? runtime : runtime + '\n'}`;
 
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, source);
-console.log('wrote ' + out + ' (' + files.length + ' files)');
+console.log('wrote ' + out + ' (' + (files.length + startupScripts.size) + ' files)');

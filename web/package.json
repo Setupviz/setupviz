@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-worker.mjs",
-    "verify": "node scripts/verify/paint.mjs && node scripts/verify/og-image.mjs && node scripts/verify/nav.mjs && node scripts/verify/contrast.mjs && node scripts/verify/scroll.mjs && node scripts/verify/monitors.mjs && node scripts/verify/landmarks.mjs && node scripts/verify/skeleton.mjs && node scripts/verify/axe.mjs && node scripts/verify/cls.mjs"
+    "verify": "node scripts/verify/paint.mjs && node scripts/verify/og-image.mjs && node scripts/verify/nav.mjs && node scripts/verify/contrast.mjs && node scripts/verify/scroll.mjs && node scripts/verify/monitors.mjs && node scripts/verify/landmarks.mjs && node scripts/verify/skeleton.mjs && node scripts/verify/axe.mjs && node scripts/verify/cls.mjs && node scripts/verify/safeguards.mjs"
   },
   "devDependencies": {
     "axe-core": "^4.10.3",

@@ -38,6 +38,7 @@ const files = [
   'favicon-rounded.png',
   'apple-touch-icon.png',
   'og-desk.png',
+  'og-launch-v1.png',
   'sitemap.xml',
   'robots.txt',
   'fonts/geist-latin.woff2',

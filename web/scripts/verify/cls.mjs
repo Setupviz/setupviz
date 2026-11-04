@@ -180,7 +180,7 @@ if (arg.startsWith('http://') || arg.startsWith('https://')) {
   }
 }
 
-const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
 const results = {};
 let pass = true;
 try {

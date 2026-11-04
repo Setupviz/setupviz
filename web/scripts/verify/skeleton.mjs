@@ -5,7 +5,7 @@ const PORT = 4317;
 
 await buildWorker();
 const server = await serveWorker(PORT);
-const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 await page.route('**/data.js', (route) => route.abort());
 const errors = [];

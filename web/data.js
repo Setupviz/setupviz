@@ -219,6 +219,16 @@
     }
     return 'https://www.amazon.com/gp/aws/cart/add.html?' + q.join('&');
   }
+  function measurementInfo(item){
+    var source = item.dimsSource;
+    var safe = typeof source === 'string' && /^https:\/\//.test(source);
+    var href = safe ? source.replace(/[&<>"']/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }) : '';
+    return '<details class="measurement-info" style="font-size:12px;color:#8F8F8F"><summary>Measurements &amp; estimates</summary><p>' +
+      (safe ? '<a href="' + href + '" target="_blank" rel="noopener">Catalog measurement source</a>. ' : 'Measurement source not recorded; verify with the manufacturer. ') +
+      'Dimensions may be rounded. Confirm the exact model and measurements before buying.' +
+      (item.base ? ' Stock stand outlines and panel positions are estimates from drawings and product photos at neutral tilt; they are not measured 3D models. <a href="https://github.com/Setupviz/setupviz/blob/main/web/monitor-stands.md" target="_blank" rel="noopener">Stand references and estimation notes</a>.' : '') +
+      '</p></details>';
+  }
   function buyLine(item){
     if (!forSale(item)) return '<p class="unavail">Not currently available</p>';
     if (!item.asin) return '<a class="amz" href="https://www.amazon.com/s?k=' + encodeURIComponent(item.name) + '" rel="noopener" target="_blank">Find this model on Amazon</a>';
@@ -950,7 +960,7 @@
     }
   }
 
-  window.SV = { markPadContact: markPadContact, drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
+  window.SV = { measurementInfo: measurementInfo, markPadContact: markPadContact, drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
     recommend: recommend, omission: omission, matchReason: matchReason, place: place, layout: layout, settle: settle, retarget: retarget, previewSetup: previewSetup, overhang: overhang, overlap: overlap, check: check, encode: encode, decode: decode, usedArea: usedArea,
     deskLimits: deskLimits, defaultDesk: defaultDesk, deskFallbackNotice: deskFallbackNotice,
     parseDeskInput: parseDeskInput, deskMm: deskMm, deskAxisOk: deskAxisOk, deskOk: deskOk, deskField: deskField, savedDesk: savedDesk,

@@ -8,7 +8,7 @@ const WIDTHS = [390, 1280];
 
 await buildWorker();
 const server = await serveWorker(PORT);
-const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
 let pass = true;
 for (const width of WIDTHS) {
   for (const path of PAGES) {

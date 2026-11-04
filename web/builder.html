@@ -11,11 +11,11 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://setupviz.com/builder">
 <meta property="og:site_name" content="SetupViz">
-<meta property="og:image" content="https://setupviz.com/og-desk.png">
+<meta property="og:image" content="https://setupviz.com/og-launch-v1.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Build your desk setup to scale | SetupViz">
 <meta name="twitter:description" content="See your gear on your desk from above. Every piece gets Fits, Tight or Won't fit, with the reason.">
-<meta name="twitter:image" content="https://setupviz.com/og-desk.png">
+<meta name="twitter:image" content="https://setupviz.com/og-launch-v1.png">
 <link rel="icon" href="/favicon-rounded.png" type="image/png" sizes="64x64">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="/sv.css">
@@ -184,7 +184,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   <main>
     <section class="deskwrap" aria-label="Desk, seen from above">
       <p class="shared-note" id="sharedBanner" hidden>Editing a copy of a shared setup.<span id="backMineWrap" hidden> · <a href="/builder" id="backMine">Back to mine</a></span></p>
-      <p class="banner" id="deskFallback" hidden>We're showing a 55 × 28 in desk. Enter yours for a real fit check.</p>
+      <p class="banner" id="deskFallback" hidden>We're showing a 55 × 28 in desk. Enter yours for an estimated fit check.</p>
       <div class="sizes">
         <div class="size"><label for="deskW">Width<span class="row"><input id="deskW" type="text" inputmode="decimal" autocomplete="off" aria-invalid="false"><span class="unit">in</span></span></label><span class="field-error" id="deskWErr" aria-live="polite"></span></div>
         <div class="size"><label for="deskD">Depth<span class="row"><input id="deskD" type="text" inputmode="decimal" autocomplete="off" aria-invalid="false"><span class="unit">in</span></span></label><span class="field-error" id="deskDErr" aria-live="polite"></span></div>
@@ -198,6 +198,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
         <p id="setupError" class="setup-error" role="alert" hidden></p>
         <div class="verdict" aria-live="polite">
           <h2><i class="dot" id="vDot"></i><span id="vTitle"></span></h2>
+          <p class="muted fit-estimate">Estimated fit—verify measurements before buying</p>
           <ul id="vList"></ul>
         </div>
         <div class="space">
@@ -466,13 +467,13 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     var bad = on.filter(function(id){ return st[id].lvl === 2; }).length, tight = on.filter(function(id){ return st[id].lvl === 1; }).length;
     var missed = SV.omission(DESK, state.pick);
     $('vDot').style.background = bad ? colors[2] : missed ? colors[1] : on.length ? colors[tight ? 1 : 0] : '#3A3A3A';
-    $('vTitle').textContent = bad ? bad + (bad === 1 ? " piece won't fit" : " pieces won't fit") : missed ? missed : !on.length ? 'Your desk is empty' : tight ? 'Tight fit · ' + tight + (tight === 1 ? ' piece' : ' pieces') : 'Everything fits on the desk';
+    $('vTitle').textContent = bad ? bad + (bad === 1 ? " piece won't fit" : " pieces won't fit") : missed ? missed : !on.length ? 'Your desk is empty' : tight ? 'Tight fit · ' + tight + (tight === 1 ? ' piece' : ' pieces') : 'No overlaps detected in this layout';
     var seen = {}, fixes = [];
     on.forEach(function(id){ st[id].issues.forEach(function(i){ if (!seen[i.fix]) { seen[i.fix] = 1; fixes.push(i); } }); });
     fixes.sort(function(a,b){ return b.lvl - a.lvl; });
     $('vList').innerHTML = fixes.length ? fixes.slice(0, 3).map(function(i){ return '<li><i class="dot" style="background:' + colors[i.lvl] + '"></i>' + esc(i.fix) + '</li>'; }).join('')
       : missed ? ''
-      : '<li style="padding-left:0;color:#8F8F8F">' + (on.length ? "Everything has room, and nothing sits where it shouldn't." : 'Add a product from the list to place it on your desk.') + '</li>';
+      : '<li style="padding-left:0;color:#8F8F8F">' + (on.length ? "Based on catalog dimensions and estimated footprints. Allow room for cables, movement and measurement differences." : 'Add a product from the list to place it on your desk.') + '</li>';
 
     var used = SV.usedPercent(SV.usedArea({ pick: draw.pick, pos: draw.pos }), DESK.w * DESK.d);
     $('usedPct').textContent = used == null ? '' : used + '%'; $('usedBar').style.width = (used == null ? 0 : Math.min(used, 100)) + '%';
@@ -502,7 +503,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
         '<span class="name">' + esc(s.name) + '</span><span class="muted" style="font-size:12px">' + esc(dims(id, s)) + '</span>' +
         (match ? '<span class="match">' + esc(match) + '</span>' : '') +
         (sel ? '<p class="why">' + withUnits(s.why) + '</p>' : '') +
-        SVPrices.label(s) + SV.buyLine(s) +
+        SV.measurementInfo(s) + SVPrices.label(s) + SV.buyLine(s) +
         '<div class="acts"><button type="button" data-act="change" aria-expanded="' + open + '">Change</button><button type="button" class="rm" data-act="remove">Remove</button></div>' +
         (open ? menuHtml(id) : '') + '</div>';
     }).join('');
@@ -546,7 +547,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     if (e.target.closest('.menu')) return;
     if (act && act.dataset.act === 'remove') return remove(id);
     if (act && act.dataset.act === 'change') { endPreview(); state.open = state.open === id ? null : id; state.focusMenu = true; if (has(id)) state.sel = id; return render(); }
-    if (e.target.closest('a')) return;
+    if (e.target.closest('a, details')) return;
     if (has(id)) { state.sel = id; render(); }
   });
   $('items').addEventListener('input', function(e){

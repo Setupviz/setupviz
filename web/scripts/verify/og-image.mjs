@@ -1,7 +1,7 @@
 import { buildWorker, serveWorker } from './serve.mjs';
 
 const PORT = 4312;
-const IMAGE = 'https://setupviz.com/og-desk.png';
+const IMAGE = 'https://setupviz.com/og-launch-v1.png';
 const PAGES = ['/', '/builder', '/desk', '/grip', '/hand', '/share', '/use'];
 
 function meta(html, attr, key) {

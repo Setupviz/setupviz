@@ -30,7 +30,7 @@ function rgbHex(color) {
 
 await buildWorker();
 const server = await serveWorker(PORT);
-const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
 await page.addScriptTag({ content: axe.source });

@@ -5,7 +5,7 @@ import { buildWorker, serveWorker } from './serve.mjs';
 const live = process.argv[2];
 if (!live) await buildWorker();
 const server = live ? null : await serveWorker(4323);
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome' });
 try {
   const page = await browser.newPage();
   const origin = live || 'http://127.0.0.1:4323';

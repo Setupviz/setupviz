@@ -5,7 +5,7 @@ const PORT = 4316;
 
 await buildWorker();
 const server = await serveWorker(PORT);
-const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
 const origin = `http://127.0.0.1:${PORT}`;
 
 const builder = await browser.newPage();

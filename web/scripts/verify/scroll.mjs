@@ -5,7 +5,7 @@ import { buildWorker, serveWorker } from './serve.mjs';
 const live = process.argv[2];
 if (!live) await buildWorker();
 const server = live ? null : await serveWorker(4319);
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome' });
 try {
   for (const width of [1280, 390]) {
     const page = await browser.newPage({ viewport: { width, height: 800 }, reducedMotion: 'no-preference' });

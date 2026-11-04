@@ -69,7 +69,7 @@ async function once(browser, path) {
 
 await buildWorker();
 const server = await serveWorker(PORT);
-const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
 const rows = [];
 let pass = true;
 for (const path of PATHS) {

@@ -35,6 +35,18 @@ try {
     assert.deepEqual(errors, []);
     await page.screenshot({ path: `/tmp/setupviz-share-${width}.png`, fullPage: true });
     console.log(`PASS safeguards @${width}: estimate, sources, disclosures, stationary gear, no JS errors or horizontal overflow`);
+    const overlap = await page.evaluate(() => {
+      const monitor = SV.catalog.monitor[0], mat = SV.catalog.pad.find(SV.isMat), mouse = SV.catalog.mouse[0];
+      return SV.encode({ desk: { w: 1800, d: 800 },
+        pick: { monitor: monitor.id, pad: mat.id, mouse: mouse.id },
+        pos: { monitor: { x: 400, y: 100 }, pad: { x: 400, y: 100 }, mouse: { x: 1795, y: 600 } } }, {});
+    });
+    await page.goto(origin + '/share?s=' + overlap);
+    await page.locator('.pad-contact').waitFor();
+    assert.ok(await page.locator('use[href="#stand-pad-contact"]').count() > 0, 'stand/mat overlap retains stripes');
+    assert.ok(await page.locator('.p-mouse.hang').count() > 0, 'off-desk mouse retains warning styling');
+    assert.match(await page.locator('#items').innerText(), /stand overlaps the desk mat/i);
+    console.log(`PASS overlap stripes and off-desk warning @${width}`);
     await page.close();
   }
 } finally { await browser.close(); server?.close(); }

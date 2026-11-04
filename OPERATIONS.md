@@ -31,3 +31,9 @@ The Platform Notifications page shows an empty state with “Create a notificati
 ## Existing test findings
 
 The separate, currently unused Python recommendation backend has three failing recommendation tests because `recommend()` calculates ranking but returns no result. This predates these changes and is not used by the deployed static Worker. The CI check deliberately reports the failure; it is not suppressed. The first-paint test initially exceeded its strict timing threshold during concurrent desktop/browser tests, then passed at 98 ms (home) and 108 ms (builder) worst samples after other tests finished.
+
+## Deployment evidence
+
+Commit `82f2a88` was deployed from the Mac mini through the existing Cloudflare browser session as Worker version `fb052cde`, confirmed at 100% traffic. Live safeguards checks passed at 390px and 1280px and `/api/prices` returned an empty price map. The existing production-only `og-launch-v1.png` was preserved and added to GitHub.
+
+Dependabot ran successfully and opened update PRs. The first GitHub Actions run passed installation, audit, build and all six pricing tests but failed the first-paint budget on the shared runner (255/286 ms). CI now runs functional checks independently of this timing check, and the separate Python job keeps its existing failures visible.

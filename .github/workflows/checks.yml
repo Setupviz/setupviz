@@ -29,8 +29,20 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run build
       - run: node --test scripts/tests/*.test.mjs
-      - run: npm run verify
-      - run: python3 -m unittest discover api/tests -v
-        working-directory: .
-        env:
-          PYTHONPATH: api
+      - name: Browser behavior, accessibility and layout checks
+        run: |
+          status=0
+          for check in og-image nav contrast scroll monitors landmarks skeleton axe cls safeguards; do
+            node scripts/verify/$check.mjs || status=1
+          done
+          exit "$status"
+      - name: First-paint performance budget
+        if: success() || failure()
+        run: node scripts/verify/paint.mjs
+  python-backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m unittest discover tests -v
+        working-directory: api

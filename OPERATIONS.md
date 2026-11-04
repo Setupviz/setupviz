@@ -46,3 +46,8 @@ comparison reasons; all 20 existing tests pass. The generated HTML embeds the
 unchanged shared stylesheet and preloads the primary font, removing a blocking
 stylesheet request and late font discovery. The first-paint threshold remains
 200 ms and CPU throttling remains 4x; no test threshold or assertion was relaxed.
+
+The first frame is now allowed to paint before catalog loading and interactive
+initialization. Dependency order and the existing failed-data recovery remain
+intact. The paint check runs earlier in CI for faster diagnostics; both it and
+functional checks still run and retain their original failure criteria.

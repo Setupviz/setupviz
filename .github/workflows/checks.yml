@@ -29,16 +29,17 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run build
       - run: node --test scripts/tests/*.test.mjs
+      - name: First-paint performance budget
+        if: success() || failure()
+        run: node scripts/verify/paint.mjs
       - name: Browser behavior, accessibility and layout checks
+        if: success() || failure()
         run: |
           status=0
           for check in og-image nav contrast scroll monitors landmarks skeleton axe cls safeguards; do
             node scripts/verify/$check.mjs || status=1
           done
           exit "$status"
-      - name: First-paint performance budget
-        if: success() || failure()
-        run: node scripts/verify/paint.mjs
   python-backend:
     runs-on: ubuntu-latest
     timeout-minutes: 5

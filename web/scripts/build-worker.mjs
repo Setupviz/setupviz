@@ -59,6 +59,31 @@ const mime = {
 
 const sharedStyles = readFileSync(join(root, 'sv.css'), 'utf8');
 
+// Paint the static heading/desk skeleton before parsing the catalog and running
+// interactive layout. Keep dependency order and the builder's existing error path.
+function afterFirstFrame(html) {
+  const scripts = /<script src="\/data.js"><\/script>\s*(?:<script src="\/prices.js"><\/script>\s*)?<script>([\s\S]*?)<\/script>/;
+  if (!scripts.test(html)) throw new Error('interactive startup block missing');
+  return html.replace(scripts, (block, initialize) => {
+    const urls = [...block.matchAll(/<script src="([^"]+)">/g)].map(match => match[1]);
+    return `<script>
+(function () {
+  var urls = ${JSON.stringify(urls)};
+  function initialize() {${initialize}
+}
+  function load(index) {
+    if (index === urls.length) { initialize(); return; }
+    var script = document.createElement('script');
+    script.src = urls[index];
+    script.onload = script.onerror = function () { load(index + 1); };
+    document.body.appendChild(script);
+  }
+  requestAnimationFrame(function () { setTimeout(function () { load(0); }, 0); });
+})();
+</script>`;
+  });
+}
+
 const entries = files.map((name) => {
   let body = readFileSync(join(root, name));
   if (name === 'data.js') body = Buffer.concat([readFileSync(join(root, 'desk-size.js')), body]);
@@ -69,6 +94,8 @@ const entries = files.map((name) => {
     '<link rel="stylesheet" href="/sv.css">',
     '<link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
     '<style data-shared-styles>' + sharedStyles + '</style>'));
+
+  if (name === 'index.html' || name === 'builder.html') body = Buffer.from(afterFirstFrame(body.toString()));
 
   const type = mime[extname(name)];
   if (!type) throw new Error('no content type for ' + name);

@@ -37,3 +37,12 @@ The separate, currently unused Python recommendation backend has three failing r
 Commit `82f2a88` was deployed from the Mac mini through the existing Cloudflare browser session as Worker version `fb052cde`, confirmed at 100% traffic. Live safeguards checks passed at 390px and 1280px and `/api/prices` returned an empty price map. The existing production-only `og-launch-v1.png` was preserved and added to GitHub.
 
 Dependabot ran successfully and opened update PRs. The first GitHub Actions run passed installation, audit, build and all six pricing tests but failed the first-paint budget on the shared runner (255/286 ms). CI now runs functional checks independently of this timing check, and the separate Python job keeps its existing failures visible.
+
+## Follow-up fixes requested by the owner
+
+The owner subsequently requested fixes for the failing checks. The Python
+recommender now returns the requested number of ranked results and their size
+comparison reasons; all 20 existing tests pass. The generated HTML embeds the
+unchanged shared stylesheet and preloads the primary font, removing a blocking
+stylesheet request and late font discovery. The first-paint threshold remains
+200 ms and CPU throttling remains 4x; no test threshold or assertion was relaxed.

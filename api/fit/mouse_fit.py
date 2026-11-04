@@ -113,6 +113,17 @@ def recommend(mice, current_name, feel, grip, n=3):
     candidates = list(filter(lambda x: x['in_shop'] and x != current_mouse, mice))
     target = target_size(current_mouse, feel)
     ranked = sorted(candidates, key=lambda mouse: (-grip_score(mouse, grip), size_distance(mouse, target), mouse['name']))
+    return [
+        {
+            "name": mouse["name"],
+            "reason": (
+                f"{mouse['length_mm'] - current_mouse['length_mm']:+.1f} mm length, "
+                f"{mouse['width_mm'] - current_mouse['width_mm']:+.1f} mm width "
+                f"vs {current_mouse['name']}"
+            ),
+        }
+        for mouse in ranked[:n]
+    ]
 
 
 def main():

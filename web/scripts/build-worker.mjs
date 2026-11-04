@@ -57,11 +57,18 @@ const mime = {
   '.woff2': 'font/woff2',
 };
 
+const sharedStyles = readFileSync(join(root, 'sv.css'), 'utf8');
+
 const entries = files.map((name) => {
   let body = readFileSync(join(root, name));
   if (name === 'data.js') body = Buffer.concat([readFileSync(join(root, 'desk-size.js')), body]);
   if (name.endsWith('.html')) body = Buffer.from(body.toString().replace(
     '<script src="/desk-size.js"></script>\n<script src="/data.js">', '<script src="/data.js">'));
+
+  if (name.endsWith('.html')) body = Buffer.from(body.toString().replace(
+    '<link rel="stylesheet" href="/sv.css">',
+    '<link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
+    '<style data-shared-styles>' + sharedStyles + '</style>'));
 
   const type = mime[extname(name)];
   if (!type) throw new Error('no content type for ' + name);

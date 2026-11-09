@@ -205,19 +205,14 @@
     return null;
   }
 
-  // One helper builds every tagged product link from the ASIN. The tag is not stored on the product.
+  // Paid links go through the site's /go route, which counts the click and
+  // redirects to Amazon with the tag. `from` names where the link was shown.
   var AMAZON_TAG = 'setupviz-20';
-  function amazonLink(asin){
-    return 'https://www.amazon.com/dp/' + asin + '?tag=' + AMAZON_TAG;
+  function amazonLink(asin, from){
+    return '/go/' + asin + '?from=' + encodeURIComponent(from || 'other');
   }
-  function cartLink(asins){
-    var q = ['AssociateTag=' + AMAZON_TAG];
-    for (var i = 0; i < asins.length; i++) {
-      var n = i + 1;
-      q.push('ASIN.' + n + '=' + asins[i]);
-      q.push('Quantity.' + n + '=1');
-    }
-    return 'https://www.amazon.com/gp/aws/cart/add.html?' + q.join('&');
+  function cartLink(asins, from){
+    return '/go/cart?a=' + asins.join(',') + '&from=' + encodeURIComponent(from || 'other');
   }
   function measurementInfo(item){
     var source = item.dimsSource;
@@ -229,10 +224,10 @@
       (item.base ? ' Stock stand outlines and panel positions are estimates from drawings and product photos at neutral tilt; they are not measured 3D models. <a href="https://github.com/Setupviz/setupviz/blob/main/web/monitor-stands.md" target="_blank" rel="noopener">Stand references and estimation notes</a>.' : '') +
       '</p></details>';
   }
-  function buyLine(item){
+  function buyLine(item, from){
     if (!forSale(item)) return '<p class="unavail">Not currently available</p>';
     if (!item.asin) return '<a class="amz" href="https://www.amazon.com/s?k=' + encodeURIComponent(item.name) + '" rel="noopener" target="_blank">Find this model on Amazon</a>';
-    return '<p class="paid">Paid link · We may earn a commission.</p><a class="amz" href="' + amazonLink(item.asin) + '" rel="sponsored nofollow noopener" target="_blank" aria-label="See today\'s price on Amazon (opens in a new tab)">See today\'s price on Amazon</a>';
+    return '<p class="paid">Paid link · We may earn a commission.</p><a class="amz" href="' + amazonLink(item.asin, from || 'builder') + '" rel="sponsored nofollow noopener" target="_blank" aria-label="See today\'s price on Amazon (opens in a new tab)">See today\'s price on Amazon</a>';
   }
 
   function answers(){
@@ -960,7 +955,7 @@
     }
   }
 
-  window.SV = { measurementInfo: measurementInfo, markPadContact: markPadContact, drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
+  window.SV = { measurementInfo: measurementInfo, markPadContact: markPadContact, drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, amazonTag: AMAZON_TAG, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
     recommend: recommend, omission: omission, matchReason: matchReason, place: place, layout: layout, settle: settle, retarget: retarget, previewSetup: previewSetup, overhang: overhang, overlap: overlap, check: check, encode: encode, decode: decode, usedArea: usedArea,
     deskLimits: deskLimits, defaultDesk: defaultDesk, deskFallbackNotice: deskFallbackNotice,
     parseDeskInput: parseDeskInput, deskMm: deskMm, deskAxisOk: deskAxisOk, deskOk: deskOk, deskField: deskField, savedDesk: savedDesk,

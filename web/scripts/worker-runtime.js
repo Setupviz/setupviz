@@ -33,9 +33,42 @@ function secure(response) {
   return new Response(response.body, { status: response.status, headers });
 }
 
+
+// Paid links go through /go so clicks can be counted without cookies or
+// per-visitor data. Only catalog ASINs redirect, so this is not an open redirect.
+// AMAZON_TAGS (optional JSON, e.g. {"builder":"setupviz-bld-20"}) maps a
+// placement to its own Associates tracking ID; anything else uses PRICE_TAG.
+// CLICKS (optional Analytics Engine binding) receives one data point per click.
+const GO_PLACES = ['builder', 'builder-cart', 'share', 'share-cart', 'product', 'product-cart', 'fix', 'other'];
+function goRedirect(url, env) {
+  const asinOk = (a) => PRICE_ASINS.includes(a);
+  const from = GO_PLACES.includes(url.searchParams.get('from')) ? url.searchParams.get('from') : 'other';
+  let tags = {};
+  try { tags = JSON.parse(env?.AMAZON_TAGS || '{}') || {}; } catch {}
+  const tag = typeof tags[from] === 'string' && /^[a-z0-9-]{3,40}-2[0-9]$/.test(tags[from]) ? tags[from] : PRICE_TAG;
+  const parts = url.pathname.split('/').filter(Boolean);
+  let target, kind, asins;
+  if (parts[1] === 'cart') {
+    asins = (url.searchParams.get('a') || '').split(',').filter(Boolean).slice(0, 10);
+    if (!asins.length || !asins.every(asinOk)) return null;
+    const q = ['AssociateTag=' + tag];
+    asins.forEach((a, i) => q.push('ASIN.' + (i + 1) + '=' + a, 'Quantity.' + (i + 1) + '=1'));
+    target = 'https://www.amazon.com/gp/aws/cart/add.html?' + q.join('&');
+    kind = 'cart';
+  } else {
+    if (parts.length !== 2 || !asinOk(parts[1])) return null;
+    asins = [parts[1]];
+    target = 'https://www.amazon.com/dp/' + parts[1] + '?tag=' + tag;
+    kind = 'item';
+  }
+  try { env?.CLICKS?.writeDataPoint({ blobs: [kind, from, asins.join(',')], doubles: [asins.length], indexes: [from] }); } catch {}
+  return new Response(null, { status: 302, headers: { ...SEC, location: target, 'cache-control': 'no-store', 'x-robots-tag': 'noindex' } });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname.startsWith('/go/')) return goRedirect(url, env) || serveAsset('/404.html', request, url.hostname, 404);
     if (url.pathname === '/api/prices') return secure(await amazonPrices(request, env));
     const missing = () => serveAsset('/404.html', request, url.hostname, 404);
     let path;

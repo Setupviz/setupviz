@@ -515,7 +515,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     var complete = picked.length && picked.every(function(item){ return !!item.asin; });
     buy.textContent = complete ? "Buy this whole setup" : "Use individual product links";
     buy.setAttribute("aria-label", buy.textContent);
-    if (complete) { buy.href = SV.cartLink(picked.map(function(s){ return s.asin; })); buy.removeAttribute('aria-disabled'); }
+    if (complete) { buy.href = SV.cartLink(picked.map(function(s){ return s.asin; }), 'builder-cart'); buy.removeAttribute('aria-disabled'); }
     else { buy.removeAttribute('href'); buy.setAttribute('aria-disabled', 'true'); }
   }
 

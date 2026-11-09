@@ -167,7 +167,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
     var s = SV.get(c, S.pick[c]);
     var dims = c === 'monitor' ? SV.monitorMeasurements(s, one, two) : two(s.w, s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + SV.padLabels[s.kind].toLowerCase() : '');
     var note = st[c].issues.map(function(i){ return i.fix; }).join(' ') || st[c].msg;
-    return '<div class="item"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">' + esc(s.name) + '</span><span style="font-size:12px;color:#8F8F8F">' + esc(dims) + '</span>' + (st[c].lvl ? '<span style="font-size:12px;color:#CFCFCF">' + esc(note) + '</span>' : '') + SV.measurementInfo(s) + SVPrices.label(s) + SV.buyLine(s) + '</div><span class="dot" style="background:' + colors[st[c].lvl] + '" title="' + esc(st[c].msg) + '"></span></div>';
+    return '<div class="item"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">' + esc(s.name) + '</span><span style="font-size:12px;color:#8F8F8F">' + esc(dims) + '</span>' + (st[c].lvl ? '<span style="font-size:12px;color:#CFCFCF">' + esc(note) + '</span>' : '') + SV.measurementInfo(s) + SVPrices.label(s) + SV.buyLine(s, 'share') + '</div><span class="dot" style="background:' + colors[st[c].lvl] + '" title="' + esc(st[c].msg) + '"></span></div>';
   }).join('');
   SVPrices.update(on.map(function(c){ return SV.get(c, S.pick[c]); }));
   var buy = document.getElementById('buyAll');
@@ -175,7 +175,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
   var complete = asins.length && asins.every(Boolean);
     buy.textContent = complete ? "Buy this whole setup" : "Use individual product links";
     buy.setAttribute("aria-label", buy.textContent);
-    if (complete) { buy.href = SV.cartLink(asins); buy.removeAttribute('aria-disabled'); }
+    if (complete) { buy.href = SV.cartLink(asins, 'share-cart'); buy.removeAttribute('aria-disabled'); }
 
   var url = new URL('/share?s=' + code, location.href).href;
   document.getElementById('open').href = '/builder?s=' + code;

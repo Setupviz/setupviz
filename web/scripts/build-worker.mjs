@@ -138,7 +138,7 @@ const source = `const F={
 ${entries.join(',\n')}
 };
 const PRICE_ASINS=${JSON.stringify(asins)};
-const PRICE_TAG=${JSON.stringify(new URL(catalog.amazonLink(asins[0])).searchParams.get("tag"))};
+const PRICE_TAG=${JSON.stringify(catalog.amazonTag)};
 ${priceWorker}
 ${runtime.endsWith('\n') ? runtime : runtime + '\n'}`;
 

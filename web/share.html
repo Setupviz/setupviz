@@ -83,13 +83,14 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
     </div>
   </div>
   <div class="acts">
+    <a class="btn btn-primary" id="tryMine" href="/builder">Try this setup on my desk</a>
     <p id="priceSummary" hidden></p>
     <details id="priceTerms" hidden><summary>About Amazon prices</summary><p>Product prices and availability are accurate as of the date/time indicated and are subject to change. Any price and availability information displayed on Amazon.com at the time of purchase will apply to the purchase of this product.</p><p>CERTAIN CONTENT THAT APPEARS ON THIS SITE COMES FROM AMAZON. THIS CONTENT IS PROVIDED “AS IS” AND IS SUBJECT TO CHANGE OR REMOVAL AT ANY TIME.</p></details>
     <p class="sv-disclosure buy-note">As an Amazon Associate I earn from qualifying purchases.</p>
     <a class="btn btn-primary" id="buyAll" rel="sponsored nofollow noopener" target="_blank" aria-label="Buy this whole setup (opens in a new tab)" aria-disabled="true">Buy this whole setup</a>
     <p class="paid">Paid link. We earn a commission if you buy, at no extra cost to you.</p>
     <button type="button" class="btn btn-primary" id="copy">Copy link</button>
-    <a class="btn btn-outline" id="open" href="/builder">Open in the builder</a>
+    <a class="btn btn-outline" id="open" href="/builder">Open with their desk</a>
     <a class="btn btn-outline" href="/desk">Build my own</a>
   </div>
 </main>
@@ -179,6 +180,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
 
   var url = new URL('/share?s=' + code, location.href).href;
   document.getElementById('open').href = '/builder?s=' + code;
+  document.getElementById('tryMine').href = '/builder?s=' + code + '&mine=1';
   document.getElementById('copy').onclick = function(){
     SV.copySetupLink(this, url);
   };

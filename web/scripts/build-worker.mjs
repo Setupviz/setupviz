@@ -11,6 +11,7 @@ import { createHash } from 'node:crypto';
 import { runInNewContext } from 'node:vm';
 import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gearPages } from './gear-pages.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = process.argv[2] || join(root, 'dist', 'worker.js');
@@ -97,8 +98,16 @@ function afterFirstFrame(html, name) {
   });
 }
 
-const entries = files.map((name) => {
-  let body = readFileSync(join(root, name));
+const sandbox = { window: {} };
+for (const script of ['desk-size.js', 'data.js']) runInNewContext(readFileSync(join(root, script), 'utf8'), sandbox);
+const catalog = sandbox.window.SV;
+const gear = gearPages(catalog);
+const generated = new Map(gear.map((page) => [page.name, Buffer.from(page.body)]));
+const gearUrls = gear.map((page) => '  <url><loc>https://setupviz.com' + page.path + '</loc></url>').join('\n');
+
+const entries = [...files, ...generated.keys()].map((name) => {
+  let body = generated.get(name) || readFileSync(join(root, name));
+  if (name === 'sitemap.xml') body = Buffer.from(body.toString().replace('</urlset>', gearUrls + '\n</urlset>'));
   if (name === 'data.js') body = Buffer.concat([readFileSync(join(root, 'desk-size.js')), body]);
   if (name.endsWith('.html')) body = Buffer.from(body.toString().replace(
     '<script src="/desk-size.js"></script>\n<script src="/data.js">', '<script src="/data.js">'));
@@ -129,9 +138,6 @@ for (const [name, body] of startupScripts) {
 
 const runtime = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'worker-runtime.js'), 'utf8');
 
-const sandbox = { window: {} };
-for (const script of ['desk-size.js', 'data.js']) runInNewContext(readFileSync(join(root, script), 'utf8'), sandbox);
-const catalog = sandbox.window.SV;
 const asins = [...new Set(Object.values(catalog.catalog).flat().filter(catalog.forSale).map(item => item.asin).filter(Boolean))];
 const priceWorker = readFileSync(join(root, 'scripts/amazon-prices.js'), 'utf8');
 const source = `const F={
@@ -144,4 +150,4 @@ ${runtime.endsWith('\n') ? runtime : runtime + '\n'}`;
 
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, source);
-console.log('wrote ' + out + ' (' + (files.length + startupScripts.size) + ' files)');
+console.log('wrote ' + out + ' (' + (files.length + generated.size + startupScripts.size) + ' files)');

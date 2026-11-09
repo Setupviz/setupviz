@@ -262,6 +262,8 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     DESK = { w: fromLink.setup.desk.w, d: fromLink.setup.desk.d }; A = fromLink.answers; state.pick = fromLink.setup.pick; state.pos = fromLink.setup.pos; state.shared = true;
     var edit = sharedEdit(shareToken);
     if (edit) { DESK = { w: edit.desk.w, d: edit.desk.d }; state.pick = edit.pick; state.pos = edit.pos; }
+    // From "Try this setup on my desk": same gear, laid out on the visitor's saved desk.
+    else if (/[?&]mine=1/.test(location.search) && !stored.fallback) { DESK = stored.desk; state.pos = SV.layout(DESK, state.pick); }
   }
   else if (hasLink) deskFallback = true;
   else {
@@ -271,6 +273,12 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   if (!fromLink) {
     if (saved && saved.sig === sig() && saved.pick && saved.pos) { state.pick = saved.pick; state.pos = saved.pos; }
     else { state.pick = SV.recommend(A, DESK); state.pos = SV.layout(DESK, state.pick); }
+  }
+  // /builder?try=keyboard:tkl puts that product on the desk, coming from a gear page.
+  var tryLink = !fromLink && location.search.match(/[?&]try=([a-z]+):([A-Za-z0-9_-]+)/);
+  if (tryLink && SV.cats.indexOf(tryLink[1]) >= 0 && SV.forSale(SV.get(tryLink[1], tryLink[2]))) {
+    SV.retarget(DESK, state.pick, state.pos, tryLink[1], tryLink[2]);
+    state.sel = tryLink[1];
   }
   SV.cats.forEach(function(c){
     if (!state.pick[c]) return;

@@ -22,6 +22,8 @@
 <style>
 .wrap{max-width:var(--sv-content);margin:0 auto;padding:0 24px;box-sizing:border-box}
 section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
+/* Skip layout and paint for sections below the first screen until they near the viewport. */
+#story,#start,#checks,.money,footer{content-visibility:auto;contain-intrinsic-size:auto 900px}
 
 /* hero */
 .hero{padding:40px 0 24px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}

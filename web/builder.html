@@ -475,6 +475,10 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       : missed ? ''
       : '<li style="padding-left:0;color:#8F8F8F">' + (on.length ? "Based on catalog dimensions and estimated footprints. Allow room for cables, movement and measurement differences." : 'Add a product from the list to place it on your desk.') + '</li>';
 
+    var swap = bad && !state.drag ? SV.fixSwap(DESK, draw.pick, draw.pos, one) : null;
+    if (swap) $('vList').insertAdjacentHTML('afterbegin', '<li class="swap-fix"><i class="dot" style="background:' + colors[swap.bad ? 1 : 0] + '"></i>' +
+      (swap.bad ? 'Fewer problems with the ' : 'Everything fits with the ') + esc(swap.name) + '. <button type="button" class="linkbtn" data-swap-cat="' + swap.cat + '" data-swap-id="' + esc(swap.id) + '"' + (swap.relayout ? ' data-swap-relayout="1"' : '') + '>Swap it in' + (swap.relayout ? ' and rearrange' : '') + '</button></li>');
+
     var used = SV.usedPercent(SV.usedArea({ pick: draw.pick, pos: draw.pos }), DESK.w * DESK.d);
     $('usedPct').textContent = used == null ? '' : used + '%'; $('usedBar').style.width = (used == null ? 0 : Math.min(used, 100)) + '%';
     $('usedNote').textContent = used == null ? '' : used < 35 ? 'Plenty of room left for a lamp or speakers.' : used < 55 ? 'Comfortable, with room for one small extra.' : 'Getting full. Skip extras, or pick a smaller piece.';
@@ -536,6 +540,14 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     document.querySelectorAll('.menu .keep').forEach(function(k){ k.hidden = true; });
     render(true);
   }
+  $('vList').addEventListener('click', function(e){
+    var b = e.target.closest('[data-swap-cat]'); if (!b) return;
+    if (!b.dataset.swapRelayout) return choose(b.dataset.swapCat, b.dataset.swapId);
+    endPreview(); state.open = null; state.sel = b.dataset.swapCat;
+    state.pick[b.dataset.swapCat] = b.dataset.swapId;
+    state.pos = SV.layout(DESK, state.pick);
+    save(); render();
+  });
   $('items').addEventListener('click', function(e){
     var slot = e.target.closest('.slot'); if (!slot) return;
     var id = slot.dataset.id, opt = e.target.closest('.opt'), act = e.target.closest('[data-act]');

@@ -33,7 +33,7 @@ jobs:
         if: success() || failure()
         run: |
           status=0
-          for check in og-image nav contrast scroll monitors landmarks skeleton axe cls safeguards; do
+          for check in og-image nav contrast scroll monitors landmarks skeleton axe cls safeguards swap; do
             node scripts/verify/$check.mjs || status=1
           done
           exit "$status"

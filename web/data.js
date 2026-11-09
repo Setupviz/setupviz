@@ -818,13 +818,16 @@
         var q = next.pos[c];
         if (q && c !== 'monitor') next.pos[c] = { x: item.w <= desk.w ? Math.min(Math.max(0, q.x), desk.w - item.w) : q.x,
                                                   y: item.d <= desk.d ? Math.min(Math.max(0, q.y), desk.d - item.d) : q.y };
-        var s = score({ desk: desk, pick: next.pick, pos: next.pos }), relayout = false;
+        var s = score({ desk: desk, pick: next.pick, pos: next.pos }), relayout = false, evaluated = next.pos;
         if (s.bad) {
           var fresh = layout(desk, next.pick), f = score({ desk: desk, pick: next.pick, pos: fresh });
-          if (f.bad < s.bad || (f.bad === s.bad && f.tight < s.tight)) { s = f; relayout = true; }
+          if (f.bad < s.bad || (f.bad === s.bad && f.tight < s.tight)) { s = f; relayout = true; evaluated = fresh; }
         }
         if (s.bad >= base.bad) return;
-        var cand = { cat: c, id: item.id, name: item.name, relayout: relayout, bad: s.bad, tight: s.tight, asin: !!item.asin,
+        // pick and pos are exactly the setup that was scored, so applying them
+        // gives the result the suggestion promised.
+        var cand = { cat: c, id: item.id, name: item.name, relayout: relayout,
+          pick: next.pick, pos: JSON.parse(JSON.stringify(evaluated)), bad: s.bad, tight: s.tight, asin: !!item.asin,
           diff: Math.abs(item.w * item.d - current.w * current.d) };
         if (!best || cand.bad < best.bad || (cand.bad === best.bad && (cand.tight < best.tight ||
             (cand.tight === best.tight && (cand.asin > best.asin || (cand.asin === best.asin && cand.diff < best.diff)))))) best = cand;

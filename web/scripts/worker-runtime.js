@@ -36,15 +36,22 @@ function secure(response) {
 
 // Paid links go through /go so clicks can be counted without cookies or
 // per-visitor data. Only catalog ASINs redirect, so this is not an open redirect.
-// AMAZON_TAGS (optional JSON, e.g. {"builder":"setupviz-bld-20"}) maps a
-// placement to its own Associates tracking ID; anything else uses PRICE_TAG.
+// DEFAULT_TAGS maps a placement to its Associates tracking ID; AMAZON_TAGS
+// (optional JSON) overrides it. Anything else uses PRICE_TAG.
 // CLICKS (optional Analytics Engine binding) receives one data point per click.
+// One Associates tracking ID per part of the site, so Amazon reports show which part earns.
+const DEFAULT_TAGS = {
+  'builder': 'setupvizbuilder-20', 'fix': 'setupvizbuilder-20',
+  'builder-cart': 'setupvizcart-20', 'share-cart': 'setupvizcart-20',
+  'share': 'setupvizshare-20',
+  'product': 'setupvizgear-20', 'product-cart': 'setupvizgear-20',
+};
 const GO_PLACES = ['builder', 'builder-cart', 'share', 'share-cart', 'product', 'product-cart', 'fix', 'other'];
 function goRedirect(url, env) {
   const asinOk = (a) => PRICE_ASINS.includes(a);
   const from = GO_PLACES.includes(url.searchParams.get('from')) ? url.searchParams.get('from') : 'other';
-  let tags = {};
-  try { tags = JSON.parse(env?.AMAZON_TAGS || '{}') || {}; } catch {}
+  let tags = { ...DEFAULT_TAGS };
+  try { Object.assign(tags, JSON.parse(env?.AMAZON_TAGS || '{}') || {}); } catch {}
   const tag = typeof tags[from] === 'string' && /^[a-z0-9-]{3,40}-2[0-9]$/.test(tags[from]) ? tags[from] : PRICE_TAG;
   const parts = url.pathname.split('/').filter(Boolean);
   let target, kind, asins;

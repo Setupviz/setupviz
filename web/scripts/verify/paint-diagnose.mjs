@@ -66,7 +66,11 @@ const line = (m) => `fmp ${r(m.fmp).padStart(4)}  req ${r(m.req)}  ttfb ${r(m.tt
 
 await buildWorker();
 const server = await serveWorker(PORT);
-const results = { 'home-first': [], 'builder-first': [], 'text-warm': [] };
+// Optional second argument: the order the variants run in each round, e.g.
+// text-warm,builder-first,home-first. The first variant of the first round
+// is the one that meets a cold machine.
+const ORDERS = (process.argv[3] || 'home-first,builder-first,text-warm').split(',');
+const results = Object.fromEntries(ORDERS.map((o) => [o, []]));
 let slowest = null;
 try {
   for (let t = 0; t < TRIALS; t++) {

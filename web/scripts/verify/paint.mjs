@@ -70,6 +70,17 @@ async function once(browser, path) {
 await buildWorker();
 const server = await serveWorker(PORT);
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome', headless: true });
+// Warm the browser, renderer and local server once before sampling. A fresh
+// runner pays a one-time startup cost on whichever page is measured first
+// (paint-diagnose.mjs: home's first sample 134 ms on a cold machine, then
+// 49-59 ms; builder first and post-warm-up home 47-62 ms). /robots.txt loads
+// none of the site's HTML, CSS, fonts or images, so it cannot hide page cost.
+// Every sample still opens a new tab with the cache disabled.
+{
+  const warm = await browser.newPage();
+  await warm.goto(`http://127.0.0.1:${PORT}/robots.txt`, { waitUntil: 'load', timeout: 30000 });
+  await warm.close();
+}
 const rows = [];
 let pass = true;
 for (const path of PATHS) {

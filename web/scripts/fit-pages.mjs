@@ -1,4 +1,4 @@
-// "Will it fit" pages: every monitor on four common desk sizes, a page per desk
+// "Will it fit" pages: every monitor on common desk sizes, a page per desk
 // size listing what fits, and a /fit index. Each answer comes from the same
 // recommend, layout and check code as the builder, run on a full setup
 // (monitor, keyboard, mouse pad and mouse), so the pages say what the builder would.
@@ -9,6 +9,11 @@ export const FIT_DESKS = [
   { slug: '47x24', w: 1200, d: 600, name: '47 × 24 in', metric: '120 × 60 cm', note: 'the most common office desk size' },
   { slug: '55x28', w: 1400, d: 700, name: '55 × 28 in', metric: '140 × 70 cm', note: 'a roomy home office desk' },
   { slug: '63x31', w: 1600, d: 800, name: '63 × 31.5 in', metric: '160 × 80 cm', note: 'a large gaming or standing desk' },
+  { slug: '48x24', w: 1219, d: 610, name: '48 × 24 in', metric: '122 × 61 cm', note: 'a common compact standing desk size' },
+  { slug: '48x30', w: 1219, d: 762, name: '48 × 30 in', metric: '122 × 76 cm', note: 'a standard standing desk size' },
+  { slug: '60x24', w: 1524, d: 610, name: '60 × 24 in', metric: '152 × 61 cm', note: 'a long, shallow desk' },
+  { slug: '60x30', w: 1524, d: 762, name: '60 × 30 in', metric: '152 × 76 cm', note: 'the most common standing desk size' },
+  { slug: '72x30', w: 1829, d: 762, name: '72 × 30 in', metric: '183 × 76 cm', note: 'a large standing or executive desk' },
 ];
 const NONE = { grip: '', hand: '', use: '' };
 const WORD = ['Fits', 'Tight', "Won't fit"];

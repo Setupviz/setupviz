@@ -1,5 +1,6 @@
 // Looking products up, and the words used for categories and answers.
 import { catalog, idAlias, preferences, padOrder } from './catalog.js';
+import { readStored } from './storage.js';
 
 export const cats = ['monitor', 'keyboard', 'pad', 'mouse'];
 export const padLabels = { cloth: 'Cloth', mat: 'Cloth desk mat', glass: 'Glass' };
@@ -26,7 +27,7 @@ export function preferenceIds(cat){
   return ids;
 }
 export function answers(){
-  function read(k){ try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function read(k){ return readStored(k) || ''; }
   return { grip: read('sv-grip'), hand: read('sv-hand'), use: read('sv-use') };
 }
 export function answerText(a){

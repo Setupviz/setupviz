@@ -10,13 +10,14 @@ import { showBuyAll } from '../client.js';
 import { linkSetup, savedSetup, setupSig, dropMissing } from '../setup-source.js';
 import { download } from '../setup-image.js';
 import { priceLabel, updatePrices } from '../prices.js';
+import { readStored, writeStored } from '../storage.js';
 
 try {
   var A = SV.answers();
   var order = ['pad', 'monitor', 'keyboard', 'mouse'], listOrder = ['monitor', 'keyboard', 'mouse', 'pad'];
   var cats = { monitor: ['Monitor', 'a monitor', 'monitors'], keyboard: ['Keyboard', 'a keyboard', 'keyboards'], mouse: ['Mouse', 'a mouse', 'mice'], pad: ['Mouse pad', 'a mouse pad', 'mouse pads'] };
   var colors = FIT_COLORS, words = FIT_WORDS;
-  var state = { unit: localStorage.getItem('sv-unit') || 'in', sel: 'mouse', hover: null, drag: null, dx: 0, dy: 0, open: null, pick: {}, pos: {}, shared: false, ghost: null, previewCat: null, previewPid: null };
+  var state = { unit: readStored('sv-unit') || 'in', sel: 'mouse', hover: null, drag: null, dx: 0, dy: 0, open: null, pick: {}, pos: {}, shared: false, ghost: null, previewCat: null, previewPid: null };
 
   // where the setup comes from: a share link, then this browser's saved setup, then our picks
   var stored = savedSetup(), saved = stored.setup;
@@ -56,7 +57,7 @@ try {
   // Edits stay on the link. This view never writes the receiver's saved setup.
   function sharedBag(){
     try {
-      var bag = JSON.parse(localStorage.getItem('sv-shared') || 'null');
+      var bag = JSON.parse(readStored('sv-shared') || 'null');
       if (!bag || !Array.isArray(bag.order) || !bag.edits || typeof bag.edits !== 'object' || Array.isArray(bag.edits)) return null;
       return bag;
     } catch (e) { return null; }
@@ -72,7 +73,7 @@ try {
       var order = [shareToken].concat(bag.order.filter(function(s){ return s !== shareToken && sharedEdit(s); })).slice(0, 5);
       var edits = {};
       order.forEach(function(s){ edits[s] = s === shareToken ? { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos } : bag.edits[s]; });
-      localStorage.setItem('sv-shared', JSON.stringify({ order: order, edits: edits }));
+      writeStored('sv-shared', JSON.stringify({ order: order, edits: edits }));
     } catch (e) {}
   }
   var changed = false;
@@ -81,7 +82,7 @@ try {
     if (!changed) { changed = true; SV.track('setup_changed'); }
     try {
       if (state.shared) { rememberShared(); return; }
-      localStorage.setItem('sv-setup', JSON.stringify({ sig: sig(), pick: state.pick, pos: state.pos }));
+      writeStored('sv-setup', JSON.stringify({ sig: sig(), pick: state.pick, pos: state.pos }));
     } catch (e) {}
   }
 
@@ -406,7 +407,7 @@ try {
     state.pos = SV.layout(DESK, state.pick);
     rec = SV.recommend(A, DESK);
     deskFallback = false;
-    if (!state.shared) try { localStorage.setItem('sv-desk', JSON.stringify(DESK)); } catch (e) {}
+    if (!state.shared) writeStored('sv-desk', JSON.stringify(DESK));
     save();
     render();
   }
@@ -425,7 +426,7 @@ try {
     var active = document.activeElement;
     if ((active === $('deskW') || active === $('deskD')) && !active.closest('label').contains(e.target)) active.blur();
   }, true);
-  document.querySelectorAll('#units button').forEach(function(b){ b.onclick = function(){ state.unit = b.dataset.unit; localStorage.setItem('sv-unit', state.unit); render(); }; });
+  document.querySelectorAll('#units button').forEach(function(b){ b.onclick = function(){ state.unit = b.dataset.unit; writeStored('sv-unit', state.unit); render(); }; });
   render();
 } catch (e) {
   var err = document.getElementById('setupError');

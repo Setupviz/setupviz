@@ -10,8 +10,9 @@ import { showBuyAll } from '../client.js';
 import { linkSetup, savedSetup, setupSig, dropMissing } from '../setup-source.js';
 import { summary, download } from '../setup-image.js';
 import { priceLabel, updatePrices } from '../prices.js';
+import { readStored } from '../storage.js';
 
-var unit = localStorage.getItem('sv-unit') || 'in';
+var unit = readStored('sv-unit') || 'in';
 var units = lengths(function(){ return unit; }), one = units.one, two = units.two;
 
 // the setup comes from the link; with no link, show this browser's own setup

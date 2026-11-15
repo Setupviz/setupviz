@@ -1,9 +1,10 @@
 // The desk-size page.
 // Inlined into the page after /desk-size.js.
 import { savedDesk, measureText, deskRangeMessage, deskFallbackNotice, deskField, deskOk } from '../desk.js';
+import { readStored, writeStored } from '../storage.js';
 
-var saved = savedDesk(localStorage.getItem('sv-desk'));
-var state = { unit: localStorage.getItem('sv-unit') || 'in', w: saved.desk.w, d: saved.desk.d };
+var saved = savedDesk(readStored('sv-desk'));
+var state = { unit: readStored('sv-unit') || 'in', w: saved.desk.w, d: saved.desk.d };
 var deskFallback = saved.fallback;
 var presets = [[1200,600,'Small'],[1400,700,'Standard'],[1600,800,'Large'],[1800,800,'Extra large']];
 var $ = function(id){ return document.getElementById(id); };
@@ -46,8 +47,8 @@ function render(){
   });
 }
 function save(){
-  localStorage.setItem('sv-unit', state.unit);
-  if (!deskFallback) localStorage.setItem('sv-desk', JSON.stringify({ w: state.w, d: state.d }));
+  writeStored('sv-unit', state.unit);
+  if (!deskFallback) writeStored('sv-desk', JSON.stringify({ w: state.w, d: state.d }));
 }
 function commit(id, axis){
   if ($(id).value === measure(state[axis])) {

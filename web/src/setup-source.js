@@ -1,8 +1,9 @@
 // Which setup a page shows: one from a share link, this browser's saved setup, or our picks.
-// Browser only: reads the address and localStorage. Storage that can't be read counts as empty.
+// Browser only: reads the address and saved values. Storage that can't be read counts as empty.
 import { savedDesk } from './desk.js';
 import { cats, get } from './products.js';
 import { decode } from './share.js';
+import { readStored } from './storage.js';
 
 // The ?s= share link in the address: whether there is one, its token, and the setup it
 // decodes to (null when there is none or it can't be read).
@@ -17,8 +18,8 @@ export function linkSetup(search){
 // and its saved setup, unchecked.
 export function savedSetup(){
   var raw = null, setup = null;
-  try { setup = JSON.parse(localStorage.getItem('sv-setup') || 'null'); } catch (e) {}
-  try { raw = localStorage.getItem('sv-desk'); } catch (e) {}
+  try { setup = JSON.parse(readStored('sv-setup') || 'null'); } catch (e) {}
+  raw = readStored('sv-desk');
   var stored = savedDesk(raw);
   return { desk: stored.desk, fallback: stored.fallback, setup: setup };
 }

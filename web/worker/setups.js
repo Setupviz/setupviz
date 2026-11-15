@@ -15,6 +15,15 @@ const ID_CHARS = 'abcdefghijkmnpqrstuvwxyz23456789';
 const PAGE_SIZE = 24;
 const DESK_SIZES = { small: [0, 1200], medium: [1200, 1500], large: [1500, 100000] };
 
+// Every database call goes through query(). D1 can fail (an outage, the free plan's daily
+// limits); a failure comes back as DB_DOWN instead of an exception, and the route answers
+// the way it does when there is no database. Nothing about the request is logged.
+const DB_DOWN = Symbol('database unavailable');
+async function query(env, run) {
+  try { return await run(env.DB); } catch { return DB_DOWN; }
+}
+const unavailable = () => json({ error: 'unavailable' }, 503);
+
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { ...SEC, 'content-type': 'application/json', 'cache-control': 'no-store' } });
 }
@@ -69,19 +78,22 @@ async function createLink(request, url, env) {
   if (!read) return json({ error: 'setup' }, 400);
   if (await limited(env, request, 'create')) return json({ error: 'slow down' }, 429);
   const id = await setupId(read.code);
-  await env.DB.prepare('INSERT OR IGNORE INTO setups (id, code, desk_w, desk_d, created) VALUES (?1, ?2, ?3, ?4, ?5)')
-    .bind(id, read.code, read.setup.desk.w, read.setup.desk.d, Date.now()).run();
+  const saved = await query(env, (DB) => DB.prepare('INSERT OR IGNORE INTO setups (id, code, desk_w, desk_d, created) VALUES (?1, ?2, ?3, ?4, ?5)')
+    .bind(id, read.code, read.setup.desk.w, read.setup.desk.d, Date.now()).run());
+  if (saved === DB_DOWN) return unavailable();
   track(env, 'short_link');
   return json({ id, url: url.origin + '/s/' + id });
 }
 
+// The stored row for an id, null when there is none, or DB_DOWN.
 async function findSetup(env, id) {
   if (!env?.DB || !/^[a-z2-9]{8}$/.test(id)) return null;
-  return env.DB.prepare('SELECT id, code, published, votes FROM setups WHERE id = ?1').bind(id).first();
+  return query(env, (DB) => DB.prepare('SELECT id, code, published, votes FROM setups WHERE id = ?1').bind(id).first());
 }
 
 async function openLink(id, request, url, env) {
   const row = await findSetup(env, id);
+  if (row === DB_DOWN) return new Response("Short links can't be opened right now. Try again in a minute.", { status: 503, headers: { ...SEC, 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '60' } });
   if (!row) return serveAsset('/404.html', request, url.hostname, 404);
   return new Response(null, { status: 302, headers: { ...SEC, location: '/share?s=' + row.code + '&id=' + row.id, 'cache-control': 'public, max-age=300' } });
 }
@@ -91,8 +103,12 @@ async function publish(id, request, url, env) {
   if (!sameOrigin(request, url)) return json({ error: 'origin' }, 403);
   if (await limited(env, request, 'publish')) return json({ error: 'slow down' }, 429);
   const row = await findSetup(env, id);
+  if (row === DB_DOWN) return unavailable();
   if (!row) return json({ error: 'missing' }, 404);
-  if (!row.published) { await env.DB.prepare('UPDATE setups SET published = ?2 WHERE id = ?1').bind(id, Date.now()).run(); track(env, 'publish'); }
+  if (!row.published) {
+    if (await query(env, (DB) => DB.prepare('UPDATE setups SET published = ?2 WHERE id = ?1').bind(id, Date.now()).run()) === DB_DOWN) return unavailable();
+    track(env, 'publish');
+  }
   return json({ id, url: url.origin + '/setups?sort=new' });
 }
 
@@ -100,7 +116,8 @@ async function vote(id, request, url, env) {
   if (!env?.DB) return json({ error: 'off' }, 503);
   if (!sameOrigin(request, url)) return json({ error: 'origin' }, 403);
   if (await limited(env, request, 'vote')) return json({ error: 'slow down' }, 429);
-  const row = await env.DB.prepare('UPDATE setups SET votes = votes + 1 WHERE id = ?1 AND published > 0 RETURNING votes').bind(id).first();
+  const row = await query(env, (DB) => DB.prepare('UPDATE setups SET votes = votes + 1 WHERE id = ?1 AND published > 0 RETURNING votes').bind(id).first());
+  if (row === DB_DOWN) return unavailable();
   if (!row) return json({ error: 'missing' }, 404);
   track(env, 'vote');
   return json({ id, votes: row.votes });
@@ -128,13 +145,14 @@ async function gallery(request, url, env) {
   const sort = url.searchParams.get('sort') === 'new' ? 'new' : 'top';
   const size = Object.hasOwn(DESK_SIZES, url.searchParams.get('desk')) ? url.searchParams.get('desk') : '';
   const page = Math.min(50, Math.max(1, parseInt(url.searchParams.get('page') || '1', 10) || 1));
-  let rows = [], more = false;
+  let rows = [], more = false, down = false;
   if (env?.DB) {
     const [lo, hi] = size ? DESK_SIZES[size] : [0, 100000];
     const order = sort === 'new' ? 'published DESC' : 'votes DESC, published DESC';
-    const res = await env.DB.prepare(`SELECT id, code, votes FROM setups WHERE published > 0 AND desk_w >= ?1 AND desk_w < ?2 ORDER BY ${order} LIMIT ?3 OFFSET ?4`)
-      .bind(lo, hi, PAGE_SIZE + 1, (page - 1) * PAGE_SIZE).all();
-    rows = res.results || [];
+    const res = await query(env, (DB) => DB.prepare(`SELECT id, code, votes FROM setups WHERE published > 0 AND desk_w >= ?1 AND desk_w < ?2 ORDER BY ${order} LIMIT ?3 OFFSET ?4`)
+      .bind(lo, hi, PAGE_SIZE + 1, (page - 1) * PAGE_SIZE).all());
+    down = res === DB_DOWN;
+    rows = down ? [] : res.results || [];
     more = rows.length > PAGE_SIZE;
     rows = rows.slice(0, PAGE_SIZE);
   }
@@ -145,11 +163,13 @@ async function gallery(request, url, env) {
 <span>${tab('All desks', link(sort, '', 1), !size)} ${tab('Under 47 in', link(sort, 'small', 1), size === 'small')} ${tab('47 to 59 in', link(sort, 'medium', 1), size === 'medium')} ${tab('59 in and up', link(sort, 'large', 1), size === 'large')}</span>
 </nav>`;
   const list = rows.length ? `<ul class="setup-grid">${rows.map(card).join('\n')}</ul>`
-    : `<p>${env?.DB ? 'No setups here yet. Build yours and publish it from the builder.' : 'The gallery opens soon. Build your setup now and publish it when it does.'}</p>`;
+    : `<p>${down ? "We can't load the gallery right now. Try again in a minute." : env?.DB ? 'No setups here yet. Build yours and publish it from the builder.' : 'The gallery opens soon. Build your setup now and publish it when it does.'}</p>`;
   const pager = `<p class="setup-pager">${page > 1 ? `<a href="${link(sort, size, page - 1)}">Newer page</a>` : ''}${more ? `<a href="${link(sort, size, page + 1)}">Next page</a>` : ''}</p>`;
   const base = await serveAsset('/setups.html', request, url.hostname).text();
   const html = base.replace('<!--SETUPS-->', filters + list + pager);
   const noindex = page > 1 || size || sort === 'new';
+  // A database failure is temporary: 503 keeps crawlers from indexing an empty gallery.
+  if (down) return new Response(html, { status: 503, headers: { ...SEC, 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '60' } });
   return new Response(html, { status: 200, headers: { ...SEC, 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=60', ...(noindex ? { 'x-robots-tag': 'noindex, follow' } : {}) } });
 }
 

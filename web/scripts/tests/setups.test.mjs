@@ -140,3 +140,25 @@ test('fit pages exist, answer the question, and are in the sitemap', async () =>
   const map = await (await call(e, '/sitemap.xml')).text();
   for (const p of ['/fit', '/fit/47x24-desk', '/fit/mon27-on-55x28-desk', '/setups']) assert.ok(map.includes('https://setupviz.com' + p + '</loc>'), p);
 });
+
+// D1 can fail (an outage, the free plan's daily limits): each route answers as it would without a
+// database instead of throwing. Both a call that throws and one that rejects are covered.
+const brokenDbs = {
+  throws: { prepare() { throw new Error('D1_ERROR: limit'); } },
+  rejects: { prepare() { const stmt = { bind: () => stmt, run: () => Promise.reject(new Error('D1_ERROR')), first: () => Promise.reject(new Error('D1_ERROR')), all: () => Promise.reject(new Error('D1_ERROR')) }; return stmt; } },
+};
+for (const [kind, DB] of Object.entries(brokenDbs)) {
+  test('database failure (' + kind + '): routes answer instead of throwing', async () => {
+    const e = env({ DB });
+    const page = await call(e, '/setups');
+    assert.equal(page.status, 503);
+    assert.match(await page.text(), /can't load the gallery right now/);
+    const link = await call(e, '/s/abcdefgh');
+    assert.equal(link.status, 503);
+    for (const path of ['/api/setups', '/api/setups/abcdefgh/publish', '/api/setups/abcdefgh/vote']) {
+      const res = await post(e, path, path === '/api/setups' ? { s: code } : null);
+      assert.equal(res.status, 503, path);
+      assert.equal((await res.json()).error, 'unavailable', path);
+    }
+  });
+}

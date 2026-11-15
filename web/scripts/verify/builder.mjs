@@ -145,6 +145,28 @@ checks['an unknown saved unit falls back to inches'] = async (page) => {
   assert.match(await page.textContent('#wLabel'), / in$/, 'desk');
 };
 
+// The price widget only uses a response shaped like the Worker's: { asOf, prices: { ASIN: cents } }.
+// Anything else shows no prices and breaks nothing; a good response still shows them.
+checks['the price widget ignores a malformed /api/prices response'] = async (page) => {
+  let body;
+  await page.route('**/api/prices', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) }));
+  const asin = await (async () => { await page.goto(origin + '/builder'); await page.locator('#desk .piece-monitor svg').waitFor(); return page.evaluate(() => SV.get('monitor', 'mon27').asin); })();
+  const shown = async (value) => {
+    body = value;
+    await page.reload();
+    await page.locator('#desk .piece-monitor svg').waitFor();
+    await page.waitForTimeout(300);
+    return page.evaluate(() => [...document.querySelectorAll('[data-price]')].filter((el) => !el.hidden).map((el) => el.textContent));
+  };
+  const now = Date.now();
+  for (const bad of [{ asOf: now }, { asOf: now, prices: { [asin]: '19999' } }, { asOf: now, prices: { [asin]: -5 } }, { asOf: 'today', prices: { [asin]: 19999 } }, [], 'prices']) {
+    assert.deepEqual(await shown(bad), [], JSON.stringify(bad));
+  }
+  const good = await shown({ asOf: now, prices: { [asin]: 19999 } });
+  assert.equal(good.length, 1);
+  assert.match(good[0], /^\$199\.99 on Amazon/);
+};
+
 try {
   for (const [name, check] of Object.entries(checks)) {
     const touch = name.includes('touch');

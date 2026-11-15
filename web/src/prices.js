@@ -16,15 +16,29 @@ function paint() {
   }
   const summary = document.getElementById('priceSummary');
   const found = selection.map(item => prices[item.asin]).filter(Boolean);
-  summary.hidden = !found.length;
-  const label = found.length === selection.length ? 'Estimated setup total' : 'Subtotal for ' + found.length + ' of ' + selection.length + ' items';
-  summary.textContent = found.length ? label + ' · ' + dollars.format(found.reduce((a,b) => a+b, 0) / 100) + ' before tax and shipping' : '';
-  document.getElementById('priceTerms').hidden = !visiblePrice;
+  if (summary) {
+    summary.hidden = !found.length;
+    const label = found.length === selection.length ? 'Estimated setup total' : 'Subtotal for ' + found.length + ' of ' + selection.length + ' items';
+    summary.textContent = found.length ? label + ' · ' + dollars.format(found.reduce((a,b) => a+b, 0) / 100) + ' before tax and shipping' : '';
+  }
+  const terms = document.getElementById('priceTerms');
+  if (terms) terms.hidden = !visiblePrice;
+}
+// Only a response shaped like the Worker's is used: { asOf: time in ms, prices: { ASIN: cents } }
+// with whole, positive cents. Anything else, or any price that isn't, counts as no price.
+function readSnapshot(body) {
+  if (!body || typeof body !== 'object' || !Number.isFinite(body.asOf)) return {};
+  if (!body.prices || typeof body.prices !== 'object' || Array.isArray(body.prices)) return {};
+  const prices = {};
+  for (const [asin, cents] of Object.entries(body.prices)) {
+    if (/^[A-Z0-9]{10}$/.test(asin) && Number.isInteger(cents) && cents > 0) prices[asin] = cents;
+  }
+  return { asOf: body.asOf, prices };
 }
 async function refresh() {
   try {
     const response = await fetch('/api/prices', { cache: 'no-store' });
-    snapshot = response.ok ? await response.json() : {};
+    snapshot = response.ok ? readSnapshot(await response.json()) : {};
   } catch { snapshot = {}; }
   paint();
 }

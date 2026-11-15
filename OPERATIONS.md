@@ -51,3 +51,17 @@ The first frame is now allowed to paint before catalog loading and interactive
 initialization. Dependency order and the existing failed-data recovery remain
 intact. The paint check runs earlier in CI for faster diagnostics; both it and
 functional checks still run and retain their original failure criteria.
+
+## Growth phase 1: owner steps (November 15, 2026)
+
+The code for step counts, "will it fit" pages, Save image, link previews, short links and the setups gallery is on the `growth-phase1` branch. Everything works without new Cloudflare services except short links and the gallery, which stay off (long links keep working, the gallery says it opens soon) until step 3.
+
+1. **Search Console.** Add `setupviz.com` as a Domain property in Google Search Console, verify it with the DNS TXT record (Cloudflare DNS), and submit `https://setupviz.com/sitemap.xml`. Do the same in Bing Webmaster Tools (it can import from Search Console). The sitemap now lists the 110 gear pages, 145 fit pages and the gallery.
+2. **Analytics Engine.** In Workers & Pages > setupviz > Settings > Bindings, add an Analytics Engine binding named `CLICKS` (dataset e.g. `setupviz_clicks`). It stores Amazon clicks from /go and the step counts from /e: `setup_changed`, `share_link`, `save_image`, `try_click`, `short_link`, `publish`, `vote`. Query them in the Analytics Engine SQL API, e.g. `SELECT blob2 AS step, SUM(_sample_interval) AS n FROM setupviz_clicks WHERE blob1 = 'event' AND timestamp > NOW() - INTERVAL '7' DAY GROUP BY step`.
+3. **D1 for short links and the gallery.** Create a D1 database (Workers & Pages > D1 > Create, name `setupviz`), run `web/schema.sql` in its console, then bind it to the Worker as `DB`. Free plan limits: 5 GB storage, 100,000 writes and 5 million reads a day.
+4. **Rate limit (recommended).** Add a Rate limiting binding named `SETUPS_RATE_LIMITER` (suggested 20 requests per 60 seconds). It limits creating links, publishing and voting per network. Without it those still work, bounded only by D1's free limits.
+5. **Deploy.** `node scripts/deploy-worker.mjs` now keeps D1 bindings as well as the existing ones.
+
+Removing a gallery entry: in the D1 console, `UPDATE setups SET published = 0 WHERE id = '<id>';`. Entries contain only catalog products, positions and desk sizes, never text people typed, so there is nothing to moderate beyond spam votes.
+
+The link-preview image (`/og/setup.png`) is drawn in the Worker in about 6 ms warm and cached per data center for a day.

@@ -98,6 +98,9 @@ aside{flex:1 1 340px;min-width:0;border-radius:16px;background:#171717;border:0;
 [hidden]{display:none!important}
 button.buyall,a.buyall{width:100%;border:0;box-sizing:border-box;cursor:pointer;font-family:inherit;text-decoration:none}
 button.buyall:hover,a.buyall:hover{background:#FFFFFF;color:#121212}
+.share-more{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#publishNote:empty{display:none}
+#publishNote{margin:0;font-size:12px}
 button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{opacity:.4;cursor:not-allowed}
 .paid,.unavail{margin:0;font-size:12px;line-height:16px;color:#8F8F8F}
 .slot .amz{display:inline-flex;align-items:center;box-sizing:border-box;max-width:100%;min-height:24px;width:fit-content;font-size:12px;color:#8F8F8F;text-decoration:underline;text-underline-offset:3px}
@@ -223,6 +226,8 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
         <a class="buyall" id="buyAll" rel="sponsored nofollow noopener" target="_blank" aria-label="Buy this whole setup (opens in a new tab)" aria-disabled="true">Buy this whole setup</a>
         <p class="paid">Paid link. We earn a commission if you buy, at no extra cost to you.</p>
         <button type="button" class="buyall" id="shareBtn">Copy share link</button>
+        <div class="share-more"><button type="button" class="linkbtn" id="saveImg">Save image</button><button type="button" class="linkbtn" id="publishBtn">Publish to the gallery</button></div>
+        <p class="muted" id="publishNote" role="status"></p>
       </div>
       <div class="req" id="request">
         <strong>Missing a product?</strong>
@@ -234,6 +239,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
 
 <script src="/desk-size.js"></script>
 <script src="/data.js"></script>
+<script src="/setup-image.js"></script>
 <script src="/prices.js"></script>
 <script>
 (function(){
@@ -311,7 +317,10 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       localStorage.setItem('sv-shared', JSON.stringify({ order: order, edits: edits }));
     } catch (e) {}
   }
+  var changed = false;
   function save(){
+    // Count the first change per visit: "placed or changed gear", not every drag.
+    if (!changed) { changed = true; SV.track('setup_changed'); }
     try {
       if (state.shared) { rememberShared(); return; }
       localStorage.setItem('sv-setup', JSON.stringify({ sig: sig(), pick: state.pick, pos: state.pos }));
@@ -588,9 +597,45 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && state.open) { state.open = null; endPreview(); render(); } });
   document.addEventListener('click', function(e){ if (state.open && !e.target.closest('.slot')) { state.open = null; endPreview(); render(); } });
   $('reset').onclick = function(){ endPreview(); state.open = null; state.pick = SV.recommend(A, DESK); state.pos = SV.layout(DESK, state.pick); state.sel = 'mouse'; save(); render(); };
+  function setupNow(){ return { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos }; }
+  // A short link from the server when it can make one, else the long link that needs no server.
+  var shortLinks = {};
+  function shortLink(){
+    var code = SV.encode(setupNow(), A);
+    if (shortLinks[code]) return Promise.resolve(shortLinks[code]);
+    return fetch('/api/setups', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ s: code }) })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(res){ if (res && res.id) shortLinks[code] = res; return shortLinks[code] || null; })
+      .catch(function(){ return null; });
+  }
   $('shareBtn').onclick = function(){
-    var b = $('shareBtn'), url = shareUrl();
-    SV.copySetupLink(b, url);
+    var b = $('shareBtn');
+    SV.track('share_link');
+    var long = shareUrl();
+    var url = Promise.race([shortLink(), new Promise(function(done){ setTimeout(done, 2500); })])
+      .then(function(res){ return res && res.url || long; });
+    // The clipboard write has to start inside the click, so it takes the link as a promise.
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      navigator.clipboard.write([new ClipboardItem({ 'text/plain': url.then(function(u){ return new Blob([u], { type: 'text/plain' }); }) })])
+        .then(function(){
+          var label = b.dataset.copyLabel || b.textContent; b.dataset.copyLabel = label;
+          b.textContent = 'Link copied'; clearTimeout(b.copyTimer);
+          b.copyTimer = setTimeout(function(){ b.textContent = label; }, 1800);
+        }, function(){ url.then(function(u){ SV.copySetupLink(b, u); }); });
+    } else url.then(function(u){ SV.copySetupLink(b, u); });
+  };
+  $('saveImg').onclick = function(){ SV.track('save_image'); SVImage.download(setupNow(), state.unit, $('saveImg')); };
+  $('publishBtn').onclick = function(){
+    var b = $('publishBtn'), note = $('publishNote');
+    b.disabled = true; note.textContent = 'Publishing…';
+    shortLink().then(function(res){
+      if (!res) throw new Error('no link');
+      return fetch('/api/setups/' + res.id + '/publish', { method: 'POST' }).then(function(r){ if (!r.ok) throw new Error('no publish'); return res; });
+    }).then(function(res){
+      note.innerHTML = 'Published. <a href="/setups?sort=new">See it in the gallery</a> or share <a href="' + res.url.replace(/[^a-z0-9:\/._-]/gi, '') + '">its link</a>.';
+    }).catch(function(){
+      note.textContent = "The gallery isn't open yet. Copy the share link instead.";
+    }).then(function(){ b.disabled = false; });
   };
   window.addEventListener('resize', render);
   function clearSize(id){
@@ -650,6 +695,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
     var resetBtn = document.getElementById('reset');
     if (shareBtn) shareBtn.disabled = true;
     if (resetBtn) resetBtn.disabled = true;
+    ['saveImg', 'publishBtn'].forEach(function(id){ var el = document.getElementById(id); if (el) el.disabled = true; });
     var buyAll = document.getElementById('buyAll');
     if (buyAll) { buyAll.removeAttribute('href'); buyAll.setAttribute('aria-disabled', 'true'); }
     var usedBar = document.getElementById('usedBar');
@@ -665,7 +711,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
   }
 })();
 </script>
-<footer style="display:flex;flex-wrap:wrap;justify-content:center"><div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:8px 24px 0"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div></footer>
+<footer style="display:flex;flex-wrap:wrap;justify-content:center"><div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:8px 24px 0"><a href="/setups" class="sv-legal-link">Setups gallery</a><a href="/fit" class="sv-legal-link">Will it fit?</a><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div></footer>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
 </body>
 </html>

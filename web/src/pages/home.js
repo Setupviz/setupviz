@@ -40,7 +40,7 @@ function paint(deskOnly){
   });
   document.querySelector('#demoSum .dot').style.background = colors[bad ? 2 : tight ? 1 : 0];
   document.querySelector('#demoSum .tx').textContent = bad ? bad + " won't fit" : fit + ' fit' + (tight ? ', ' + tight + ' tight' : '');
-  document.getElementById('demoUsed').textContent = SV.usedPercent(SV.usedArea({ pick: pick, pos: pos }), desk.w * desk.d) + '% of the desk used';
+  document.getElementById('demoUsed').textContent = SV.usedPercent(SV.usedArea({ desk: desk, pick: pick, pos: pos }), desk.w * desk.d) + '% of the desk used';
   document.getElementById('demoTry').href = document.querySelector('.card.c-3').href = '/builder?s=' + SV.encode({ desk: desk, pick: pick, pos: pos }, { grip: '', hand: '', use: '' });
 }
 board.addEventListener('pointerdown', function(e){

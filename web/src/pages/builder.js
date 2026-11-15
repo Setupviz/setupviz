@@ -251,7 +251,7 @@ try {
     if (swap) $('vList').insertAdjacentHTML('afterbegin', '<li class="swap-fix"><i class="dot" style="background:' + colors[swap.bad ? 1 : 0] + '"></i>' +
       (swap.bad ? 'Fewer problems with the ' : swap.tight ? 'Everything fits, with a tight spot, with the ' : 'Everything fits with the ') + esc(swap.name) + '. <button type="button" class="linkbtn" data-swap-cat="' + swap.cat + '" data-swap-id="' + esc(swap.id) + '">Swap it in' + (swap.relayout ? ' and rearrange' : '') + '</button></li>');
 
-    var used = SV.usedPercent(SV.usedArea({ pick: draw.pick, pos: draw.pos }), DESK.w * DESK.d);
+    var used = SV.usedPercent(SV.usedArea({ desk: DESK, pick: draw.pick, pos: draw.pos }), DESK.w * DESK.d);
     $('usedPct').textContent = used == null ? '' : used + '%'; $('usedBar').style.width = (used == null ? 0 : Math.min(used, 100)) + '%';
     $('usedNote').textContent = used == null ? '' : used < 35 ? 'Plenty of room left for a lamp or speakers.' : used < 55 ? 'Comfortable, with room for one small extra.' : 'Getting full. Skip extras, or pick a smaller piece.';
     var keyboard = spec('keyboard');

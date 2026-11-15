@@ -167,7 +167,7 @@ try {
   });
 
   function choose(id, pid){
-    endPreview(); state.open = null; state.sel = id;
+    endPreview(); state.open = null; state.sel = id; state.focusSlot = id;
     SV.retarget(DESK, state.pick, state.pos, id, pid);
     save(); render();
   }
@@ -287,6 +287,9 @@ try {
         (open ? menuHtml(id) : '') + '</div>';
     }).join('');
     var mi = document.querySelector('.menu input'); if (mi && document.activeElement !== mi && state.focusMenu) { mi.focus({ preventScroll: true }); state.focusMenu = false; }
+    // A menu closed from the keyboard hands focus back to its slot's Change (or Add) button,
+    // since redrawing the list removed the element that had it.
+    if (state.focusSlot) { var back = document.querySelector('.slot[data-id="' + state.focusSlot + '"] [data-act="change"]'); state.focusSlot = null; if (back) back.focus({ preventScroll: true }); }
     $('navShare').href = shareUrl();
     updatePrices(listOrder.filter(has).map(spec));
     showBuyAll($('buyAll'), listOrder.filter(has).map(spec).filter(SV.forSale), 'builder-cart');
@@ -328,7 +331,7 @@ try {
     if (e.target.closest('.keep')) return choose(id, state.previewPid);
     if (e.target.closest('.menu')) return;
     if (act && act.dataset.act === 'remove') return remove(id);
-    if (act && act.dataset.act === 'change') { endPreview(); state.open = state.open === id ? null : id; state.focusMenu = true; if (has(id)) state.sel = id; return render(); }
+    if (act && act.dataset.act === 'change') { endPreview(); if (state.open === id) state.focusSlot = id; state.open = state.open === id ? null : id; state.focusMenu = true; if (has(id)) state.sel = id; return render(); }
     if (e.target.closest('a, details')) return;
     if (has(id)) { state.sel = id; render(); }
   });
@@ -343,7 +346,7 @@ try {
   $('items').addEventListener('pointerout', function(e){ if (coarse || !e.target.closest('.opt')) return; var to = e.relatedTarget; if (!to || !to.closest || !(to.closest('.opt') || to.closest('.keep'))) clearGhost(); });
   $('items').addEventListener('focusin', function(e){ if (coarse) return; var o = e.target.closest('.opt'); if (o) preview(o.closest('.slot').dataset.id, o.dataset.pid); });
   $('items').addEventListener('focusout', function(e){ if (coarse) return; var to = e.relatedTarget; if (!to || !to.closest || !to.closest('.menu')) clearGhost(); });
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && state.open) { state.open = null; endPreview(); render(); } });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && state.open) { state.focusSlot = state.open; state.open = null; endPreview(); render(); } });
   document.addEventListener('click', function(e){ if (state.open && !e.target.closest('.slot')) { state.open = null; endPreview(); render(); } });
   $('reset').onclick = function(){ endPreview(); state.open = null; state.pick = SV.recommend(A, DESK); state.pos = SV.layout(DESK, state.pick); state.sel = 'mouse'; save(); render(); };
   function setupNow(){ return { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos }; }

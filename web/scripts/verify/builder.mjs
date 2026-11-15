@@ -51,6 +51,33 @@ checks['a swap offered during a touch preview does not add the previewed product
   assert.equal(await page.locator('.slot[data-id="mouse"].empty').count(), 1, 'the mouse slot is still empty');
 };
 
+// Closing a product menu from the keyboard puts focus back on that slot's Change button
+// instead of dropping it to the page.
+checks['focus returns to the slot when its menu closes'] = async (page) => {
+  await page.goto(origin + '/builder');
+  await page.locator('#desk .piece-monitor svg').waitFor();
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await page.locator('#desk .piece-monitor svg').waitFor();
+  const focused = () => page.evaluate(() => {
+    const el = document.activeElement;
+    return el.matches('.menu input') ? 'search' : (el.closest('.slot')?.dataset.id || '') + ':' + (el.dataset.act || el.tagName);
+  });
+  await page.focus('.slot[data-id="mouse"] [data-act="change"]');
+  await page.keyboard.press('Enter');
+  assert.equal(await focused(), 'search', 'opening the menu focuses its search box');
+  await page.keyboard.press('Escape');
+  assert.equal(await focused(), 'mouse:change', 'Escape returns focus to Change');
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Enter');
+  assert.equal(await focused(), 'mouse:change', 'choosing a product returns focus to Change');
+  await page.keyboard.press('Enter');
+  await page.focus('.slot[data-id="mouse"] [data-act="change"]');
+  await page.keyboard.press('Enter');
+  assert.equal(await focused(), 'mouse:change', 'closing with Change keeps focus on it');
+};
+
 try {
   for (const [name, check] of Object.entries(checks)) {
     const touch = name.includes('touch');

@@ -2,7 +2,9 @@
 // size listing what fits, and a /fit index. Each answer comes from the same
 // recommend, layout and check code as the builder, run on a full setup
 // (monitor, keyboard, mouse pad and mouse), so the pages say what the builder would.
-import { esc, inch, cm, head, foot } from './gear-pages.mjs';
+import { inch, cm, head, foot } from './gear-pages.mjs';
+import { esc } from '../src/html.js';
+import { FIT_COLORS, FIT_WORDS } from '../src/fit-words.js';
 
 export const FIT_DESKS = [
   { slug: '40x20', w: 1016, d: 508, name: '40 × 20 in', metric: '102 × 51 cm', note: 'a small writing desk' },
@@ -16,7 +18,7 @@ export const FIT_DESKS = [
   { slug: '72x30', w: 1829, d: 762, name: '72 × 30 in', metric: '183 × 76 cm', note: 'a large standing or executive desk' },
 ];
 const NONE = { grip: '', hand: '', use: '' };
-const WORD = ['Fits', 'Tight', "Won't fit"];
+const WORD = FIT_WORDS;
 const both = (mm) => inch(mm) + ' (' + cm(mm) + ')';
 
 export function fitFor(SV, IMG, desk, monitorId) {
@@ -36,9 +38,18 @@ function fixes(f) {
     .filter((t) => t && !seen.has(t) && seen.add(t));
 }
 
+const PIECE = { keyboard: 'keyboard', pad: 'mouse pad', mouse: 'mouse' };
+const list = (items, word) => items.length < 2 ? items.join('') : items.slice(0, -1).join(', ') + ' ' + word + ' ' + items[items.length - 1];
+
 function verdict(f, desk) {
   const m = f.monitor;
   if (f.sideRoom < 0) return { lvl: 2, line: `No. The ${m.name} is ${both(-f.sideRoom)} wider than a ${desk.name} desk.` };
+  // settle() leaves out a piece that can't fit, so a setup that "fits" may be missing one.
+  const left = ['keyboard', 'pad', 'mouse'].filter((c) => !f.setup.pick[c]);
+  if (left.length && f.sum.worst < 2) {
+    const kept = ['keyboard', 'mouse', 'pad'].filter((c) => f.setup.pick[c]).map((c) => PIECE[c]);
+    return { lvl: 1, line: `Yes, without ${list(left.map((c) => 'a ' + PIECE[c]), 'or')}. The ${m.name} fits on a ${desk.name} desk${kept.length ? ' with ' + list(kept.map((p) => 'a ' + p), 'and') : ''}, but there's no room for ${list(left.map((c) => 'a ' + PIECE[c]), 'or')} as well.` };
+  }
   if (f.sum.worst === 0) return { lvl: 0, line: `Yes. The ${m.name} fits on a ${desk.name} desk with a keyboard, mouse pad and mouse, and leaves ${inch(f.room)} of depth in front of the stand.` };
   if (f.sum.worst === 1) return { lvl: 1, line: `Yes, but it's tight. The monitor fits, and the full setup has ${f.sum.tight} tight spot${f.sum.tight > 1 ? 's' : ''}.` };
   return { lvl: 2, line: `Not with a full setup. The monitor itself ${f.sum.status.monitor.lvl < 2 ? 'fits' : "doesn't fit"}, but ${f.sum.bad} piece${f.sum.bad > 1 ? "s don't" : " doesn't"} fit around it.` };
@@ -50,7 +61,7 @@ main.fit .verdict{font-size:18px;line-height:28px}
 main.fit .lvl{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:baseline}
 </style>`;
 
-function dot(lvl) { return `<span class="lvl" style="background:${['#5BE38A', '#F5C542', '#FF6B5B'][lvl]}" aria-hidden="true"></span>`; }
+function dot(lvl) { return `<span class="lvl" style="background:${FIT_COLORS[lvl]}" aria-hidden="true"></span>`; }
 
 export function fitPages(SV, IMG) {
   const monitors = SV.catalog.monitor.filter(SV.forSale);

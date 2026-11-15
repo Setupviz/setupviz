@@ -1,9 +1,9 @@
 // Build one indexable page per product in the catalog, plus a /gear index.
 // Each page shows the sourced measurements in inches and centimetres and links
 // into the builder with that product already on the desk.
-const SITE = 'https://setupviz.com';
+import { esc } from '../src/html.js';
 
-export const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const SITE = 'https://setupviz.com';
 export const inch = (mm) => (mm / 25.4).toFixed(1).replace(/\.0$/, '') + ' in';
 export const cm = (mm) => (mm / 10).toFixed(1).replace(/\.0$/, '') + ' cm';
 const both = (mm) => inch(mm) + ' (' + cm(mm) + ')';

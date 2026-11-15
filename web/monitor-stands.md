@@ -16,6 +16,17 @@ Panel positions are approximate at neutral tilt. Side and overhead images locate
 | S3225QS | [Manufacturer reference](https://dl.dell.com/content/manual4700369-dell-32-plus-4k-monitor-s3225qs-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
 | U2726DER | [Manufacturer reference](https://dl.dell.com/content/manual47122317-dell-ultrasharp-27-thunderbolt-hub-monitor-u2726der-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
 | AW2725DF | [Manufacturer reference](https://dl.dell.com/content/manual84042005-alienware-aw2725df-monitor-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| S2725QC | [Manufacturer reference](https://dl.dell.com/content/manual2618704-dell-27-plus-4k-usb-c-monitor-s2725qc-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| S3225QC | [Manufacturer reference](https://dl.dell.com/content/manual15028758-dell-32-plus-4k-qd-oled-monitor-s3225qc-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| SE2426H | [Manufacturer reference](https://dl.dell.com/content/manual85651127-dell-24-monitor-se2426h-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| SE2726H | [Manufacturer reference](https://dl.dell.com/content/manual82243106-dell-27-monitor-se2726h-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| SE2426HG | [Manufacturer reference](https://dl.dell.com/content/manual3082004-dell-24-240hz-monitor-se2426hg-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| SE2726HG | [Manufacturer reference](https://dl.dell.com/content/manual12097823-dell-27-240hz-monitor-se2726hg-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| AW2725QF | [Manufacturer reference](https://dl.dell.com/content/manual10674259-alienware-aw2725qf-monitor-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| U3226QER | [Manufacturer reference](https://dl.dell.com/content/manual47122912-dell-ultrasharp-32-4k-thunderbolt-hub-u3226qer-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| AW2525HM | [Manufacturer reference](https://dl.dell.com/content/manual25880483-aw2525hm-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| AW2524HF | [Manufacturer reference](https://dl.dell.com/content/manual16910978-alienware-aw2524hf-monitor-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| AW2726DL | [Manufacturer reference](https://dl.dell.com/content/manual36443427-alienware-27-280hz-gaming-monitor-aw2726dl-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
 | G27C4X | [Manufacturer reference](https://storage-asset.msi.com/global/picture/product/product_17205196425911e12a12663347b61c3eb7b4ba38db.webp) | Estimated from oblique or front/rear photos and comparable stock hardware |
 | G32C4X | [Manufacturer reference](https://storage-asset.msi.com/global/picture/product/product_1675826253f57958b3253172ddb04ccbfb8aee2c91.webp) | Estimated from oblique or front/rear photos and comparable stock hardware |
 | G32C4XS | [Manufacturer reference](https://storage-asset.msi.com/specSheet/us/monitor/G32C4XS.pdf) | Estimated from oblique or front/rear photos and comparable stock hardware |

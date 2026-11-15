@@ -90,6 +90,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
     <a class="btn btn-primary" id="buyAll" rel="sponsored nofollow noopener" target="_blank" aria-label="Buy this whole setup (opens in a new tab)" aria-disabled="true">Buy this whole setup</a>
     <p class="paid">Paid link. We earn a commission if you buy, at no extra cost to you.</p>
     <button type="button" class="btn btn-primary" id="copy">Copy link</button>
+    <button type="button" class="btn btn-outline" id="saveImg">Save image</button>
     <a class="btn btn-outline" id="open" href="/builder">Open with their desk</a>
     <a class="btn btn-outline" href="/desk">Build my own</a>
   </div>
@@ -97,6 +98,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
 
 <script src="/desk-size.js"></script>
 <script src="/data.js"></script>
+<script src="/setup-image.js"></script>
 <script src="/prices.js"></script>
 <script>
 (function(){
@@ -178,7 +180,10 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
     buy.setAttribute("aria-label", buy.textContent);
     if (complete) { buy.href = SV.cartLink(asins, 'share-cart'); buy.removeAttribute('aria-disabled'); }
 
-  var url = new URL('/share?s=' + code, location.href).href;
+  var shortId = location.search.match(/[?&]id=([a-z2-9]{8})(?:&|$)/);
+  var url = shortId && hasLink && !deskFallback ? new URL('/s/' + shortId[1], location.href).href : new URL('/share?s=' + code, location.href).href;
+  document.getElementById('saveImg').onclick = function(){ SV.track('save_image'); SVImage.download(S, unit, this); };
+  document.getElementById('tryMine').addEventListener('click', function(){ SV.track('try_click'); });
   document.getElementById('open').href = '/builder?s=' + code;
   document.getElementById('tryMine').href = '/builder?s=' + code + '&mine=1';
   document.getElementById('copy').onclick = function(){
@@ -186,7 +191,7 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
   };
 })();
 </script>
-<footer style="display:flex;flex-wrap:wrap;justify-content:center"><div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:8px 24px 0"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div></footer>
+<footer style="display:flex;flex-wrap:wrap;justify-content:center"><div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:8px 24px 0"><a href="/setups" class="sv-legal-link">Setups gallery</a><a href="/fit" class="sv-legal-link">Will it fit?</a><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div></footer>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
 </body>
 </html>

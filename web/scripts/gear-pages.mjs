@@ -3,15 +3,15 @@
 // into the builder with that product already on the desk.
 const SITE = 'https://setupviz.com';
 
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const inch = (mm) => (mm / 25.4).toFixed(1).replace(/\.0$/, '') + ' in';
-const cm = (mm) => (mm / 10).toFixed(1).replace(/\.0$/, '') + ' cm';
+export const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+export const inch = (mm) => (mm / 25.4).toFixed(1).replace(/\.0$/, '') + ' in';
+export const cm = (mm) => (mm / 10).toFixed(1).replace(/\.0$/, '') + ' cm';
 const both = (mm) => inch(mm) + ' (' + cm(mm) + ')';
 const units = (text) => String(text || '').replace(/\{(\d+(?:\.\d+)?)\}/g, (_, mm) => inch(+mm));
 
 const plural = { monitor: 'Monitors', keyboard: 'Keyboards', pad: 'Mouse pads and desk mats', mouse: 'Mice' };
 
-function head(title, description, path) {
+export function head(title, description, path) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -53,8 +53,8 @@ main.gear .paid{font-size:13px;color:#8F8F8F;margin:0}
 `;
 }
 
-const foot = `
-<footer><div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:16px 24px 0"><a href="/gear" class="sv-legal-link">All gear</a><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div></footer>
+export const foot = `
+<footer><div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:16px 24px 0"><a href="/gear" class="sv-legal-link">All gear</a><a href="/fit" class="sv-legal-link">Will it fit?</a><a href="/setups" class="sv-legal-link">Setups gallery</a><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div></footer>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
 </body>
 </html>

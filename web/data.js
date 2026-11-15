@@ -979,6 +979,10 @@
     return s.diagonalIn + "″ diagonal · " + one(s.dims.w) + " wide · " + one(s.d) + " deep with stand\nStand span (W × D): " + two(s.base[0], s.base[1]) + "\nTop view shows the stock stand at neutral tilt. Outline and panel position are approximate.";
   }
 
+  // Counts one step (see scripts/setups-runtime.js EVENTS). No cookie or visitor id.
+  function track(name){
+    try { if (navigator.sendBeacon) navigator.sendBeacon('/e?n=' + encodeURIComponent(name)); } catch (e) {}
+  }
   async function copySetupLink(button, url){
     const original = button.dataset.copyLabel || button.textContent;
     button.dataset.copyLabel = original;
@@ -992,7 +996,7 @@
     }
   }
 
-  window.SV = { measurementInfo: measurementInfo, markPadContact: markPadContact, drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, fixSwap: fixSwap, amazonTag: AMAZON_TAG, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
+  window.SV = { track: track, measurementInfo: measurementInfo, markPadContact: markPadContact, drawMonitor: drawMonitor, copySetupLink: copySetupLink, invalidShareNotice: "This link couldn’t be read. You’re seeing an example desk.",  monitorMeasurements: monitorMeasurements, catalog: catalog, cats: cats, labels: labels, padLabels: padLabels, preferences: preferences, get padTry(){ return activePads(); }, idAlias: idAlias, get: get, forSale: forSale, isMat: isMat, amazonLink: amazonLink, fixSwap: fixSwap, amazonTag: AMAZON_TAG, cartLink: cartLink, buyLine: buyLine, answers: answers, answerText: answerText, mouseSlot: mouseSlot,
     recommend: recommend, omission: omission, matchReason: matchReason, place: place, layout: layout, settle: settle, retarget: retarget, previewSetup: previewSetup, overhang: overhang, overlap: overlap, check: check, encode: encode, decode: decode, usedArea: usedArea,
     deskLimits: deskLimits, defaultDesk: defaultDesk, deskFallbackNotice: deskFallbackNotice,
     parseDeskInput: parseDeskInput, deskMm: deskMm, deskAxisOk: deskAxisOk, deskOk: deskOk, deskField: deskField, savedDesk: savedDesk,

@@ -45,8 +45,9 @@ const DEFAULT_TAGS = {
   'builder-cart': 'setupvizcart-20', 'share-cart': 'setupvizcart-20',
   'share': 'setupvizshare-20',
   'product': 'setupvizgear-20', 'product-cart': 'setupvizgear-20',
+  'fit': 'setupvizgear-20',
 };
-const GO_PLACES = ['builder', 'builder-cart', 'share', 'share-cart', 'product', 'product-cart', 'fix', 'other'];
+const GO_PLACES = ['builder', 'builder-cart', 'share', 'share-cart', 'product', 'product-cart', 'fix', 'fit', 'other'];
 function goRedirect(url, env) {
   const asinOk = (a) => PRICE_ASINS.includes(a);
   const from = GO_PLACES.includes(url.searchParams.get('from')) ? url.searchParams.get('from') : 'other';
@@ -73,10 +74,12 @@ function goRedirect(url, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname.startsWith('/go/')) return goRedirect(url, env) || serveAsset('/404.html', request, url.hostname, 404);
     if (url.pathname === '/api/prices') return secure(await amazonPrices(request, env));
+    const setups = await setupsRoute(request, url, env, ctx);
+    if (setups) return setups;
     const missing = () => serveAsset('/404.html', request, url.hostname, 404);
     let path;
     try { path = decodeURIComponent(url.pathname); } catch { return missing(); }

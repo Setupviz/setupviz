@@ -12,6 +12,8 @@ import { runInNewContext } from 'node:vm';
 import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gearPages } from './gear-pages.mjs';
+import { fitPages } from './fit-pages.mjs';
+import { galleryPage } from './gallery-page.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = process.argv[2] || join(root, 'dist', 'worker.js');
@@ -98,18 +100,21 @@ function afterFirstFrame(html, name) {
   });
 }
 
-const sandbox = { window: {} };
-for (const script of ['desk-size.js', 'data.js']) runInNewContext(readFileSync(join(root, script), 'utf8'), sandbox);
+// setup-image.js is bundled into data.js, like desk-size.js, and also runs in the Worker.
+const shared = ['desk-size.js', 'data.js', 'setup-image.js'];
+const sandbox = { window: {}, btoa, atob };
+for (const script of shared) runInNewContext(readFileSync(join(root, script), 'utf8'), sandbox);
 const catalog = sandbox.window.SV;
-const gear = gearPages(catalog);
-const generated = new Map(gear.map((page) => [page.name, Buffer.from(page.body)]));
-const gearUrls = gear.map((page) => '  <url><loc>https://setupviz.com' + page.path + '</loc></url>').join('\n');
+const pagesBuilt = [...gearPages(catalog), ...fitPages(catalog, sandbox.window.SVImage), galleryPage()];
+const generated = new Map(pagesBuilt.map((page) => [page.name, Buffer.from(page.body)]));
+const gearUrls = pagesBuilt.map((page) => '  <url><loc>https://setupviz.com' + page.path + '</loc></url>').join('\n');
 
 const entries = [...files, ...generated.keys()].map((name) => {
   let body = generated.get(name) || readFileSync(join(root, name));
   if (name === 'sitemap.xml') body = Buffer.from(body.toString().replace('</urlset>', gearUrls + '\n</urlset>'));
-  if (name === 'data.js') body = Buffer.concat([readFileSync(join(root, 'desk-size.js')), body]);
+  if (name === 'data.js') body = Buffer.concat([readFileSync(join(root, 'desk-size.js')), body, readFileSync(join(root, 'setup-image.js'))]);
   if (name.endsWith('.html')) body = Buffer.from(body.toString().replace(
+    '<script src="/desk-size.js"></script>\n<script src="/data.js"></script>\n<script src="/setup-image.js"></script>', '<script src="/data.js"></script>').replace(
     '<script src="/desk-size.js"></script>\n<script src="/data.js">', '<script src="/data.js">'));
 
   if (name.endsWith('.html')) body = Buffer.from(body.toString().replace(
@@ -137,6 +142,9 @@ for (const [name, body] of startupScripts) {
 }
 
 const runtime = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'worker-runtime.js'), 'utf8');
+const setupsRuntime = readFileSync(join(root, 'scripts/setups-runtime.js'), 'utf8');
+// The site's own catalog, fit checks and drawings, run once when the Worker starts.
+const sharedSource = shared.map((script) => readFileSync(join(root, script), 'utf8')).join('\n');
 
 const asins = [...new Set(Object.values(catalog.catalog).flat().filter(catalog.forSale).map(item => item.asin).filter(Boolean))];
 const priceWorker = readFileSync(join(root, 'scripts/amazon-prices.js'), 'utf8');
@@ -146,6 +154,10 @@ ${entries.join(',\n')}
 const PRICE_ASINS=${JSON.stringify(asins)};
 const PRICE_TAG=${JSON.stringify(catalog.amazonTag)};
 ${priceWorker}
+const SVW=(function(){var window={};
+${sharedSource}
+return window;})();
+${setupsRuntime}
 ${runtime.endsWith('\n') ? runtime : runtime + '\n'}`;
 
 mkdirSync(dirname(out), { recursive: true });

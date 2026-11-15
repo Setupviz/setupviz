@@ -20,6 +20,14 @@ export function isMat(item){ return !!(item && item.kind === 'mat'); }
 export function activePads(){
   return padOrder.filter(function(id){ return forSale(get('pad', id)); });
 }
+// The first id in a preference list that is in the catalog and for sale, or null.
+export function firstActive(cat, ids){
+  for (var i = 0; i < ids.length; i++) {
+    var item = get(cat, ids[i]);
+    if (forSale(item)) return item.id;
+  }
+  return null;
+}
 export function preferenceIds(cat){
   var ids = {};
   var slots = preferences[cat];

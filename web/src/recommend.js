@@ -1,6 +1,6 @@
 // Our picks for a person's answers and desk, and the words that explain them.
 import { catalog, preferences } from './catalog.js';
-import { cats, get, forSale, isMat, activePads, preferenceIds, gripWords, handWords } from './products.js';
+import { cats, get, forSale, isMat, activePads, preferenceIds, firstActive, gripWords, handWords } from './products.js';
 import { overlap, standBox, standOverlap } from './geometry.js';
 import { check, blank } from './fit.js';
 import { layout } from './layout.js';
@@ -28,7 +28,17 @@ export function recommend(a, desk){
 }
 function scoreRecommend(a, desk){
   var base = legacyRecommend(a, desk);
+  base = { monitor: onSale('monitor', base.monitor), keyboard: onSale('keyboard', base.keyboard), pad: base.pad, mouse: onSale('mouse', base.mouse) };
   return { monitor: base.monitor, keyboard: base.keyboard, pad: selectPad(desk, base, padListFor(desk)), mouse: base.mouse };
+}
+// The baseline picks from a fixed set of models. When one of them is retired, the preference
+// list that starts with it names the replacement, so retiring a model is a data change.
+// No model in that list for sale: the slot stays empty, and omission() says so.
+function onSale(cat, id){
+  if (!id || forSale(get(cat, id))) return id;
+  var slots = preferences[cat];
+  for (var name in slots) if (slots[name][0] === id) return firstActive(cat, slots[name]);
+  return null;
 }
 function padListFor(desk){
   return desk.w >= 1300 ? preferences.pad.mat : desk.w < 1100 || desk.d < 600 ? preferences.pad.small : preferences.pad.default;

@@ -95,6 +95,26 @@ checks['two quick share clicks send one short-link request'] = async (page) => {
   assert.equal(posts, 1);
 };
 
+// Publishing says what actually went wrong: a short-link clash or an outage is not
+// "the gallery isn't open yet".
+checks['publishing explains why it failed'] = async (page) => {
+  let answer;
+  await page.route('**/api/setups', (route) => route.fulfill({ status: answer[0], contentType: 'application/json', body: JSON.stringify({ error: answer[1] }) }));
+  await page.goto(origin + '/builder');
+  await page.locator('#desk .piece-monitor svg').waitFor();
+  const publish = async (status, error) => {
+    answer = [status, error];
+    await page.evaluate(() => { document.getElementById('publishNote').textContent = ''; });
+    await page.click('#publishBtn');
+    await page.waitForFunction(() => !document.getElementById('publishBtn').disabled);
+    return page.textContent('#publishNote');
+  };
+  assert.match(await publish(409, 'taken'), /can't be published right now\. Your share link still works/);
+  assert.match(await publish(503, 'off'), /gallery isn't open yet/);
+  assert.match(await publish(503, 'unavailable'), /Couldn't publish right now/);
+  assert.match(await publish(429, 'slow down'), /Wait a minute/);
+};
+
 try {
   for (const [name, check] of Object.entries(checks)) {
     const touch = name.includes('touch');

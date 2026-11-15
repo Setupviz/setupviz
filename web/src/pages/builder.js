@@ -351,21 +351,32 @@ try {
   $('reset').onclick = function(){ endPreview(); state.open = null; state.pick = SV.recommend(A, DESK); state.pos = SV.layout(DESK, state.pick); state.sel = 'mouse'; save(); render(); };
   function setupNow(){ return { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos }; }
   // A short link from the server when it can make one, else the long link that needs no server.
+  // Resolves to { id, url }, or { error } with the server's reason ('off', 'taken', ...).
   // One request per setup: a second click while it is in flight gets the same answer. A failed
   // request is forgotten, so a later click tries again.
   var shortLinks = {};
   function shortLink(){
     var code = SV.encode(setupNow(), A);
     if (!shortLinks[code]) {
-      var request = fetch('/api/setups', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ s: code }) })
-        .then(function(r){ return r.ok ? r.json() : null; })
-        .then(function(res){ return res && res.id ? res : null; })
-        .catch(function(){ return null; });
+      var request = postJson('/api/setups', { s: code }).then(function(res){ return res.id ? res : { error: res.error }; });
       shortLinks[code] = request;
-      request.then(function(res){ if (!res && shortLinks[code] === request) delete shortLinks[code]; });
+      request.then(function(res){ if (!res.id && shortLinks[code] === request) delete shortLinks[code]; });
     }
     return shortLinks[code];
   }
+  // The JSON answer of a POST; a failed one becomes { error } with the server's reason if it gave one.
+  function postJson(path, body){
+    return fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: body ? JSON.stringify(body) : undefined })
+      .then(function(r){
+        return r.json().catch(function(){ return {}; }).then(function(res){ return r.ok ? res : { error: res && res.error || 'failed' }; });
+      })
+      .catch(function(){ return { error: 'network' }; });
+  }
+  var publishFailed = {
+    off: "The gallery isn't open yet. Copy the share link instead.",
+    taken: "This setup can't be published right now. Your share link still works.",
+    'slow down': 'Too many tries. Wait a minute and publish again.'
+  };
   $('shareBtn').onclick = function(){
     var b = $('shareBtn');
     SV.track('share_link');
@@ -386,13 +397,11 @@ try {
   $('publishBtn').onclick = function(){
     var b = $('publishBtn'), note = $('publishNote');
     b.disabled = true; note.textContent = 'Publishing…';
-    shortLink().then(function(res){
-      if (!res) throw new Error('no link');
-      return fetch('/api/setups/' + res.id + '/publish', { method: 'POST' }).then(function(r){ if (!r.ok) throw new Error('no publish'); return res; });
+    shortLink().then(function(link){
+      return link.id ? postJson('/api/setups/' + link.id + '/publish').then(function(res){ return res.error ? res : link; }) : link;
     }).then(function(res){
-      note.innerHTML = 'Published. <a href="/setups?sort=new">See it in the gallery</a> or share <a href="' + res.url.replace(/[^a-z0-9:\/._-]/gi, '') + '">its link</a>.';
-    }).catch(function(){
-      note.textContent = "The gallery isn't open yet. Copy the share link instead.";
+      if (res.error) note.textContent = publishFailed[res.error] || "Couldn't publish right now. Try again in a minute.";
+      else note.innerHTML = 'Published. <a href="/setups?sort=new">See it in the gallery</a> or share <a href="' + res.url.replace(/[^a-z0-9:\/._-]/gi, '') + '">its link</a>.';
     }).then(function(){ b.disabled = false; });
   };
   window.addEventListener('resize', render);

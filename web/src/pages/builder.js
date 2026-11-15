@@ -248,7 +248,8 @@ try {
       : missed ? ''
       : '<li style="padding-left:0;color:#8F8F8F">' + (on.length ? "Based on catalog dimensions and estimated footprints. Allow room for cables, movement and measurement differences." : 'Add a product from the list to place it on your desk.') + '</li>';
 
-    var swap = bad && !state.drag ? SV.fixSwap(DESK, draw.pick, draw.pos, one) : null;
+    // No swap while a product is only previewed: applying it would also commit the preview.
+    var swap = bad && !state.drag && !state.ghost ? SV.fixSwap(DESK, draw.pick, draw.pos, one) : null;
     offeredSwap = swap;
     if (swap) $('vList').insertAdjacentHTML('afterbegin', '<li class="swap-fix"><i class="dot" style="background:' + colors[swap.bad ? 1 : 0] + '"></i>' +
       (swap.bad ? 'Fewer problems with the ' : swap.tight ? 'Everything fits, with a tight spot, with the ' : 'Everything fits with the ') + esc(swap.name) + '. <button type="button" class="linkbtn" data-swap-cat="' + swap.cat + '" data-swap-id="' + esc(swap.id) + '">Swap it in' + (swap.relayout ? ' and rearrange' : '') + '</button></li>');

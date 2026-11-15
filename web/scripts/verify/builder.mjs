@@ -31,9 +31,30 @@ checks['shared link and mine=1 keep their own edits'] = async (page) => {
   assert.equal(await open(''), '70.9', 'editing on my desk does not move the link to my desk');
 };
 
+// On a touch screen the first tap on a product only previews it. "Swap it in" must not
+// commit that preview: only a product the person chose is added.
+checks['a swap offered during a touch preview does not add the previewed product'] = async (page) => {
+  await page.goto(origin + '/builder');
+  await page.locator('#desk .piece-monitor svg').waitFor();
+  const token = await page.evaluate(() => {
+    localStorage.clear();
+    const desk = { w: 1200, d: 600 };
+    return SV.encode({ desk, pick: { keyboard: 'tkl' }, pos: { keyboard: { x: 1100, y: 300 } } }, {});
+  });
+  await page.goto(origin + '/builder?s=' + token);
+  await page.locator('#vList [data-swap-cat]').waitFor();
+  await page.click('.slot[data-id="mouse"] .add');
+  await page.click('.slot[data-id="mouse"] .opt >> nth=0');
+  assert.equal(await page.locator('.slot[data-id="mouse"] .opt.pre').count(), 1, 'the first tap previews');
+  const swap = page.locator('#vList [data-swap-cat]');
+  if (await swap.count()) await swap.click();
+  assert.equal(await page.locator('.slot[data-id="mouse"].empty').count(), 1, 'the mouse slot is still empty');
+};
+
 try {
   for (const [name, check] of Object.entries(checks)) {
-    const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    const touch = name.includes('touch');
+    const context = await browser.newContext(touch ? { viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true } : { viewport: { width: 1280, height: 800 } });
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', (err) => errors.push(err.message));

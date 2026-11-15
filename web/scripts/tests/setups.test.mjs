@@ -176,3 +176,17 @@ test('short link: an id already used by another setup is never handed out', asyn
   assert.equal((await res.json()).error, 'taken');
   assert.equal((await call(e, '/s/' + id)).headers.get('location'), '/share?s=' + other + '&id=' + id, 'the stored setup keeps its link');
 });
+
+test('www: every page, dynamic ones included, moves to setupviz.com with its query', async () => {
+  const e = env();
+  const www = (path, init) => worker.fetch(new Request('https://www.setupviz.com' + path, init), e);
+  for (const path of ['/setups?sort=new', '/share?s=' + code, '/s/abcdefgh', '/builder?x=1', '/fit/47x24-desk', '/og/setup.png?s=' + code]) {
+    const res = await www(path);
+    assert.equal(res.status, 301, path);
+    assert.equal(res.headers.get('location'), 'https://setupviz.com' + path, path);
+  }
+  const head = await www('/setups', { method: 'HEAD' });
+  assert.equal(head.headers.get('location'), 'https://setupviz.com/setups');
+  // A redirect would turn a POST into a GET, so API calls on www are answered where they are.
+  assert.notEqual((await www('/api/setups', { method: 'POST', body: JSON.stringify({ s: code }), headers: { origin: 'https://www.setupviz.com' } })).status, 301);
+});

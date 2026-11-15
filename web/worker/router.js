@@ -76,6 +76,12 @@ function goRedirect(url, env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    // www to apex for every page, dynamic ones included, keeping the path and query. A POST is
+    // answered where it is, since a redirect would turn it into a GET.
+    if (url.hostname === 'www.setupviz.com' && (request.method === 'GET' || request.method === 'HEAD')) {
+      url.hostname = 'setupviz.com';
+      return secure(Response.redirect(url, 301));
+    }
     if (url.pathname.startsWith('/go/')) return goRedirect(url, env) || serveAsset('/404.html', request, url.hostname, 404);
     if (url.pathname === '/api/prices') return secure(await amazonPrices(request, env));
     const setups = await setupsRoute(request, url, env, ctx);
@@ -89,9 +95,8 @@ export default {
     const route = ['', '/', '/index', '/home'].includes(stem) ? '/home' : stem;
     const key = route === '/home' ? '/index.html' : F[route] ? route : route + '.html';
     if (!F[key] || key === '/404.html') return missing();
-    if (path !== prefix + route || url.hostname === 'www.setupviz.com') {
+    if (path !== prefix + route) {
       url.pathname = prefix + route;
-      if (url.hostname === 'www.setupviz.com') url.hostname = 'setupviz.com';
       return secure(Response.redirect(url, 301));
     }
     return serveAsset(key, request, url.hostname);

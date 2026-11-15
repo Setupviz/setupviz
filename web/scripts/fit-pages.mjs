@@ -38,9 +38,18 @@ function fixes(f) {
     .filter((t) => t && !seen.has(t) && seen.add(t));
 }
 
+const PIECE = { keyboard: 'keyboard', pad: 'mouse pad', mouse: 'mouse' };
+const list = (items, word) => items.length < 2 ? items.join('') : items.slice(0, -1).join(', ') + ' ' + word + ' ' + items[items.length - 1];
+
 function verdict(f, desk) {
   const m = f.monitor;
   if (f.sideRoom < 0) return { lvl: 2, line: `No. The ${m.name} is ${both(-f.sideRoom)} wider than a ${desk.name} desk.` };
+  // settle() leaves out a piece that can't fit, so a setup that "fits" may be missing one.
+  const left = ['keyboard', 'pad', 'mouse'].filter((c) => !f.setup.pick[c]);
+  if (left.length && f.sum.worst < 2) {
+    const kept = ['keyboard', 'mouse', 'pad'].filter((c) => f.setup.pick[c]).map((c) => PIECE[c]);
+    return { lvl: 1, line: `Yes, without ${list(left.map((c) => 'a ' + PIECE[c]), 'or')}. The ${m.name} fits on a ${desk.name} desk${kept.length ? ' with ' + list(kept.map((p) => 'a ' + p), 'and') : ''}, but there's no room for ${list(left.map((c) => 'a ' + PIECE[c]), 'or')} as well.` };
+  }
   if (f.sum.worst === 0) return { lvl: 0, line: `Yes. The ${m.name} fits on a ${desk.name} desk with a keyboard, mouse pad and mouse, and leaves ${inch(f.room)} of depth in front of the stand.` };
   if (f.sum.worst === 1) return { lvl: 1, line: `Yes, but it's tight. The monitor fits, and the full setup has ${f.sum.tight} tight spot${f.sum.tight > 1 ? 's' : ''}.` };
   return { lvl: 2, line: `Not with a full setup. The monitor itself ${f.sum.status.monitor.lvl < 2 ? 'fits' : "doesn't fit"}, but ${f.sum.bad} piece${f.sum.bad > 1 ? "s don't" : " doesn't"} fit around it.` };

@@ -216,3 +216,15 @@ test('/preview serves the gallery and shared setups the way the site does', asyn
   const shared = await (await call(e, '/preview/share?s=' + code)).text();
   assert.ok(shared.includes('/og/setup.png?s=' + code), 'a shared setup gets its own link preview');
 });
+
+test('fit pages never promise a piece the checked setup left out', async () => {
+  // On a 40 x 20 in desk the MSI G27C4X leaves no room for a mouse pad, so the setup we check
+  // drops it. The page must not say it fits "with a keyboard, mouse pad and mouse".
+  const e = env();
+  const html = await (await call(e, '/fit/msig27c4x-on-40x20-desk')).text();
+  assert.doesNotMatch(html, /fits on a 40 × 20 in desk with a keyboard, mouse pad and mouse/);
+  assert.match(html, /class="verdict"><span class="lvl" style="background:#F5C542"[^>]*><\/span>Yes, without a mouse pad\./);
+  const hub = await (await call(e, '/fit/40x20-desk')).text();
+  const row = hub.match(/<tr><td><span class="lvl"[^>]*><\/span><a href="\/fit\/msig27c4x-on-40x20-desk">[^<]*<\/a><\/td><td>([^<]*)<\/td>/);
+  assert.equal(row[1], 'Tight', 'the hub counts it as tight, not as a fit');
+});

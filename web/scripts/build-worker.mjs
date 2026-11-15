@@ -8,12 +8,12 @@
 // Since then the content security policy is enforced instead of report-only.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { runInNewContext } from 'node:vm';
 import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gearPages } from './gear-pages.mjs';
 import { fitPages } from './fit-pages.mjs';
 import { galleryPage } from './gallery-page.mjs';
+import { bundle, runSite } from './bundle.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = process.argv[2] || join(root, 'dist', 'worker.js');
@@ -32,8 +32,6 @@ const files = [
   'sv.css',
   'questions.css',
   '404.html',
-  'data.js',
-  'desk-size.js',
   'prices.js',
   'setupviz-logo.png',
   'favicon.svg',
@@ -100,23 +98,22 @@ function afterFirstFrame(html, name) {
   });
 }
 
-// setup-image.js is bundled into data.js, like desk-size.js, and also runs in the Worker.
-const shared = ['desk-size.js', 'data.js', 'setup-image.js'];
-const sandbox = { window: {}, btoa, atob };
-for (const script of shared) runInNewContext(readFileSync(join(root, script), 'utf8'), sandbox);
-const catalog = sandbox.window.SV;
-const pagesBuilt = [...gearPages(catalog), ...fitPages(catalog, sandbox.window.SVImage), galleryPage()];
-const generated = new Map(pagesBuilt.map((page) => [page.name, Buffer.from(page.body)]));
+// The shared code in src/, bundled once: /data.js for the site's pages, /desk-size.js for the
+// desk page, and the same site bundle runs in the Worker and here to generate pages.
+const siteBundle = bundle('entry-site.js');
+const site = runSite(siteBundle);
+const catalog = site.SV;
+const pagesBuilt = [...gearPages(catalog), ...fitPages(catalog, site.SVImage), galleryPage()];
+const generated = new Map([
+  ['data.js', Buffer.from(siteBundle)],
+  ['desk-size.js', Buffer.from(bundle('entry-desk.js'))],
+  ...pagesBuilt.map((page) => [page.name, Buffer.from(page.body)]),
+]);
 const gearUrls = pagesBuilt.map((page) => '  <url><loc>https://setupviz.com' + page.path + '</loc></url>').join('\n');
 
 const entries = [...files, ...generated.keys()].map((name) => {
   let body = generated.get(name) || readFileSync(join(root, name));
   if (name === 'sitemap.xml') body = Buffer.from(body.toString().replace('</urlset>', gearUrls + '\n</urlset>'));
-  if (name === 'data.js') body = Buffer.concat([readFileSync(join(root, 'desk-size.js')), body, readFileSync(join(root, 'setup-image.js'))]);
-  if (name.endsWith('.html')) body = Buffer.from(body.toString().replace(
-    '<script src="/desk-size.js"></script>\n<script src="/data.js"></script>\n<script src="/setup-image.js"></script>', '<script src="/data.js"></script>').replace(
-    '<script src="/desk-size.js"></script>\n<script src="/data.js">', '<script src="/data.js">'));
-
   if (name.endsWith('.html')) body = Buffer.from(body.toString().replace(
     '<link rel="stylesheet" href="/sv.css">',
     '<link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
@@ -143,8 +140,6 @@ for (const [name, body] of startupScripts) {
 
 const runtime = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'worker-runtime.js'), 'utf8');
 const setupsRuntime = readFileSync(join(root, 'scripts/setups-runtime.js'), 'utf8');
-// The site's own catalog, fit checks and drawings, run once when the Worker starts.
-const sharedSource = shared.map((script) => readFileSync(join(root, script), 'utf8')).join('\n');
 
 const asins = [...new Set(Object.values(catalog.catalog).flat().filter(catalog.forSale).map(item => item.asin).filter(Boolean))];
 const priceWorker = readFileSync(join(root, 'scripts/amazon-prices.js'), 'utf8');
@@ -155,7 +150,7 @@ const PRICE_ASINS=${JSON.stringify(asins)};
 const PRICE_TAG=${JSON.stringify(catalog.amazonTag)};
 ${priceWorker}
 const SVW=(function(){var window={};
-${sharedSource}
+${siteBundle}
 return window;})();
 ${setupsRuntime}
 ${runtime.endsWith('\n') ? runtime : runtime + '\n'}`;

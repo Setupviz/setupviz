@@ -5,10 +5,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { inflateSync } from 'node:zlib';
-import { runInNewContext } from 'node:vm';
 import { DatabaseSync } from 'node:sqlite';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { runSite } from '../bundle.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const out = join(root, 'dist', 'worker-setups-test.js');
@@ -40,9 +40,7 @@ before(async () => {
   const built = spawnSync(process.execPath, [join(root, 'scripts', 'build-worker.mjs'), out], { stdio: 'inherit' });
   assert.equal(built.status, 0);
   worker = (await import(pathToFileURL(out).href)).default;
-  const sb = { window: {}, btoa, atob };
-  for (const f of ['desk-size.js', 'data.js', 'setup-image.js']) runInNewContext(readFileSync(join(root, f), 'utf8'), sb);
-  SV = sb.window.SV;
+  SV = runSite().SV;
   const desk = { w: 1200, d: 600 }, a = { grip: '', hand: '', use: '' }, pick = SV.recommend(a, desk);
   code = SV.encode({ desk, pick, pos: SV.layout(desk, pick) }, a);
 });

@@ -1,6 +1,6 @@
 // Short links, the public setups gallery, link-preview pictures and step counts.
 // Loaded into the Worker after worker-runtime.js helpers. Uses SVW (the site's own
-// data.js and setup-image.js, run once at startup) to read and check setups, so a
+// the src/ bundle, run once at startup) to read and check setups, so a
 // stored setup is only ever products from the catalog at validated positions:
 // nothing anyone types is stored or shown.
 //

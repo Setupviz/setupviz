@@ -1,11 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { runInNewContext } from 'node:vm';
+import { runSite } from '../bundle.mjs';
 
-const sandbox = { window: {} };
-for (const file of ['../../desk-size.js', '../../data.js']) runInNewContext(readFileSync(new URL(file, import.meta.url), 'utf8'), sandbox);
-const SV = sandbox.window.SV;
+const { SV } = runSite();
 const one = (mm) => (mm / 25.4).toFixed(1) + ' in';
 const clone = (v) => JSON.parse(JSON.stringify(v));
 

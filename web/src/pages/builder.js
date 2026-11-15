@@ -28,14 +28,16 @@ try {
   // The swap on offer in the verdict, with the exact pick and positions fixSwap scored.
   var offeredSwap = null;
   var DESK = { w: SV.defaultDesk.w, d: SV.defaultDesk.d };
-  var shareToken = '';
+  // Edits to a shared setup are kept per view, under the link's token: the sharer's desk, or
+  // "Try this setup on my desk" (mine=1), the same gear on this visitor's saved desk.
+  var editKey = '';
   if (fromLink) {
-    shareToken = linked.token;
+    var mine = /[?&]mine=1/.test(location.search) && !stored.fallback;
+    editKey = linked.token + (mine ? '|mine' : '');
     DESK = { w: fromLink.setup.desk.w, d: fromLink.setup.desk.d }; A = fromLink.answers; state.pick = fromLink.setup.pick; state.pos = fromLink.setup.pos; state.shared = true;
-    var edit = sharedEdit(shareToken);
+    var edit = sharedEdit(editKey);
     if (edit) { DESK = { w: edit.desk.w, d: edit.desk.d }; state.pick = edit.pick; state.pos = edit.pos; }
-    // From "Try this setup on my desk": same gear, laid out on the visitor's saved desk.
-    else if (/[?&]mine=1/.test(location.search) && !stored.fallback) { DESK = stored.desk; state.pos = SV.layout(DESK, state.pick); }
+    else if (mine) { DESK = stored.desk; state.pos = SV.layout(DESK, state.pick); }
   }
   else if (hasLink) deskFallback = true;
   else {
@@ -70,9 +72,9 @@ try {
   function rememberShared(){
     try {
       var bag = sharedBag() || { order: [], edits: {} };
-      var order = [shareToken].concat(bag.order.filter(function(s){ return s !== shareToken && sharedEdit(s); })).slice(0, 5);
+      var order = [editKey].concat(bag.order.filter(function(s){ return s !== editKey && sharedEdit(s); })).slice(0, 5);
       var edits = {};
-      order.forEach(function(s){ edits[s] = s === shareToken ? { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos } : bag.edits[s]; });
+      order.forEach(function(s){ edits[s] = s === editKey ? { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos } : bag.edits[s]; });
       writeStored('sv-shared', JSON.stringify({ order: order, edits: edits }));
     } catch (e) {}
   }

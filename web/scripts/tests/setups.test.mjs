@@ -162,3 +162,17 @@ for (const [kind, DB] of Object.entries(brokenDbs)) {
     }
   });
 }
+
+test('short link: an id already used by another setup is never handed out', async () => {
+  // Ids are 40 bits of the code's hash, so two setups can share one. Store a different setup
+  // under this setup's id first; sharing must not return a link that opens the other setup.
+  const { id } = await (await post(env(), '/api/setups', { s: code })).json();
+  const desk = { w: 1600, d: 800 }, a = { grip: '', hand: '', use: '' }, pick = SV.recommend(a, desk);
+  const other = SV.encode({ desk, pick, pos: SV.layout(desk, pick) }, a);
+  const e = env();
+  await e.DB.prepare('INSERT INTO setups (id, code, desk_w, desk_d, created) VALUES (?1, ?2, ?3, ?4, ?5)').bind(id, other, 1600, 800, 1).run();
+  const res = await post(e, '/api/setups', { s: code });
+  assert.equal(res.status, 409);
+  assert.equal((await res.json()).error, 'taken');
+  assert.equal((await call(e, '/s/' + id)).headers.get('location'), '/share?s=' + other + '&id=' + id, 'the stored setup keeps its link');
+});

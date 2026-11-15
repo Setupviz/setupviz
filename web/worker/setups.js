@@ -81,6 +81,11 @@ async function createLink(request, url, env) {
   const saved = await query(env, (DB) => DB.prepare('INSERT OR IGNORE INTO setups (id, code, desk_w, desk_d, created) VALUES (?1, ?2, ?3, ?4, ?5)')
     .bind(id, read.code, read.setup.desk.w, read.setup.desk.d, Date.now()).run());
   if (saved === DB_DOWN) return unavailable();
+  // Ids are 40 bits of the code's hash, so another setup can already own this one. Never hand
+  // out a link that opens someone else's setup: the page then shares the long link instead.
+  const row = await findSetup(env, id);
+  if (row === DB_DOWN) return unavailable();
+  if (!row || row.code !== read.code) return json({ error: 'taken' }, 409);
   track(env, 'short_link');
   return json({ id, url: url.origin + '/s/' + id });
 }

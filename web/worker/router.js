@@ -4,27 +4,40 @@ const BEACON="<script defer src=\"https://static.cloudflareinsights.com/beacon.m
 // Shared, immutable assets only. Never retain request data or prices here.
 const bodies = new Map();
 
-function serveAsset(key, request, host, status = 200) {
+// HTML served on setupviz.com carries the analytics beacon, so it has its own ETag and body.
+function analyticsFor(asset, host) { return host === 'setupviz.com' && asset.type === 'text/html'; }
+
+function assetHeaders(key, host) {
   const asset = F[key];
-  const analytics = host === 'setupviz.com' && asset.type === 'text/html';
-  const variant = key + (analytics ? ':analytics' : '');
-  const etag = '"' + asset.etag + (analytics ? '-a' : '') + '"';
-  const headers = {
+  return {
     ...SEC,
     'content-type': asset.type + (asset.text ? '; charset=utf-8' : ''),
     'cache-control': 'public, max-age=300',
-    etag,
+    etag: '"' + asset.etag + (analyticsFor(asset, host) ? '-a' : '') + '"',
   };
-  if (status === 200 && request.headers.get('if-none-match')?.split(/,\s*/).includes(etag))
-    return new Response(null, { status: 304, headers });
-  if (request.method === 'HEAD') return new Response(null, { status, headers });
+}
+
+// A file's body as served to this host. Pages rendered from a template (the gallery, a shared
+// setup) start from this, not from serveAsset, so the visitor's cache headers don't apply to it.
+function assetBody(key, host) {
+  const asset = F[key];
+  const analytics = analyticsFor(asset, host);
+  const variant = key + (analytics ? ':analytics' : '');
   if (!bodies.has(variant)) {
     let body = asset.body;
     if (!asset.text) body = Uint8Array.from(atob(body), c => c.charCodeAt(0));
     else if (analytics) body = body.replace('</body>', BEACON + '</body>');
     bodies.set(variant, body);
   }
-  return new Response(bodies.get(variant), { status, headers });
+  return bodies.get(variant);
+}
+
+function serveAsset(key, request, host, status = 200) {
+  const headers = assetHeaders(key, host);
+  if (status === 200 && request.headers.get('if-none-match')?.split(/,\s*/).includes(headers.etag))
+    return new Response(null, { status: 304, headers });
+  if (request.method === 'HEAD') return new Response(null, { status, headers });
+  return new Response(assetBody(key, host), { status, headers });
 }
 
 function secure(response) {

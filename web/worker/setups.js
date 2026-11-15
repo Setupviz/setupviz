@@ -170,8 +170,7 @@ async function gallery(request, url, env) {
   const list = rows.length ? `<ul class="setup-grid">${rows.map(card).join('\n')}</ul>`
     : `<p>${down ? "We can't load the gallery right now. Try again in a minute." : env?.DB ? 'No setups here yet. Build yours and publish it from the builder.' : 'The gallery opens soon. Build your setup now and publish it when it does.'}</p>`;
   const pager = `<p class="setup-pager">${page > 1 ? `<a href="${link(sort, size, page - 1)}">Newer page</a>` : ''}${more ? `<a href="${link(sort, size, page + 1)}">Next page</a>` : ''}</p>`;
-  const base = await serveAsset('/setups.html', request, url.hostname).text();
-  const html = base.replace('<!--SETUPS-->', filters + list + pager);
+  const html = assetBody('/setups.html', url.hostname).replace('<!--SETUPS-->', filters + list + pager);
   const noindex = page > 1 || size || sort === 'new';
   // A database failure is temporary: 503 keeps crawlers from indexing an empty gallery.
   if (down) return new Response(html, { status: 503, headers: { ...SEC, 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '60' } });
@@ -179,19 +178,21 @@ async function gallery(request, url, env) {
 }
 
 // A shared setup's own picture and summary in its link preview.
+// Without a readable setup it is the static page. With one, the page is rendered, so it has
+// no ETag and the visitor's cache headers for the static page don't apply.
 async function sharePage(request, url) {
-  const res = serveAsset('/share.html', request, url.hostname);
   const code = url.searchParams.get('s');
   const read = code && readSetup(code);
-  if (!read || res.status !== 200 || request.method === 'HEAD') return res;
+  if (!read) return serveAsset('/share.html', request, url.hostname);
+  const headers = assetHeaders('/share.html', url.hostname);
+  delete headers.etag;
+  if (request.method === 'HEAD') return new Response(null, { status: 200, headers });
   const sum = SVW.SVImage.summary(read.setup);
   const title = escHtml('A desk setup: ' + sum.text.replace(/\.$/, '') + ' | SetupViz');
   const image = 'https://setupviz.com/og/setup.png?s=' + read.code;
-  const html = (await res.text())
+  const html = assetBody('/share.html', url.hostname)
     .replaceAll('content="https://setupviz.com/og-launch-v1.png"', `content="${image}"`)
     .replaceAll('content="A desk setup, checked for fit | SetupViz"', `content="${title}"`);
-  const headers = new Headers(res.headers);
-  headers.delete('etag');
   return new Response(html, { status: 200, headers });
 }
 

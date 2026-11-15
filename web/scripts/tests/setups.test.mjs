@@ -190,3 +190,20 @@ test('www: every page, dynamic ones included, moves to setupviz.com with its que
   // A redirect would turn a POST into a GET, so API calls on www are answered where they are.
   assert.notEqual((await www('/api/setups', { method: 'POST', body: JSON.stringify({ s: code }), headers: { origin: 'https://www.setupviz.com' } })).status, 301);
 });
+
+test('a browser cache header for a page template never empties a rendered page', async () => {
+  // The gallery and a shared setup's page are rendered from the setups.html and share.html
+  // templates. A conditional request carrying a template's ETag must still get the full page.
+  const built = readFileSync(out, 'utf8');
+  const etag = (key) => '"' + built.match(new RegExp('^"' + key + '": \\{[^\\n]*?"etag":"([0-9a-f]+)"', 'm'))[1] + '-a"';
+  const e = env();
+  const gallery = await call(e, '/setups', { headers: { 'if-none-match': etag('/setups.html') } });
+  assert.equal(gallery.status, 200);
+  assert.match(await gallery.text(), /The gallery|No setups here yet|setup-grid/);
+  const shared = await call(e, '/share?s=' + code, { headers: { 'if-none-match': etag('/share.html') } });
+  assert.equal(shared.status, 200);
+  assert.ok((await shared.text()).includes('/og/setup.png?s=' + code));
+  const head = await call(e, '/share?s=' + code, { method: 'HEAD' });
+  assert.equal(head.status, 200);
+  assert.equal(head.headers.get('etag'), null, 'the rendered page has no static ETag');
+});

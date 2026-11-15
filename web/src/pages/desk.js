@@ -1,10 +1,10 @@
 // The desk-size page.
 // Inlined into the page after /desk-size.js.
 import { savedDesk, measureText, deskRangeMessage, deskFallbackNotice, deskField, deskOk } from '../desk.js';
-import { readStored, writeStored } from '../storage.js';
+import { readStored, writeStored, savedUnit } from '../storage.js';
 
 var saved = savedDesk(readStored('sv-desk'));
-var state = { unit: readStored('sv-unit') || 'in', w: saved.desk.w, d: saved.desk.d };
+var state = { unit: savedUnit(), w: saved.desk.w, d: saved.desk.d };
 var deskFallback = saved.fallback;
 var presets = [[1200,600,'Small'],[1400,700,'Standard'],[1600,800,'Large'],[1800,800,'Extra large']];
 var $ = function(id){ return document.getElementById(id); };

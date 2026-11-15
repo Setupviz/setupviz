@@ -10,14 +10,14 @@ import { showBuyAll } from '../client.js';
 import { linkSetup, savedSetup, setupSig, dropMissing } from '../setup-source.js';
 import { download } from '../setup-image.js';
 import { priceLabel, updatePrices } from '../prices.js';
-import { readStored, writeStored } from '../storage.js';
+import { readStored, writeStored, savedUnit } from '../storage.js';
 
 try {
   var A = SV.answers();
   var order = ['pad', 'monitor', 'keyboard', 'mouse'], listOrder = ['monitor', 'keyboard', 'mouse', 'pad'];
   var cats = { monitor: ['Monitor', 'a monitor', 'monitors'], keyboard: ['Keyboard', 'a keyboard', 'keyboards'], mouse: ['Mouse', 'a mouse', 'mice'], pad: ['Mouse pad', 'a mouse pad', 'mouse pads'] };
   var colors = FIT_COLORS, words = FIT_WORDS;
-  var state = { unit: readStored('sv-unit') || 'in', sel: 'mouse', hover: null, drag: null, dx: 0, dy: 0, open: null, pick: {}, pos: {}, shared: false, ghost: null, previewCat: null, previewPid: null };
+  var state = { unit: savedUnit(), sel: 'mouse', hover: null, drag: null, dx: 0, dy: 0, open: null, pick: {}, pos: {}, shared: false, ghost: null, previewCat: null, previewPid: null };
 
   // where the setup comes from: a share link, then this browser's saved setup, then our picks
   var stored = savedSetup(), saved = stored.setup;

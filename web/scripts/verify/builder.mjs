@@ -128,6 +128,23 @@ checks['the publish note clears when the setup changes'] = async (page) => {
   assert.equal(await page.textContent('#publishNote'), '');
 };
 
+// A saved unit other than in or cm (an old version, a hand edit) falls back to inches on
+// every page instead of printing it as the unit.
+checks['an unknown saved unit falls back to inches'] = async (page) => {
+  await page.goto(origin + '/builder');
+  await page.evaluate(() => localStorage.setItem('sv-unit', 'furlongs'));
+  await page.reload();
+  await page.locator('#desk .piece-monitor svg').waitFor();
+  assert.equal(await page.textContent('.size .unit'), 'in', 'builder');
+  assert.equal(await page.getAttribute('#units button[data-unit="in"]', 'aria-pressed'), 'true', 'builder unit button');
+  await page.goto(origin + '/share');
+  await page.locator('#items .item').first().waitFor();
+  assert.match(await page.textContent('#deskLine'), / in$/, 'share');
+  await page.goto(origin + '/desk');
+  await page.waitForFunction(() => !document.getElementById('w').disabled);
+  assert.match(await page.textContent('#wLabel'), / in$/, 'desk');
+};
+
 try {
   for (const [name, check] of Object.entries(checks)) {
     const touch = name.includes('touch');

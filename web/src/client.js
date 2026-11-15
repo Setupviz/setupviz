@@ -1,6 +1,6 @@
 // Browser-only helpers: step counting and copying a link.
 
-// Counts one step (see scripts/setups-runtime.js EVENTS). No cookie or visitor id.
+// Counts one step (see worker/setups.js EVENTS). No cookie or visitor id.
 export function track(name){
   try { if (navigator.sendBeacon) navigator.sendBeacon('/e?n=' + encodeURIComponent(name)); } catch (e) {}
 }

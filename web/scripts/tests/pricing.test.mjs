@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
-const source = readFileSync(new URL('../amazon-prices.js', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../../worker/prices.js', import.meta.url), 'utf8');
 function harness(extra = {}) {
   const events = [], calls = [];
   const context = { Response, AbortSignal, PRICE_ASINS: ['B000000001'], PRICE_TAG: 'test',

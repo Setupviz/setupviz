@@ -271,7 +271,8 @@ async function setupsRoute(request, url, env, ctx) {
   if (path === '/e' && request.method === 'POST') return countEvent(url, env);
   if (path === '/og/setup.png') return ogImage(request, url, ctx);
   if (page === '/share' && request.method !== 'POST') return url.searchParams.has('s') ? sharePage(request, url) : null;
-  if (page === '/setups' || page === '/setups/') return gallery(request, url, env);
+  if (page === '/setups/') { url.pathname = path.slice(0, -1); return secure(Response.redirect(url, 301)); }
+  if (page === '/setups') return gallery(request, url, env);
   if (path === '/api/setups' && request.method === 'POST') return createLink(request, url, env);
   let m = path.match(/^\/api\/setups\/([a-z2-9]{8})\/(publish|vote)$/);
   if (m && request.method === 'POST') return m[2] === 'publish' ? publish(m[1], request, url, env) : vote(m[1], request, url, env);

@@ -228,3 +228,12 @@ test('fit pages never promise a piece the checked setup left out', async () => {
   const row = hub.match(/<tr><td><span class="lvl"[^>]*><\/span><a href="\/fit\/msig27c4x-on-40x20-desk">[^<]*<\/a><\/td><td>([^<]*)<\/td>/);
   assert.equal(row[1], 'Tight', 'the hub counts it as tight, not as a fit');
 });
+
+test('/setups/ redirects to /setups like every other trailing-slash URL', async () => {
+  const e = env();
+  for (const [from, to] of [['/setups/?sort=new', '/setups?sort=new'], ['/preview/setups/', '/preview/setups']]) {
+    const res = await call(e, from);
+    assert.equal(res.status, 301, from);
+    assert.equal(res.headers.get('location'), 'https://setupviz.com' + to, from);
+  }
+});

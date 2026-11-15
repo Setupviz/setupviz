@@ -82,6 +82,8 @@ try {
   function save(){
     // Count the first change per visit: "placed or changed gear", not every drag.
     if (!changed) { changed = true; SV.track('setup_changed'); }
+    // "Published" was about the setup before this change.
+    document.getElementById('publishNote').textContent = '';
     try {
       if (state.shared) { rememberShared(); return; }
       writeStored('sv-setup', JSON.stringify({ sig: sig(), pick: state.pick, pos: state.pos }));

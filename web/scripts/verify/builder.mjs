@@ -115,6 +115,19 @@ checks['publishing explains why it failed'] = async (page) => {
   assert.match(await publish(429, 'slow down'), /Wait a minute/);
 };
 
+// "Published" describes the setup as it was published, so it clears once the setup changes.
+checks['the publish note clears when the setup changes'] = async (page) => {
+  await page.route('**/api/setups', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ id: 'abcdefgh', url: origin + '/s/abcdefgh' }) }));
+  await page.route('**/api/setups/abcdefgh/publish', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ id: 'abcdefgh' }) }));
+  await page.goto(origin + '/builder');
+  await page.locator('#desk .piece-monitor svg').waitFor();
+  await page.click('#publishBtn');
+  await page.waitForFunction(() => /Published/.test(document.getElementById('publishNote').textContent));
+  await page.focus('#desk .piece-mouse');
+  await page.keyboard.press('ArrowLeft');
+  assert.equal(await page.textContent('#publishNote'), '');
+};
+
 try {
   for (const [name, check] of Object.entries(checks)) {
     const touch = name.includes('touch');

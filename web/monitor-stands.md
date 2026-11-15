@@ -10,6 +10,12 @@ Panel positions are approximate at neutral tilt. Side and overhead images locate
 | S2425HSM | [Manufacturer reference](https://dl.dell.com/content/manual79158351-dell-24-plus-monitor-s2425hsm-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
 | S3425DW | [Manufacturer reference](https://dl.dell.com/content/manual6669801-dell-34-plus-usb-c-monitor-s3425dw-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
 | XG27ACS | [Manufacturer reference](https://dlcdnets.asus.com/pub/ASUS/LCD%20Monitors/XG27ACS/ASUS_XG27ACS_English.pdf?model=XG27ACS) | Manufacturer outline drawing (manual, p. 2-2) |
+| S2725QS | [Manufacturer reference](https://dl.dell.com/content/manual3743786-dell-27-plus-4k-monitor-s2725qs-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| S2725DSM | [Manufacturer reference](https://dl.dell.com/content/manual2758308-dell-27-plus-qhd-monitor-s2725dsm-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| S2725HSM | [Manufacturer reference](https://dl.dell.com/content/manual80773991-dell-27-plus-monitor-s2725hsm-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| S3225QS | [Manufacturer reference](https://dl.dell.com/content/manual4700369-dell-32-plus-4k-monitor-s3225qs-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| U2726DER | [Manufacturer reference](https://dl.dell.com/content/manual47122317-dell-ultrasharp-27-thunderbolt-hub-monitor-u2726der-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
+| AW2725DF | [Manufacturer reference](https://dl.dell.com/content/manual84042005-alienware-aw2725df-monitor-outline-dimension.pdf?language=en-us) | Manufacturer outline drawing |
 | G27C4X | [Manufacturer reference](https://storage-asset.msi.com/global/picture/product/product_17205196425911e12a12663347b61c3eb7b4ba38db.webp) | Estimated from oblique or front/rear photos and comparable stock hardware |
 | G32C4X | [Manufacturer reference](https://storage-asset.msi.com/global/picture/product/product_1675826253f57958b3253172ddb04ccbfb8aee2c91.webp) | Estimated from oblique or front/rear photos and comparable stock hardware |
 | G32C4XS | [Manufacturer reference](https://storage-asset.msi.com/specSheet/us/monitor/G32C4XS.pdf) | Estimated from oblique or front/rear photos and comparable stock hardware |

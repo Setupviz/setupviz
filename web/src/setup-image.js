@@ -6,8 +6,9 @@
 import { measureText } from './desk.js';
 import { get } from './products.js';
 import { check } from './fit.js';
+import { esc } from './html.js';
+import { FIT_COLORS, FIT_WORDS } from './fit-words.js';
 
-export const COLORS = ['#5BE38A', '#F5C542', '#FF6B5B'];
 var ORDER = ['pad', 'monitor', 'keyboard', 'mouse'];
 var FILL = { pad: '#262A2E', stand: '#3A3F44', panel: '#5D646B', keyboard: '#4A5056', mouse: '#737B83' };
 
@@ -31,7 +32,7 @@ export function summary(setup){
 export function shapes(setup){
   var st = check(setup, inches), out = [];
   on(setup).forEach(function(c){
-    var s = get(c, setup.pick[c]), p = setup.pos[c], stroke = COLORS[st[c].lvl];
+    var s = get(c, setup.pick[c]), p = setup.pos[c], stroke = FIT_COLORS[st[c].lvl];
     if (c === 'monitor') {
       var bw = s.base ? s.base[0] : s.w * 0.4, bd = s.base ? s.base[1] : s.d * 0.8;
       out.push({ cat: c, part: 'stand', x: p.x + (s.w - bw) / 2, y: p.y + s.d - bd, w: bw, d: bd, r: 10, fill: FILL.stand, stroke: stroke });
@@ -47,7 +48,6 @@ export function shapes(setup){
 }
 
 function n(v){ return Math.round(v * 10) / 10; }
-function escAttr(s){ return String(s).replace(/[&<>"']/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
 // A to-scale top view as SVG markup. Every number comes from the catalog or a
 // decoded setup, and the label is escaped, so it is safe to put straight into a page.
@@ -58,7 +58,7 @@ export function svg(setup, label){
       '" fill="' + s.fill + '" stroke="' + s.stroke + '" stroke-width="2" vector-effect="non-scaling-stroke"/>';
   }).join('');
   return '<svg class="desk-svg" viewBox="' + n(-m) + ' ' + n(-m) + ' ' + n(w + 2 * m) + ' ' + n(d + 2 * m) + '" role="img" aria-label="' +
-    escAttr(label || 'Desk from above') + '" xmlns="http://www.w3.org/2000/svg">' +
+    esc(label || 'Desk from above') + '" xmlns="http://www.w3.org/2000/svg">' +
     '<rect x="0" y="0" width="' + n(w) + '" height="' + n(d) + '" rx="' + n(Math.min(w, d) * 0.02) + '" fill="#141414" stroke="#3A3A3A" stroke-width="1.5" vector-effect="non-scaling-stroke"/>' +
     parts + '</svg>';
 }
@@ -96,12 +96,11 @@ export function toCanvas(setup, unit){
     roundRect(ctx, ox + s.x * scale, oy + s.y * scale, s.w * scale, s.d * scale, s.r * scale);
     ctx.fillStyle = s.fill; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = s.stroke; ctx.stroke();
   });
-  var words = ['Fits', 'Tight', "Won't fit"];
   items.forEach(function(c, i){
     var s = get(c, setup.pick[c]), st = sum.status[c], y = listTop + i * 44;
-    ctx.beginPath(); ctx.arc(pad + 8, y - 8, 8, 0, Math.PI * 2); ctx.fillStyle = COLORS[st.lvl]; ctx.fill();
+    ctx.beginPath(); ctx.arc(pad + 8, y - 8, 8, 0, Math.PI * 2); ctx.fillStyle = FIT_COLORS[st.lvl]; ctx.fill();
     ctx.fillStyle = '#EDEDED'; ctx.font = '500 24px ' + font; ctx.fillText(s.name, pad + 28, y);
-    var right = words[st.lvl] + (st.lvl ? ', ' + st.msg : '') + ' · ' + one(s.w) + ' × ' + one(s.d);
+    var right = FIT_WORDS[st.lvl] + (st.lvl ? ', ' + st.msg : '') + ' · ' + one(s.w) + ' × ' + one(s.d);
     ctx.fillStyle = '#8F8F8F'; ctx.font = '400 20px ' + font; ctx.textAlign = 'right'; ctx.fillText(right, W - pad, y); ctx.textAlign = 'left';
   });
   ctx.fillStyle = '#EDEDED'; ctx.font = '600 24px ' + font; ctx.fillText('setupviz.com', pad, H - 40);

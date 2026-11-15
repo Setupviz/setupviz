@@ -106,7 +106,7 @@ async function vote(id, request, url, env) {
   return json({ id, votes: row.votes });
 }
 
-function escHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+const escHtml = SVW.SVModules['html.js'].esc;
 function inchText(mm) { return SVW.SV.measureText(mm, 'in'); }
 
 function card(row) {

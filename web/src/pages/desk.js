@@ -1,12 +1,13 @@
 // The desk-size page.
 // Inlined into the page after /desk-size.js.
+import { savedDesk, measureText, deskRangeMessage, deskFallbackNotice, deskField, deskOk } from '../desk.js';
 
-var saved = SVDesk.savedDesk(localStorage.getItem('sv-desk'));
+var saved = savedDesk(localStorage.getItem('sv-desk'));
 var state = { unit: localStorage.getItem('sv-unit') || 'in', w: saved.desk.w, d: saved.desk.d };
 var deskFallback = saved.fallback;
 var presets = [[1200,600,'Small'],[1400,700,'Standard'],[1600,800,'Large'],[1800,800,'Extra large']];
 var $ = function(id){ return document.getElementById(id); };
-function measure(mm){ return SVDesk.measureText(mm, state.unit); }
+function measure(mm){ return measureText(mm, state.unit); }
 function clearField(id){
   var input = $(id);
   input.setAttribute('aria-invalid', 'false');
@@ -23,13 +24,13 @@ function render(){
   var ratio = isFinite(state.w) ? Math.max(1.2, Math.min(3.2, state.w / depth)) : 2;
   document.querySelector('.diagram').style.aspectRatio = ratio + ' / 1';
   if ($('w').getAttribute('aria-invalid') !== 'true') $('w').value = measure(state.w);
-  else showField('w', SVDesk.deskRangeMessage('w', state.unit));
+  else showField('w', deskRangeMessage('w', state.unit));
   if ($('d').getAttribute('aria-invalid') !== 'true') $('d').value = measure(state.d);
-  else showField('d', SVDesk.deskRangeMessage('d', state.unit));
+  else showField('d', deskRangeMessage('d', state.unit));
   $('wLabel').textContent = 'width ' + measure(state.w) + ' ' + state.unit;
   $('dLabel').textContent = 'depth ' + measure(state.d) + ' ' + state.unit;
   var note = $('deskFallback');
-  note.textContent = SVDesk.deskFallbackNotice;
+  note.textContent = deskFallbackNotice;
   note.hidden = !deskFallback;
   document.querySelectorAll('#units button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.unit === state.unit); });
   $('presets').innerHTML = '';
@@ -53,7 +54,7 @@ function commit(id, axis){
     clearField(id);
     return;
   }
-  var field = SVDesk.deskField($(id).value, state.unit, axis);
+  var field = deskField($(id).value, state.unit, axis);
   if (!field.ok) {
     showField(id, field.message);
     return;
@@ -68,7 +69,7 @@ function continueWithDesk(e){
   var first = null;
   [['w', 'w'], ['d', 'd']].forEach(function(pair){
     if ($(pair[0]).value === measure(state[pair[1]])) return;
-    var field = SVDesk.deskField($(pair[0]).value, state.unit, pair[1]);
+    var field = deskField($(pair[0]).value, state.unit, pair[1]);
     if (!field.ok) {
       showField(pair[0], field.message);
       if (!first) first = $(pair[0]);
@@ -83,10 +84,10 @@ function continueWithDesk(e){
     first.focus();
     return;
   }
-  if (deskFallback || !SVDesk.deskOk(state)) {
+  if (deskFallback || !deskOk(state)) {
     e.preventDefault();
-    showField('w', SVDesk.deskRangeMessage('w', state.unit));
-    showField('d', SVDesk.deskRangeMessage('d', state.unit));
+    showField('w', deskRangeMessage('w', state.unit));
+    showField('d', deskRangeMessage('d', state.unit));
     $('w').focus();
     return;
   }

@@ -11,6 +11,8 @@
 // window.SVModules. A page bundle built with { shared: ['entry-site.js'] } reads any module
 // that bundle already contains from the registry instead of including a second copy, so a
 // page script can import shared code and still be small. The shared bundle must load first.
+// If it failed to load, those imports are undefined, as the old globals were, so the page's
+// own error handling runs (the builder shows its "Couldn't load setup data" message).
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { dirname, join, relative, sep } from 'node:path';
@@ -78,7 +80,8 @@ export function bundle(entry, { expose = false, shared = [] } = {}) {
     const head = mod.imports.map((imp) => {
       const missing = imp.names.filter((n) => !exportsOf(imp.from).includes(n));
       if (missing.length) throw new Error(mod.name + ': ' + imp.from + ' does not export ' + missing.join(', '));
-      const source = external.has(imp.from) ? 'window.' + REGISTRY + '[' + JSON.stringify(imp.from) + ']' : idOf(imp.from);
+      const source = external.has(imp.from)
+        ? '(window.' + REGISTRY + ' && window.' + REGISTRY + '[' + JSON.stringify(imp.from) + '] || {})' : idOf(imp.from);
       return 'const { ' + imp.names.join(', ') + ' } = ' + source + ';';
     });
     return 'const ' + idOf(mod.name) + ' = (function () {\n\'use strict\';\n' + head.join('\n') + '\n' + mod.body +

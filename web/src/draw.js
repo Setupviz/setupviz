@@ -1,6 +1,7 @@
 // Monitor drawings for the page. Browser only: these write to the elements they are given.
 import { get, isMat } from './products.js';
-import { outlines, standIntersection, standBox } from './geometry.js';
+import { outlines, standIntersection, standBox, overhang } from './geometry.js';
+import { percentText } from './usage.js';
 
 export function drawMonitor(el, m){
   if (el.dataset.drawnMonitor === m.id) return;
@@ -42,6 +43,13 @@ export function markPadContact(el, pick, pos){
     return [base.x - pos.monitor.x + p[0] * base.w / 100, base.y - pos.monitor.y + p[1] * base.d / 100].join(',');
   }).join(' '));
 }
-export function monitorMeasurements(s, one, two){
-  return s.diagonalIn + "″ diagonal · " + one(s.dims.w) + " wide · " + one(s.d) + " deep with stand\nStand span (W × D): " + two(s.base[0], s.base[1]) + "\nTop view shows the stock stand at neutral tilt. Outline and panel position are approximate.";
+
+// Puts a piece's element over the desk element: position and size as percentages of the desk,
+// and, when part of it hangs off an edge, the hang class and the --ol/--or/--ot/--ob insets.
+export function placePiece(el, desk, rect){
+  function pct(v, t){ return percentText(v, t) || '0%'; }
+  el.style.left = pct(rect.x, desk.w); el.style.top = pct(rect.y, desk.d); el.style.width = pct(rect.w, desk.w); el.style.height = pct(rect.d, desk.d);
+  var over = overhang(desk, rect);
+  el.classList.toggle('hang', !!over);
+  if (over) { el.style.setProperty('--ol', over.l + '%'); el.style.setProperty('--or', over.r + '%'); el.style.setProperty('--ot', over.t + '%'); el.style.setProperty('--ob', over.b + '%'); }
 }

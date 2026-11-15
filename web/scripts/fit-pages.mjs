@@ -2,7 +2,9 @@
 // size listing what fits, and a /fit index. Each answer comes from the same
 // recommend, layout and check code as the builder, run on a full setup
 // (monitor, keyboard, mouse pad and mouse), so the pages say what the builder would.
-import { esc, inch, cm, head, foot } from './gear-pages.mjs';
+import { inch, cm, head, foot } from './gear-pages.mjs';
+import { esc } from '../src/html.js';
+import { FIT_COLORS, FIT_WORDS } from '../src/fit-words.js';
 
 export const FIT_DESKS = [
   { slug: '40x20', w: 1016, d: 508, name: '40 × 20 in', metric: '102 × 51 cm', note: 'a small writing desk' },
@@ -16,7 +18,7 @@ export const FIT_DESKS = [
   { slug: '72x30', w: 1829, d: 762, name: '72 × 30 in', metric: '183 × 76 cm', note: 'a large standing or executive desk' },
 ];
 const NONE = { grip: '', hand: '', use: '' };
-const WORD = ['Fits', 'Tight', "Won't fit"];
+const WORD = FIT_WORDS;
 const both = (mm) => inch(mm) + ' (' + cm(mm) + ')';
 
 export function fitFor(SV, IMG, desk, monitorId) {
@@ -50,7 +52,7 @@ main.fit .verdict{font-size:18px;line-height:28px}
 main.fit .lvl{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:baseline}
 </style>`;
 
-function dot(lvl) { return `<span class="lvl" style="background:${['#5BE38A', '#F5C542', '#FF6B5B'][lvl]}" aria-hidden="true"></span>`; }
+function dot(lvl) { return `<span class="lvl" style="background:${FIT_COLORS[lvl]}" aria-hidden="true"></span>`; }
 
 export function fitPages(SV, IMG) {
   const monitors = SV.catalog.monitor.filter(SV.forSale);

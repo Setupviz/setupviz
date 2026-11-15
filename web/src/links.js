@@ -1,5 +1,6 @@
 // Paid links and the measurement-source note shown with each product.
 import { forSale } from './products.js';
+import { esc } from './html.js';
 
 // Paid links go through the site's /go route, which counts the click and
 // redirects to Amazon with the tag. `from` names where the link was shown.
@@ -13,7 +14,7 @@ export function cartLink(asins, from){
 export function measurementInfo(item){
   var source = item.dimsSource;
   var safe = typeof source === 'string' && /^https:\/\//.test(source);
-  var href = safe ? source.replace(/[&<>"']/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }) : '';
+  var href = safe ? esc(source) : '';
   return '<details class="measurement-info" style="font-size:12px;color:#8F8F8F"><summary>Measurements &amp; estimates</summary><p>' +
     (safe ? '<a href="' + href + '" target="_blank" rel="noopener">Catalog measurement source</a>. ' : 'Measurement source not recorded; verify with the manufacturer. ') +
     'Dimensions may be rounded. Confirm the exact model and measurements before buying.' +

@@ -1,11 +1,15 @@
 // The home page demo desk.
 // Runs after the first frame, once /data.js has loaded.
+import { SV } from '../api.js';
+import { lengths } from '../units.js';
+import { FIT_COLORS } from '../fit-words.js';
+import { placePiece } from '../draw.js';
 
 var desk = { w: 1400, d: 700 }, order = ['monitor', 'keyboard', 'pad', 'mouse'];
 var pick = { monitor: 'mon27', keyboard: 'k75', pad: 'cloth', mouse: 'da3' }, pos = SV.layout(desk, pick);
-var colors = ['#5BE38A', '#F5C542', '#FF6B5B'], state = { sel: 'mouse', drag: null };
+var colors = FIT_COLORS, state = { sel: 'mouse', drag: null };
 var board = document.getElementById('demoBoard'), side = document.getElementById('demoSide');
-function one(mm){ var n = SV.measureText(mm, 'in'); return n ? n + ' in' : ''; }
+var one = lengths(function(){ return 'in'; }).one;
 function dims(c, s){ return (c === 'monitor' ? 'Stand ' : '') + one(c === 'monitor' ? s.base[0] : s.w).replace(' in', '') + ' × ' + one(c === 'monitor' ? s.base[1] : s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + s.kind : ''); }
 function label(c, f){ return SV.labels[c] + (f.lvl === 1 ? ' is tight, ' : f.lvl === 2 ? " won't fit, " : ' ') + f.msg; }
 function words(f){ return f.lvl === 2 ? "won't fit" : 'tight'; }
@@ -18,12 +22,10 @@ function paint(deskOnly){
   var st = SV.check({ desk: desk, pick: pick, pos: pos }, one), fit = 0, tight = 0, bad = 0;
   order.forEach(function(c){
     var s = SV.get(c, pick[c]), p = pos[c], el = board.querySelector('[data-cat="' + c + '"]'), f = st[c];
-    el.style.left = SV.percentText(p.x, desk.w); el.style.top = SV.percentText(p.y, desk.d); el.style.width = SV.percentText(s.w, desk.w); el.style.height = SV.percentText(s.d, desk.d);
+    placePiece(el, desk, { x: p.x, y: p.y, w: s.w, d: s.d });
     el.classList.toggle('sel', state.sel === c);
     if (c === 'monitor') { SV.drawMonitor(el, s); SV.markPadContact(el, pick, pos); }
-    var over = SV.overhang(desk, { x: p.x, y: p.y, w: s.w, d: s.d });
-    el.classList.toggle('hang', !!over); el.classList.toggle('drag', state.drag === c);
-    if (over) { el.style.setProperty('--ol', over.l + '%'); el.style.setProperty('--or', over.r + '%'); el.style.setProperty('--ot', over.t + '%'); el.style.setProperty('--ob', over.b + '%'); }
+    el.classList.toggle('drag', state.drag === c);
     fit += f.lvl === 0; tight += f.lvl === 1; bad += f.lvl === 2;
     var tags = document.querySelectorAll('[data-tag="' + c + '"]');
     var tx = Math.max(desk.w * 0.01, Math.min(p.x, desk.w * 0.62)), ty = p.y > desk.d * 0.12 ? p.y - desk.d * 0.08 : p.y + desk.d * 0.02;

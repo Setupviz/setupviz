@@ -60,14 +60,7 @@
     <div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
   </footer>
 </div>
-<script>
-document.getElementById('skip').onclick = function(){ localStorage.removeItem('sv-hand'); };
-var saved = localStorage.getItem('sv-hand');
-document.querySelectorAll('input[type="radio"]').forEach(function(input){
-  input.checked = input.value === saved;
-  input.addEventListener('change', function(){ localStorage.setItem('sv-hand', input.value); });
-});
-</script>
+<script data-page-script></script>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
 </body>
 </html>

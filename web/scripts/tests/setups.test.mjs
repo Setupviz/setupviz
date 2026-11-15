@@ -207,3 +207,12 @@ test('a browser cache header for a page template never empties a rendered page',
   assert.equal(head.status, 200);
   assert.equal(head.headers.get('etag'), null, 'the rendered page has no static ETag');
 });
+
+test('/preview serves the gallery and shared setups the way the site does', async () => {
+  const e = env();
+  const gallery = await (await call(e, '/preview/setups')).text();
+  assert.ok(!gallery.includes('<!--SETUPS-->'), 'the gallery template is filled in');
+  assert.match(gallery, /No setups here yet/);
+  const shared = await (await call(e, '/preview/share?s=' + code)).text();
+  assert.ok(shared.includes('/og/setup.png?s=' + code), 'a shared setup gets its own link preview');
+});

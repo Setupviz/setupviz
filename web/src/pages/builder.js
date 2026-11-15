@@ -351,14 +351,20 @@ try {
   $('reset').onclick = function(){ endPreview(); state.open = null; state.pick = SV.recommend(A, DESK); state.pos = SV.layout(DESK, state.pick); state.sel = 'mouse'; save(); render(); };
   function setupNow(){ return { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos }; }
   // A short link from the server when it can make one, else the long link that needs no server.
+  // One request per setup: a second click while it is in flight gets the same answer. A failed
+  // request is forgotten, so a later click tries again.
   var shortLinks = {};
   function shortLink(){
     var code = SV.encode(setupNow(), A);
-    if (shortLinks[code]) return Promise.resolve(shortLinks[code]);
-    return fetch('/api/setups', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ s: code }) })
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(res){ if (res && res.id) shortLinks[code] = res; return shortLinks[code] || null; })
-      .catch(function(){ return null; });
+    if (!shortLinks[code]) {
+      var request = fetch('/api/setups', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ s: code }) })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(res){ return res && res.id ? res : null; })
+        .catch(function(){ return null; });
+      shortLinks[code] = request;
+      request.then(function(res){ if (!res && shortLinks[code] === request) delete shortLinks[code]; });
+    }
+    return shortLinks[code];
   }
   $('shareBtn').onclick = function(){
     var b = $('shareBtn');

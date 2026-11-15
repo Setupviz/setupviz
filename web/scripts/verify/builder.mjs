@@ -78,6 +78,23 @@ checks['focus returns to the slot when its menu closes'] = async (page) => {
   assert.equal(await focused(), 'mouse:change', 'closing with Change keeps focus on it');
 };
 
+// Two quick Share clicks reuse the short-link request in flight: one request, one link.
+checks['two quick share clicks send one short-link request'] = async (page) => {
+  let posts = 0;
+  await page.route('**/api/setups', async (route) => {
+    posts++;
+    await new Promise((done) => setTimeout(done, 400));
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ id: 'abcdefgh', url: origin + '/s/abcdefgh' }) });
+  });
+  page.on('dialog', (dialog) => dialog.dismiss());
+  await page.goto(origin + '/builder');
+  await page.locator('#desk .piece-monitor svg').waitFor();
+  await page.click('#shareBtn');
+  await page.click('#shareBtn');
+  await page.waitForTimeout(900);
+  assert.equal(posts, 1);
+};
+
 try {
   for (const [name, check] of Object.entries(checks)) {
     const touch = name.includes('touch');

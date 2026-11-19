@@ -51,9 +51,14 @@ export function deskRangeMessage(axis, unit){
   if (unit === 'cm') return 'Enter a desk size between ' + cmLimit(min) + ' and ' + cmLimit(max) + ' cm.';
   return 'Enter a desk size between ' + inchLimit(min, 'min') + ' and ' + inchLimit(max, 'max') + ' in.';
 }
+// Millimetres per unit people type after a number: 55 in, 55", 140 cm, 4 ft, 4'.
+var typedUnitMm = { in: 25.4, inch: 25.4, inches: 25.4, '"': 25.4, '\u2033': 25.4, cm: 10, ft: 304.8, foot: 304.8, feet: 304.8, "'": 304.8, '\u2032': 304.8 };
 export function deskField(raw, unit, axis){
-  var mm = deskMm(raw, unit);
-  var shown = mm == null ? '' : measureText(mm, unit);
+  var typed = typeof raw === 'string' && /^(.*?)\s*(inches|inch|in|cm|feet|foot|ft|["'\u2033\u2032])\s*$/i.exec(raw);
+  var n = parseDeskInput(typed ? typed[1] : raw);
+  if (n == null) return { ok: false, message: 'Enter a number, like ' + (unit === 'cm' ? '140' : '55') + '.' };
+  var mm = n * (typed ? typedUnitMm[typed[2].toLowerCase()] : unit === 'cm' ? 10 : 25.4);
+  var shown = measureText(mm, unit);
   var shownNumber = shown ? Number(shown) : NaN;
   var shownMm = unit === 'cm' ? shownNumber * 10 : shownNumber * 25.4;
   if (!shown || !deskAxisOk(axis, shownMm)) return { ok: false, message: deskRangeMessage(axis, unit) };

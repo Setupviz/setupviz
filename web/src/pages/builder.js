@@ -261,14 +261,14 @@ try {
     // verdict, under the desk
     var bad = on.filter(function(id){ return st[id].lvl === 2; }).length, tight = on.filter(function(id){ return st[id].lvl === 1; }).length;
     var missed = SV.omission(DESK, state.pick);
-    $('vDot').style.background = bad ? colors[2] : missed ? colors[1] : on.length ? colors[tight ? 1 : 0] : '#3A3A3A';
+    $('vDot').style.background = bad ? colors[2] : missed ? colors[1] : on.length ? colors[tight ? 1 : 0] : '#C9CCD2';
     $('vTitle').textContent = bad ? bad + (bad === 1 ? " piece won't fit" : " pieces won't fit") : missed ? missed : !on.length ? 'Your desk is empty' : tight ? 'Tight fit · ' + tight + (tight === 1 ? ' piece' : ' pieces') : 'No overlaps detected in this layout';
     var seen = {}, fixes = [];
     on.forEach(function(id){ st[id].issues.forEach(function(i){ if (!seen[i.fix]) { seen[i.fix] = 1; fixes.push(i); } }); });
     fixes.sort(function(a,b){ return b.lvl - a.lvl; });
     $('vList').innerHTML = fixes.length ? fixes.slice(0, 3).map(function(i){ return '<li><i class="dot" style="background:' + colors[i.lvl] + '"></i>' + esc(i.fix) + '</li>'; }).join('')
       : missed ? ''
-      : '<li style="padding-left:0;color:#8F8F8F">' + (on.length ? "Based on catalog dimensions and estimated footprints. Allow room for cables, movement and measurement differences." : 'Add a product from the list to place it on your desk.') + '</li>';
+      : '<li style="padding-left:0;color:#5F636C">' + (on.length ? "Based on catalog dimensions and estimated footprints. Allow room for cables, movement and measurement differences." : 'Add a product from the list to place it on your desk.') + '</li>';
 
     // No swap while a product is only previewed: applying it would also commit the preview.
     var swap = bad && !state.drag && !state.ghost ? SV.fixSwap(DESK, draw.pick, draw.pos, one) : null;

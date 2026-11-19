@@ -78,18 +78,18 @@ export function fitPages(SV, IMG) {
       const description = `${v.line} Checked to scale with the monitor's sourced measurements.`;
       const checked = ['monitor', 'keyboard', 'mouse', 'pad'].filter((c) => f.sum.cats.includes(c)).map((c) => {
         const item = SV.get(c, f.setup.pick[c]), st = f.sum.status[c];
-        return `<tr><th scope="row">${dot(st.lvl)}${esc(SV.labels[c])}</th><td><a href="/gear/${esc(item.id)}">${esc(item.name)}</a><br><span style="color:#8F8F8F">${esc(WORD[st.lvl])}${st.lvl ? ', ' + esc(st.msg) : ''}</span></td></tr>`;
+        return `<tr><th scope="row">${dot(st.lvl)}${esc(SV.labels[c])}</th><td><a href="/gear/${esc(item.id)}">${esc(item.name)}</a><br><span style="color:#5F636C">${esc(WORD[st.lvl])}${st.lvl ? ', ' + esc(st.msg) : ''}</span></td></tr>`;
       }).join('\n');
       const advice = fixes(f).map((t) => `<li>${esc(t)}</li>`).join('\n');
       const others = FIT_DESKS.filter((o) => o !== desk).map((o) => `<li><a href="/fit/${m.id}-on-${o.slug}-desk">${esc(m.name)} on a ${esc(o.name)} desk</a></li>`).join('\n');
-      const buy = m.asin ? `<p class="paid">Paid link. We may earn a commission, at no extra cost to you.</p><a class="pill pill-dark" href="/go/${esc(m.asin)}?from=fit" rel="sponsored nofollow noopener" target="_blank">See today's price on Amazon</a>` : '';
+      const buy = m.asin ? `<p class="paid">Paid link. We may earn a commission, at no extra cost to you.</p><a class="pill pill-secondary" href="/go/${esc(m.asin)}?from=fit" rel="sponsored nofollow noopener" target="_blank">See today's price on Amazon</a>` : '';
       const body = head(title, description, path) + style + `
 <main class="legal gear fit">
   <p><a href="/fit">Will it fit?</a> · <a href="/fit/${desk.slug}-desk">${esc(desk.name)} desks</a></p>
   <h1>Will the ${esc(m.name)} fit on a ${esc(desk.name)} desk?</h1>
   <p class="verdict">${dot(v.lvl)}${esc(v.line)}</p>
   ${IMG.svg(f.setup, `${m.name} with a keyboard, mouse pad and mouse on a ${desk.name} desk, from above`)}
-  <p style="font-size:14px;color:#8F8F8F">Top view to scale. Estimated fit, verify measurements before buying.</p>
+  <p style="font-size:14px;color:#5F636C">Top view to scale. Estimated fit, verify measurements before buying.</p>
   <table>
 <tr><th scope="row">Desk</th><td>${esc(desk.name)} (${esc(desk.metric)}), ${esc(desk.note)}</td></tr>
 <tr><th scope="row">Monitor width</th><td>${both(m.dims?.w ?? m.w)}, leaving ${f.sideRoom >= 0 ? both(f.sideRoom) + ' across the desk' : 'nothing: it is wider than the desk'}</td></tr>
@@ -102,7 +102,7 @@ export function fitPages(SV, IMG) {
 ${checked}
   </table>
   ${advice ? `<h2>How to make it fit</h2>\n<ul>\n${advice}\n</ul>` : ''}
-  <div class="cta"><a class="pill pill-light" href="/builder?s=${f.code}">Open this setup and change it</a><a class="pill pill-light" href="/builder?try=monitor:${esc(m.id)}">Try it on my desk</a>${buy}</div>
+  <div class="cta"><a class="pill pill-primary" href="/builder?s=${f.code}">Open this setup and change it</a><a class="pill pill-primary" href="/builder?try=monitor:${esc(m.id)}">Try it on my desk</a>${buy}</div>
   <h2>Other desk sizes</h2>
   <ul>
 ${others}
@@ -131,13 +131,13 @@ ${others}
   <ul>
 ${['monitor', 'keyboard', 'mouse', 'pad'].filter((c) => rec[c]).map((c) => `<li>${esc(SV.labels[c])}: <a href="/gear/${esc(rec[c])}">${esc(SV.get(c, rec[c]).name)}</a></li>`).join('\n')}
   </ul>
-  <div class="cta"><a class="pill pill-light" href="/builder?s=${SV.encode(start, NONE)}">Open this setup and change it</a></div>
+  <div class="cta"><a class="pill pill-primary" href="/builder?s=${SV.encode(start, NONE)}">Open this setup and change it</a></div>
   <h2>Every monitor on a ${esc(desk.name)} desk</h2>
   <table>
 <tr><th scope="col">Monitor</th><th scope="col">Full setup</th><th scope="col">Width</th><th scope="col">Room in front of the stand</th></tr>
 ${table}
   </table>
-  <p style="font-size:14px;color:#8F8F8F">Estimated fit from sourced measurements. Verify measurements before buying.</p>
+  <p style="font-size:14px;color:#5F636C">Estimated fit from sourced measurements. Verify measurements before buying.</p>
 </main>
 ` + foot;
     pages.push({ name: hubPath.slice(1) + '.html', path: hubPath, body: hub });

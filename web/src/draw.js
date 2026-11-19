@@ -17,7 +17,7 @@ export function drawMonitor(el, m){
   }).join(' ');
   var mount = d - m.base[1] + m.base[1] * (m.standShape === 'tripod' || m.standShape === 'fork' ? .42 : .18);
   el.innerHTML = '<svg class="monitor-plan" aria-hidden="true" viewBox="0 0 ' + w + ' ' + d + '" preserveAspectRatio="none">' +
-    '<defs><pattern id="stand-contact-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><rect width="4" height="10" fill="#151515"/></pattern></defs><polygon class="stand-outline" points="' + stand + '"/><path class="stand-post" d="M' + half + ' ' + mount + ' V' + (front - sag) + '"/>' +
+    '<defs><pattern id="stand-contact-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><rect width="4" height="10" fill="#FFFFFF"/></pattern></defs><polygon class="stand-outline" points="' + stand + '"/><path class="stand-post" d="M' + half + ' ' + mount + ' V' + (front - sag) + '"/>' +
     '<path class="panel-housing" d="' + housing + '"/><path class="panel-face" d="' + face + '"/></svg>';
 }
 // The overlay uses the same clipped outline as the fit warning, including the gap between feet.
@@ -38,7 +38,7 @@ export function markPadContact(el, pick, pos){
     stripes.setAttribute('fill', 'url(#stand-contact-hatch)');
     svg.append(mark, stripes);
   }
-  svg.style.fill = isMat(pad) ? '#f5c542' : '#ff6b5b';
+  svg.style.fill = isMat(pad) ? '#B7791F' : '#D2463A';
   mark.setAttribute('points', points.map(function(p){
     return [base.x - pos.monitor.x + p[0] * base.w / 100, base.y - pos.monitor.y + p[1] * base.d / 100].join(',');
   }).join(' '));

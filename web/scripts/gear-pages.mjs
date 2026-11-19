@@ -32,11 +32,11 @@ export function head(title, description, path) {
 <link rel="stylesheet" href="/sv.css">
 <style>
 main.gear table{border-collapse:collapse;width:100%;font-size:15px}
-main.gear th,main.gear td{text-align:left;padding:10px 0;border-bottom:1px solid #2A2A2A;vertical-align:top}
+main.gear th,main.gear td{text-align:left;padding:10px 0;border-bottom:1px solid #DDDFE3;vertical-align:top}
 main.gear th{font-weight:500;width:45%}
 main.gear .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
 main.gear ul{margin:0;padding-left:20px;line-height:28px}
-main.gear .paid{font-size:13px;color:#8F8F8F;margin:0}
+main.gear .paid{font-size:13px;color:#5F636C;margin:0}
 </style>
 </head>
 <body>
@@ -44,11 +44,11 @@ main.gear .paid{font-size:13px;color:#8F8F8F;margin:0}
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
   <a href="/home" class="sv-brand"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="sv-links">
-    <a class="l" href="/home#story" aria-label="How it works"><span class="nav-full">How it works</span></a>
-    <a class="l" href="/home#checks" aria-label="Checks we run"><span class="nav-full">Checks we run</span></a>
-    <a class="l" href="/builder" aria-label="Builder">Builder</a>
+    <a class="l" href="/builder">Builder</a>
+    <a class="l l-wide" href="/gear">Gear</a>
+    <a class="l l-wide" href="/setups">Setups</a>
   </div>
-  <a class="pill pill-light pill-sm nav-cta" href="/desk" aria-label="Find my setup"><span class="nav-full">Find my setup</span></a>
+  <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
 </div></nav>
 `;
 }
@@ -94,10 +94,10 @@ export function gearPages(SV) {
       const description = `${item.name} measurements: ${size}. Check whether this ${label} fits on your desk before you buy.`;
       const table = rows(cat, item, SV).map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('\n');
       const source = /^https:\/\//.test(item.dimsSource || '')
-        ? `<p style="font-size:14px;color:#8F8F8F">Measurements from the <a href="${esc(item.dimsSource)}" rel="noopener" target="_blank">manufacturer's published specs</a>. Dimensions may be rounded. Confirm the exact model before buying.${item.base ? ' Stand outlines are estimates from drawings and product photos.' : ''}</p>`
-        : '<p style="font-size:14px;color:#8F8F8F">Measurement source not recorded. Confirm the dimensions with the manufacturer before buying.</p>';
+        ? `<p style="font-size:14px;color:#5F636C">Measurements from the <a href="${esc(item.dimsSource)}" rel="noopener" target="_blank">manufacturer's published specs</a>. Dimensions may be rounded. Confirm the exact model before buying.${item.base ? ' Stand outlines are estimates from drawings and product photos.' : ''}</p>`
+        : '<p style="font-size:14px;color:#5F636C">Measurement source not recorded. Confirm the dimensions with the manufacturer before buying.</p>';
       const buy = item.asin
-        ? `<p class="paid">Paid link. We may earn a commission, at no extra cost to you.</p><a class="pill pill-dark" href="/go/${esc(item.asin)}?from=product" rel="sponsored nofollow noopener" target="_blank">See today's price on Amazon</a>`
+        ? `<p class="paid">Paid link. We may earn a commission, at no extra cost to you.</p><a class="pill pill-secondary" href="/go/${esc(item.asin)}?from=product" rel="sponsored nofollow noopener" target="_blank">See today's price on Amazon</a>`
         : '';
       const others = items.filter((o) => o.id !== item.id).slice(0, 8)
         .map((o) => `<li><a href="/gear/${esc(o.id)}">${esc(o.name)}</a></li>`).join('\n');
@@ -112,7 +112,7 @@ ${table}
   ${source}
   <h2>Will it fit on your desk?</h2>
   <p>Put the ${esc(item.name)} on a to-scale drawing of your desk, next to the rest of your gear. SetupViz shows whether each piece fits, is tight, or won't fit.</p>
-  <div class="cta"><a class="pill pill-light" href="/builder?try=${cat}:${esc(item.id)}">Try it on my desk</a>${buy}</div>
+  <div class="cta"><a class="pill pill-primary" href="/builder?try=${cat}:${esc(item.id)}">Try it on my desk</a>${buy}</div>
   <h2>Other ${esc(plural[cat].toLowerCase())}</h2>
   <ul>
 ${others}

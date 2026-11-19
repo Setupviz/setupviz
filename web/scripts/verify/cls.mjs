@@ -106,12 +106,15 @@ function readLayout(selectors) {
   for (const sel of selectors) boxes[sel] = box(sel);
   let pillSlack = null;
   const wrap = document.querySelector('.wrap');
-  const row = document.querySelector('.hero .row');
-  const pills = [...document.querySelectorAll('.hero .pill-lg')];
+  // The hero's desk-size form: the parts on its first line, and the room left beside them.
+  const row = document.querySelector('.size-form');
+  const parts = row ? [...row.children] : [];
+  const pills = parts.filter((el) => Math.round(el.getBoundingClientRect().top) === Math.round(parts[0].getBoundingClientRect().top));
   if (wrap && row && pills.length > 1) {
     const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
     const sum = pills.reduce((total, el) => total + el.getBoundingClientRect().width, 0) + gap * (pills.length - 1);
-    pillSlack = Math.round((wrap.clientWidth - sum) * 10) / 10;
+    const box = getComputedStyle(row);
+    pillSlack = Math.round((row.clientWidth - parseFloat(box.paddingLeft) - parseFloat(box.paddingRight) - sum) * 10) / 10;
   }
   let chipSlack = null;
   const chips = document.querySelector('.chips');
@@ -123,7 +126,7 @@ function readLayout(selectors) {
     const sum = rowEls.reduce((total, el) => total + el.getBoundingClientRect().width, 0) + gap * (rowEls.length - 1);
     chipSlack = Math.round((chips.clientWidth - sum) * 10) / 10;
   }
-  return { boxes, pillRows: rows('.hero .pill-lg'), chipRows: rows('.chip'), pillSlack, chipSlack };
+  return { boxes, pillRows: rows('.size-form > *'), chipRows: rows('.chip'), pillSlack, chipSlack };
 }
 
 async function layout(browser, origin, path, width, adjust) {
@@ -215,11 +218,11 @@ try {
   }
 
   // This Chrome applies the metric fallback before first paint and paints the same
-  // widths for Arimo and Geist, so the wrap never happens and CLS stays 0.
-  // QA's wider Arial crosses it (home pills 165px, desk lead +1 line). Compare an
+  // widths for Arimo and Instrument Sans, so the wrap never happens and CLS stays 0.
+  // QA's wider Arial crosses it (desk lead +1 line). Compare an
   // unadjusted local face with one 8% wider — the gap that produced the 56px and 25px shifts.
   for (const [path, width, selectors, rows] of [
-    ['/', 390, ['.story', '.hero .row'], 'pill'],
+    ['/', 390, ['.preview', '.size-form'], 'pill'],
     ['/desk', 360, ['.cols', 'p.lead', '.chips'], 'chip'],
   ]) {
     const natural = await layout(browser, origin, path, width, null);
@@ -230,7 +233,7 @@ try {
     if (natural[rows + 'Rows'] !== narrow[rows + 'Rows']) narrowMoves.push(`${rows} rows ${natural[rows + 'Rows']}->${narrow[rows + 'Rows']}`);
     if (natural[rows + 'Rows'] !== wide[rows + 'Rows']) wideMoves.push(`${rows} rows ${natural[rows + 'Rows']}->${wide[rows + 'Rows']}`);
     const slack = rows === 'pill' ? natural.pillSlack : natural.chipSlack;
-    const slackOk = rows === 'pill' ? natural.pillRows === 1 && slack >= 16 : slack >= 12;
+    const slackOk = rows === 'pill' ? slack >= 16 : slack >= 12;
     const ok = narrowMoves.length === 0 && wideMoves.length === 0 && slackOk;
     if (!ok) pass = false;
     console.log(`${ok ? 'PASS' : 'FAIL'} wrap ${path} @${width} slack=${slack} narrow=${narrowMoves.join('; ') || 'stable'} wide=${wideMoves.join('; ') || 'stable'}`);

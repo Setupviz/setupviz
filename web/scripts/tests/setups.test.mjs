@@ -241,7 +241,7 @@ test('fit pages never promise a piece the checked setup left out', async () => {
   const e = env();
   const html = await (await call(e, '/fit/msig27c4x-on-40x20-desk')).text();
   assert.doesNotMatch(html, /fits on a 40 × 20 in desk with a keyboard, mouse pad and mouse/);
-  assert.match(html, /class="verdict"><span class="lvl" style="background:#F5C542"[^>]*><\/span>Yes, without a mouse pad\./);
+  assert.match(html, /class="verdict"><span class="lvl" style="background:#B7791F"[^>]*><\/span>Yes, without a mouse pad\./);
   const hub = await (await call(e, '/fit/40x20-desk')).text();
   const row = hub.match(/<tr><td><span class="lvl"[^>]*><\/span><a href="\/fit\/msig27c4x-on-40x20-desk">[^<]*<\/a><\/td><td>([^<]*)<\/td>/);
   assert.equal(row[1], 'Tight', 'the hub counts it as tight, not as a fit');

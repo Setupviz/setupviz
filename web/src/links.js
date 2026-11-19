@@ -15,7 +15,7 @@ export function measurementInfo(item){
   var source = item.dimsSource;
   var safe = typeof source === 'string' && /^https:\/\//.test(source);
   var href = safe ? esc(source) : '';
-  return '<details class="measurement-info" style="font-size:12px;color:#8F8F8F"><summary>Measurements &amp; estimates</summary><p>' +
+  return '<details class="measurement-info" style="font-size:12px;color:#5F636C"><summary>Measurements &amp; estimates</summary><p>' +
     (safe ? '<a href="' + href + '" target="_blank" rel="noopener">Catalog measurement source</a>. ' : 'Measurement source not recorded; verify with the manufacturer. ') +
     'Dimensions may be rounded. Confirm the exact model and measurements before buying.' +
     (item.base ? ' Stock stand outlines and panel positions are estimates from drawings and product photos at neutral tilt; they are not measured 3D models. <a href="https://github.com/Setupviz/setupviz/blob/main/web/monitor-stands.md" target="_blank" rel="noopener">Stand references and estimation notes</a>.' : '') +

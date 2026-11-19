@@ -4,13 +4,15 @@ import { SV } from '../api.js';
 import { lengths } from '../units.js';
 import { FIT_COLORS } from '../fit-words.js';
 import { placePiece } from '../draw.js';
+import { readStored, writeStored, savedUnit } from '../storage.js';
+import { ditherInto } from '../dither.js';
 
 var desk = { w: 1400, d: 700 }, order = ['monitor', 'keyboard', 'pad', 'mouse'];
 var pick = { monitor: 'mon27', keyboard: 'k75', pad: 'cloth', mouse: 'da3' }, pos = SV.layout(desk, pick);
 var colors = FIT_COLORS, state = { sel: 'mouse', drag: null };
 var board = document.getElementById('demoBoard'), side = document.getElementById('demoSide');
-var one = lengths(function(){ return 'in'; }).one;
-function dims(c, s){ return (c === 'monitor' ? 'Stand ' : '') + one(c === 'monitor' ? s.base[0] : s.w).replace(' in', '') + ' × ' + one(c === 'monitor' ? s.base[1] : s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + s.kind : ''); }
+var unit = savedUnit(), one = lengths(function(){ return unit; }).one;
+function dims(c, s){ return (c === 'monitor' ? 'Stand ' : '') + one(c === 'monitor' ? s.base[0] : s.w).replace(' ' + unit, '') + ' × ' + one(c === 'monitor' ? s.base[1] : s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + s.kind : ''); }
 function label(c, f){ return SV.labels[c] + (f.lvl === 1 ? ' is tight, ' : f.lvl === 2 ? " won't fit, " : ' ') + f.msg; }
 function words(f){ return f.lvl === 2 ? "won't fit" : 'tight'; }
 function park(c){
@@ -41,7 +43,8 @@ function paint(deskOnly){
   document.querySelector('#demoSum .dot').style.background = colors[bad ? 2 : tight ? 1 : 0];
   document.querySelector('#demoSum .tx').textContent = bad ? bad + " won't fit" : fit + ' fit' + (tight ? ', ' + tight + ' tight' : '');
   document.getElementById('demoUsed').textContent = SV.usedPercent(SV.usedArea({ desk: desk, pick: pick, pos: pos }), desk.w * desk.d) + '% of the desk used';
-  document.getElementById('demoTry').href = document.querySelector('.card.c-3').href = '/builder?s=' + SV.encode({ desk: desk, pick: pick, pos: pos }, { grip: '', hand: '', use: '' });
+  document.getElementById('demoTry').href = '/builder?s=' + SV.encode({ desk: desk, pick: pick, pos: pos }, { grip: '', hand: '', use: '' });
+  document.getElementById('demoSize').textContent = 'Desk ' + SV.measureText(desk.w, unit) + ' × ' + SV.measureText(desk.d, unit) + ' ' + unit;
 }
 board.addEventListener('pointerdown', function(e){
   var el = e.target.closest('.piece'); if (!el) return;
@@ -68,4 +71,59 @@ document.getElementById('demoKeyboard').onchange = function(){
   state.sel = 'keyboard';
   paint();
 };
-paint();
+
+// The example desk takes the visitor's size, so the preview is their desk before they leave.
+function setDesk(w, d){
+  desk = { w: w, d: d };
+  board.style.aspectRatio = w + ' / ' + d;
+  pos = SV.layout(desk, pick);
+  paint();
+}
+
+// The hero's desk size: typed or picked, saved where the builder reads it, then the builder.
+var form = document.getElementById('sizeForm'), err = document.getElementById('sizeErr');
+var fields = { w: document.getElementById('hw'), d: document.getElementById('hd') };
+function showSize(){
+  fields.w.value = SV.measureText(desk.w, unit); fields.d.value = SV.measureText(desk.d, unit);
+  form.querySelectorAll('[data-unit]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.unit === unit); });
+}
+function readSize(){
+  var w = SV.deskField(fields.w.value, unit, 'w'), d = SV.deskField(fields.d.value, unit, 'd'), bad = !w.ok ? w : !d.ok ? d : null;
+  fields.w.setAttribute('aria-invalid', !w.ok); fields.d.setAttribute('aria-invalid', !d.ok);
+  err.textContent = bad ? bad.message : '';
+  return bad ? null : { w: w.mm, d: d.mm };
+}
+function useSize(size){ if (!size) return; setDesk(size.w, size.d); writeStored('sv-desk', JSON.stringify(size)); }
+fields.w.addEventListener('change', function(){ useSize(readSize()); });
+fields.d.addEventListener('change', function(){ useSize(readSize()); });
+form.querySelectorAll('[data-unit]').forEach(function(b){
+  b.onclick = function(){ unit = b.dataset.unit; writeStored('sv-unit', unit); showSize(); paint(); };
+});
+document.querySelectorAll('#sizeChips [data-w]').forEach(function(b){
+  b.onclick = function(){ err.textContent = ''; useSize({ w: +b.dataset.w, d: +b.dataset.d }); showSize(); };
+});
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  var size = readSize();
+  if (!size) { (fields.w.getAttribute('aria-invalid') === 'true' ? fields.w : fields.d).focus(); return; }
+  useSize(size);
+  location.href = '/builder';
+});
+
+var saved = SV.savedDesk(readStored('sv-desk'));
+if (saved.fallback) paint(); else setDesk(saved.desk.w, saved.desk.d);
+showSize();
+fields.w.disabled = fields.d.disabled = false;
+
+// Once, as the preview first comes into view: the desk as blue dots that clear to the drawing.
+var dots = document.getElementById('dither');
+if (window.IntersectionObserver && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  var seen = new IntersectionObserver(function(entries){
+    if (!entries[0].isIntersecting) return;
+    seen.disconnect();
+    ditherInto(dots, board);
+    dots.classList.add('on');
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ dots.classList.add('out'); }); });
+  }, { threshold: 0.35 });
+  seen.observe(board);
+}

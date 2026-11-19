@@ -21,22 +21,22 @@
 <link rel="stylesheet" href="/sv.css">
 <link rel="stylesheet" href="/questions.css">
 <style>
-.seg{display:inline-flex;align-self:flex-start;padding:3px;border-radius:8px;background:#171717;border:1px solid rgba(255,255,255,0.08)}
-.seg button{height:28px;min-height:24px;padding:0 12px;border:0;border-radius:8px;background:transparent;color:#8F8F8F;font:500 12px inherit;font-family:inherit;cursor:pointer}
-.seg button[aria-pressed="true"]{background:#2A2A2A;color:#EDEDED}
+.seg{display:inline-flex;align-self:flex-start;padding:3px;border-radius:8px;background:#FFFFFF;border:1px solid rgba(22,24,29,0.08)}
+.seg button{height:28px;min-height:24px;padding:0 12px;border:0;border-radius:8px;background:transparent;color:#5F636C;font:500 12px inherit;font-family:inherit;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#DDDFE3;color:#16181D}
 .cols{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
-.diagram{position:relative;width:100%;aspect-ratio:2/1;border-radius:16px;background:#171717;border:1px solid rgba(255,255,255,0.06)}
-.diagram .lbl{position:absolute;padding:2px 8px;background:#171717;font-size:12px;color:#CFCFCF;white-space:nowrap}
-.field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#8F8F8F}
-.field input{height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:#171717;color:#EDEDED;font:500 16px inherit;font-family:inherit;outline:none}
-.field input:focus{border-color:rgba(255,255,255,0.3)}
-.field input[aria-invalid="true"]{border-color:#FF6B5B}
-.field-error{margin:0;min-height:36px;font-size:13px;line-height:18px;color:#FF6B5B}
+.diagram{position:relative;width:100%;aspect-ratio:2/1;border-radius:16px;background:#FFFFFF;border:1px solid rgba(22,24,29,0.06)}
+.diagram .lbl{position:absolute;padding:2px 8px;background:#FFFFFF;font-size:12px;color:#3A3E46;white-space:nowrap}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#5F636C}
+.field input{height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(22,24,29,0.1);background:#FFFFFF;color:#16181D;font:500 16px inherit;font-family:inherit;outline:none}
+.field input:focus{border-color:rgba(22,24,29,0.3)}
+.field input[aria-invalid="true"]{border-color:#D2463A}
+.field-error{margin:0;min-height:36px;font-size:13px;line-height:18px;color:#D2463A}
 .field-error:empty{visibility:hidden}
-.fallback{margin:0;padding:10px 16px;border-radius:16px;background:#171717;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:18px;color:#CFCFCF}
+.fallback{margin:0;padding:10px 16px;border-radius:16px;background:#FFFFFF;border:1px solid rgba(22,24,29,0.1);font-size:13px;line-height:18px;color:#3A3E46}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{height:30px;min-height:24px;padding:0 6px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:#171717;color:#CFCFCF;font:500 12px inherit;font-family:inherit;cursor:pointer}
-.chip:hover{border-color:rgba(255,255,255,0.25)}
+.chip{height:30px;min-height:24px;padding:0 6px;border-radius:8px;border:1px solid rgba(22,24,29,0.08);background:#FFFFFF;color:#3A3E46;font:500 12px inherit;font-family:inherit;cursor:pointer}
+.chip:hover{border-color:rgba(22,24,29,0.25)}
 @media (pointer:coarse){
   .btn,.btn-outline,.seg button,.chip{min-height:44px;min-width:44px;height:44px}
 }
@@ -47,11 +47,11 @@
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
   <a href="/home" class="sv-brand"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="sv-links">
-    <a class="l" href="/home#story" aria-label="How it works"><span class="nav-full">How it works</span></a>
-    <a class="l" href="/home#checks" aria-label="Checks we run"><span class="nav-full">Checks we run</span></a>
-    <a class="l" href="/builder" aria-label="Builder">Builder</a>
+    <a class="l" href="/builder">Builder</a>
+    <a class="l l-wide" href="/gear">Gear</a>
+    <a class="l l-wide" href="/setups">Setups</a>
   </div>
-  <a class="pill pill-light pill-sm nav-cta" href="/desk" aria-label="Find my setup"><span class="nav-full">Find my setup</span></a>
+  <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
 </div></nav>
 <div class="wrap">
   <header class="hdr">
@@ -77,14 +77,14 @@
     <div class="cols">
       <div style="flex:1 1 300px;display:flex;flex-direction:column;gap:12px">
         <div class="diagram" role="img" aria-label="Top-down drawing of a desk with the width marked across the top and the depth marked down the side">
-          <div style="position:absolute;left:10%;right:10%;top:10%;height:1px;background:#8F8F8F"></div>
-          <div style="position:absolute;left:10%;top:7%;width:1px;height:7%;background:#8F8F8F"></div>
-          <div style="position:absolute;right:10%;top:7%;width:1px;height:7%;background:#8F8F8F"></div>
+          <div style="position:absolute;left:10%;right:10%;top:10%;height:1px;background:#5F636C"></div>
+          <div style="position:absolute;left:10%;top:7%;width:1px;height:7%;background:#5F636C"></div>
+          <div style="position:absolute;right:10%;top:7%;width:1px;height:7%;background:#5F636C"></div>
           <span class="lbl" id="wLabel" style="left:50%;top:10%;transform:translate(-50%,-50%)">width 55.1 in</span>
-          <div style="position:absolute;left:20%;right:10%;top:24%;bottom:10%;border-radius:8px;background:#1A1A1A;border:1px solid rgba(255,255,255,0.14)"></div>
-          <div style="position:absolute;left:11%;top:24%;bottom:10%;width:1px;background:#8F8F8F"></div>
-          <div style="position:absolute;left:9%;top:24%;width:5%;height:1px;background:#8F8F8F"></div>
-          <div style="position:absolute;left:9%;bottom:10%;width:5%;height:1px;background:#8F8F8F"></div>
+          <div style="position:absolute;left:20%;right:10%;top:24%;bottom:10%;border-radius:8px;background:#F7F7F8;border:1px solid rgba(22,24,29,0.14)"></div>
+          <div style="position:absolute;left:11%;top:24%;bottom:10%;width:1px;background:#5F636C"></div>
+          <div style="position:absolute;left:9%;top:24%;width:5%;height:1px;background:#5F636C"></div>
+          <div style="position:absolute;left:9%;bottom:10%;width:5%;height:1px;background:#5F636C"></div>
           <span class="lbl" id="dLabel" style="left:11%;top:57%;transform:translate(-50%,-50%) rotate(-90deg)">depth 27.6 in</span>
         </div>
         <p class="lead" style="font-size:13px;line-height:20px">Depth is front edge to back edge. Ignore the legs and anything bolted to the back.</p>

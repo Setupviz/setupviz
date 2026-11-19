@@ -49,18 +49,16 @@ for (const keyboard of ['k75', 'full']) {
 await page.emulateMedia({ reducedMotion: 'reduce' });
 await page.reload({ waitUntil: 'load' });
 const sectionsVisible = await page.evaluate(() =>
-  ['.hero', '.board .st-1', '.s-1 .win', '.s-2 .win', '.s-3 .win', '.cards', '.grid4', '.money'].every(selector => {
+  ['.hero', '#demoBoard', '.slots', '.steps', '.grid4', '.cards', '.money'].every(selector => {
     const el = document.querySelector(selector);
     return el && el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && !el.getAnimations().length;
-  })
+  }) && !document.getElementById('dither').checkVisibility()
 );
 
 const colors = await page.evaluate(() => {
-  const small = document.querySelector('.step .win small');
-  const em = document.querySelector('.step .win em');
-  const card = document.querySelector('.step .win');
-  const read = (el) => ({ color: getComputedStyle(el).color, bg: getComputedStyle(card).backgroundColor });
-  return { small: read(small), em: read(em) };
+  // The smallest muted text, on the grey gear cards and on the white step cards.
+  const read = (el, card) => ({ color: getComputedStyle(el).color, bg: getComputedStyle(card).backgroundColor });
+  return { small: read(document.querySelector('.mslot .m'), document.querySelector('.mslot:not(.on)')), em: read(document.querySelector('.steps li span:last-child'), document.querySelector('.steps li')) };
 });
 const smallRatio = contrast(rgbHex(colors.small.color), rgbHex(colors.small.bg));
 const emRatio = contrast(rgbHex(colors.em.color), rgbHex(colors.em.bg));
@@ -71,7 +69,7 @@ const pass = previewOk && motionOk && contrastOk;
 
 console.log(`${previewOk ? 'PASS' : 'FAIL'} keyboard preview contrast ${JSON.stringify(previewViolations)}`);
 console.log(`${motionOk ? 'PASS' : 'FAIL'} reduced-motion sections visible and still`);
-console.log(`${contrastOk ? 'PASS' : 'FAIL'} .step .win small ${smallRatio.toFixed(2)}:1 em ${emRatio.toFixed(2)}:1 on ${rgbHex(colors.small.bg)} color ${rgbHex(colors.small.color)}`);
+console.log(`${contrastOk ? 'PASS' : 'FAIL'} gear card ${smallRatio.toFixed(2)}:1 step card ${emRatio.toFixed(2)}:1 on ${rgbHex(colors.small.bg)} color ${rgbHex(colors.small.color)}`);
 console.log(pass ? 'PASS contrast' : 'FAIL contrast');
 await browser.close();
 server.close();

@@ -216,7 +216,7 @@ function hex(c) { return [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)); 
 
 async function setupPng(setup) {
   const W = 1200, H = 630, M = 60;
-  const palette = ['#0A0A0A', '#141414', '#3A3A3A', ...new Set(SVW.SVImage.shapes(setup).flatMap((s) => [s.fill, s.stroke]))];
+  const palette = ['#F2F2F3', '#FFFFFF', '#C9CCD2', ...new Set(SVW.SVImage.shapes(setup).flatMap((s) => [s.fill, s.stroke]))];
   const ix = (c) => palette.indexOf(c);
   const px = new Uint8Array((W + 1) * H);
   const scale = Math.min((W - 2 * M) / setup.desk.w, (H - 2 * M) / setup.desk.d);
@@ -233,8 +233,8 @@ async function setupPng(setup) {
     }
   };
   for (let y = 0; y < H; y++) px[y * (W + 1)] = 0;
-  fill(ox - 2, oy - 2, setup.desk.w * scale + 4, setup.desk.d * scale + 4, 14, ix('#3A3A3A'));
-  fill(ox, oy, setup.desk.w * scale, setup.desk.d * scale, 12, ix('#141414'));
+  fill(ox - 2, oy - 2, setup.desk.w * scale + 4, setup.desk.d * scale + 4, 14, ix('#C9CCD2'));
+  fill(ox, oy, setup.desk.w * scale, setup.desk.d * scale, 12, ix('#FFFFFF'));
   for (const s of SVW.SVImage.shapes(setup)) {
     const x = ox + s.x * scale, y = oy + s.y * scale, w = s.w * scale, h = s.d * scale, r = s.r * scale;
     fill(x, y, w, h, r, ix(s.stroke));

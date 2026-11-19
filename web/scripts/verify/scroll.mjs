@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { buildWorker, serveWorker } from './serve.mjs';
 
+// The homepage scrolls normally: nothing pins but the top bar, and the page stays short.
+// The preview's dots appear once as it comes into view, then clear to the drawing.
 const live = process.argv[2];
 if (!live) await buildWorker();
 const server = live ? null : await serveWorker(4319);
@@ -9,30 +11,19 @@ const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL 
 try {
   for (const width of [1280, 390]) {
     const page = await browser.newPage({ viewport: { width, height: 800 }, reducedMotion: 'no-preference' });
-    await page.goto(new URL('/home', live || 'http://127.0.0.1:4319').href);
-    const sample = async (selector, offset) => page.locator(selector).evaluate(async (el, offset) => {
-      window.scrollTo(0, el.getBoundingClientRect().top + scrollY + offset);
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      const desktop = innerWidth > 820;
-      const target = desktop ? document.querySelector('.mslot.st-2') : el;
-      const transform = getComputedStyle(target).transform;
-      const translateY = transform === 'none' ? 0 : new DOMMatrix(transform).m42;
-      return { translateY, top: document.querySelector('.pin').getBoundingClientRect().top, opacity: Number(getComputedStyle(target).opacity) };
-    }, offset);
-    if (width > 820) {
-      const early = await sample('.story', 100);
-      const late = await sample('.story', 1050);
-      assert.ok(Math.abs(early.top - late.top) < 2, 'desk preview stays pinned');
-      assert.ok(early.opacity < 0.1 && late.opacity > 0.9, 'keyboard row appears as the visitor scrolls');
-      assert.ok((await sample('.story', 100)).opacity < 0.1, 'scrolling back rewinds the scene');
-    } else {
-      const early = await sample('.s-2 .win', -795);
-      const late = await sample('.s-2 .win', -350);
-      assert.ok(early.translateY - late.translateY > 10, 'phone walkthrough responds to scroll');
-    }
+    await page.goto(new URL('/home', live || 'http://127.0.0.1:4319').href, { waitUntil: 'networkidle' });
+    const pinned = await page.evaluate(() => [...document.querySelectorAll('main *')].filter(el => /sticky|fixed/.test(getComputedStyle(el).position)).length);
+    assert.equal(pinned, 0, 'no section pins while scrolling');
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    assert.ok(height < 6000, `homepage stays short (${height}px)`);
+    await page.locator('#demoBoard').scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.getElementById('dither').classList.contains('on'));
+    await page.waitForTimeout(1600);
+    const after = await page.evaluate(() => Number(getComputedStyle(document.getElementById('dither')).opacity));
+    assert.equal(after, 0, 'the dots clear to the drawing');
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    assert.equal(await page.locator('.pin').evaluate(el => getComputedStyle(el).position), 'static');
-    console.log('PASS scroll at', width);
+    assert.equal(await page.locator('#dither').evaluate(el => getComputedStyle(el).display), 'none');
+    console.log('PASS scroll at', width, height + 'px');
     await page.close();
   }
 } finally {

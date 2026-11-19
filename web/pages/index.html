@@ -20,223 +20,113 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="/sv.css">
 <style>
+/* One short path: desk size in the hero, the plan right under it, then the gear that fits. */
 .wrap{max-width:var(--sv-content);margin:0 auto;padding:0 24px;box-sizing:border-box}
 section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
-/* Skip layout and paint for sections below the first screen until they near the viewport. */
-#story,#start,#checks,.money,footer{content-visibility:auto;contain-intrinsic-size:auto 900px}
+#how,#checks,#more,.money,footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
 
 /* hero */
-.hero{padding:40px 0 24px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
-.hero h1{margin:0;max-width:880px;font-size:clamp(32px,5vw,64px);line-height:1.08;font-weight:400;letter-spacing:-0.035em}
-.hero .row{display:flex;gap:10px;flex-wrap:wrap}
-/* 390px sits on the wrap: a few wider glyphs drop the second pill and push the story 56px. */
-@media (min-width:380px) and (max-width:520px){
-  .hero .pill-lg{padding:0 12px}
-  .hero .row{gap:8px}
-}
+.hero{padding:48px 0 32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
+.badge{display:inline-flex;align-items:center;gap:8px;min-height:28px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);font-size:13px;color:var(--muted)}
+.badge i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.badge:hover{color:var(--text);border-color:var(--line-3)}
+.hero h1{margin:0;max-width:760px;font-size:clamp(36px,6vw,64px);line-height:1.02;font-weight:600;letter-spacing:-0.045em;text-wrap:balance}
+.hero .sub{margin:0;max-width:460px;font-size:17px;line-height:26px;color:var(--muted);text-wrap:balance}
+.size-form{display:flex;align-items:center;gap:6px;margin-top:8px;padding:6px 6px 6px 20px;border-radius:999px;background:var(--panel);box-shadow:0 1px 0 var(--line),0 12px 32px rgba(22,24,29,0.06);max-width:100%;box-sizing:border-box}
+.size-form label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.size-form input{width:3.4em;height:40px;padding:0;border:0;background:transparent;font:500 17px/1 var(--mono);color:var(--text);outline:none}
+.size-form input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.size-form input[aria-invalid="true"]{color:#D2463A}
+.size-form .x{color:var(--dim)}
+.size-form .unit{display:inline-flex;padding:2px;border-radius:999px;background:var(--panel-2)}
+.size-form .unit button{height:28px;min-height:24px;min-width:34px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:12px;cursor:pointer}
+.size-form .unit button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(22,24,29,0.12)}
+.size-form .pill{margin-left:4px}
+.size-err{margin:0;font-size:13px;line-height:20px;color:#B42318}
+.size-err:empty{display:none}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.chip{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--muted);font:400 13px/1 var(--font);cursor:pointer}
+.chip:hover{color:var(--text);border-color:var(--line-3)}
+a.chip{color:var(--text)}
 
-/* product shot: builder in miniature */
-.mini{display:flex;min-height:380px}
-.mini-desk{flex:1 1 auto;min-width:0;padding:18px;display:flex;flex-direction:column;gap:10px;border-right:1px solid var(--line)}
-.mini-desk .cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
-.mini-side{flex:0 0 260px;padding:16px;display:flex;flex-direction:column;gap:8px}
-.mini-side .h{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
-.mslot{padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
-.mslot.on{border-color:var(--line-3);background:var(--raise)}
-.mslot .c{font-size:12px;letter-spacing:0;color:var(--muted)}
-.mslot .n{font-size:13px}
-.mslot .m{font-size:12px;color:var(--muted)}
-.mini-side .h a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
-
-.board{position:relative;width:100%;aspect-ratio:2/1;border-radius:10px;border:1px solid var(--line);background-size:2.5% 5%;background-position:1.25% 2.5%;overflow:hidden}
-#demoBoard{width:auto;touch-action:none;overflow:visible}
+/* the preview: the example desk, drawn to scale, with the gear on it in cards below */
+.preview{position:relative;border-radius:24px;background:var(--panel);padding:clamp(12px,2vw,24px);display:flex;flex-direction:column;gap:16px}
+.preview-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.preview-top label{display:flex;align-items:center;gap:8px;white-space:nowrap;min-width:0}
+.preview-top select{min-width:0;max-width:100%}
+.preview-top select{font:inherit;color:var(--text);background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 10px}
+.board-wrap{position:relative}
+.board{position:relative;width:100%;aspect-ratio:2/1;border-radius:14px;border:1px solid var(--line);background-size:2.5% 5%;background-position:1.25% 2.5%;overflow:hidden}
+#demoBoard{touch-action:none;overflow:visible}
 .board > *{position:absolute;box-sizing:border-box}
 :where(.board .piece){padding:0;border:0;background:transparent;font:inherit;color:inherit;cursor:grab;touch-action:none;appearance:none}
 .board .drag{cursor:grabbing}
-.b-tag{font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(18,18,18,0.9);border:1px solid var(--line-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;pointer-events:none}
-.b-tag .dot,.caps .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
-.caps .cap-b{display:inline-flex;align-items:center;gap:6px}
-.demo-verdicts{display:none}
+/* Dots that resolve into the drawing once, as the preview scrolls into view. Decorative only. */
+.dither{position:absolute;inset:0;width:100%;height:100%;border-radius:14px;pointer-events:none;opacity:0}
+.dither.on{opacity:1}
+.dither.out{opacity:0;transition:opacity .9s ease .35s}
+.caps{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.caps .cap-b{display:inline-flex;align-items:center;gap:6px;color:var(--text)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
+.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.mslot{padding:14px;border-radius:14px;background:var(--panel-2);border:1px solid transparent;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mslot.on{border-color:var(--line-2);background:var(--panel)}
+.mslot .c{font-size:12px;color:var(--muted)}
+.mslot .n{font-size:14px;font-weight:600;line-height:20px}
+.mslot .m{font-size:12px;color:var(--muted)}
+.b-tag{align-self:flex-start;margin-top:8px;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--panel);border:1px solid var(--line-2);display:inline-flex;align-items:center;gap:6px}
+.preview-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.preview-foot p{margin:0;font-size:13px;color:var(--muted)}
 
-.pin{display:flex;flex-direction:column}
-.shot{padding:clamp(8px,1vw,16px)}
-.demo-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
-.demo-controls select{font:inherit;color:var(--text);background:var(--panel-2);border:1px solid var(--line-3);border-radius:8px;padding:8px}
-.story{position:relative}
-.hint{display:none;text-align:center;font-size:13px}
-@keyframes land{from{opacity:.92;transform:translateY(-14%) scale(1.05)}to{opacity:1;transform:none}}
-@keyframes hint-out{to{visibility:hidden}}
-@keyframes slot{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes show{to{opacity:1}}
-@media (min-width:761px) and (prefers-reduced-motion:no-preference){
-@supports (animation-timeline:view()){
-  .story{height:300vh;view-timeline-name:--build;view-timeline-axis:block}
-  .pin{position:sticky;top:0;height:100vh;box-sizing:border-box;padding-top:64px;justify-content:flex-start}
-  .pin .stage{flex:0 1 auto;max-height:calc(100vh - 118px);overflow:hidden;padding-top:clamp(16px,3vw,40px)}
-  .hint{display:block;opacity:1;animation:hint-out linear both;animation-timeline:--build;animation-range:cover 27% cover 31%}
-  .board .st-1,.board .st-2,.board .st-3,.board .st-4{animation:land ease-out both;animation-timeline:--build}
-  .board .st-1{animation-range:cover 30% cover 37%}
-  .board .st-2{animation-range:cover 39% cover 46%}
-  .board .st-3{animation-range:cover 48% cover 55%}
-  .board .st-4{animation-range:cover 57% cover 64%}
-  @keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
-  .board .b-tag{transform-origin:left center;animation:pop ease-out both;animation-timeline:--build}
-  .board .tg-1{animation-range:cover 37% cover 40%}
-  .board .tg-2{animation-range:cover 46% cover 49%}
-  .board .tg-3{animation-range:cover 55% cover 58%}
-  .board .tg-4{animation-range:cover 64% cover 67%}
-  .mslot.st-1,.mslot.st-2,.mslot.st-3,.mslot.st-4{animation:slot ease-out both;animation-timeline:--build}
-  .mslot.st-1{animation-range:cover 31% cover 38%}
-  .mslot.st-2{animation-range:cover 40% cover 47%}
-  .mslot.st-3{animation-range:cover 49% cover 56%}
-  .mslot.st-4{animation-range:cover 58% cover 65%}
-  .caps .st-5{opacity:0;animation:show linear both;animation-timeline:--build;animation-range:cover 66% cover 71%}
-}
-}
-@media (max-width:760px){
-  .story{height:auto}.pin{position:static;height:auto;padding-top:0}
-  .pin .stage{max-height:none;overflow:visible}
-  .mini{flex-direction:column}.mini-side{display:flex;flex:1 1 auto}.mini-desk{border-right:0}
-  .board .piece,.board .b-tag,.mslot,.caps .st-5{animation:none!important;opacity:1}
-  #demoBoard .b-tag{display:none}
-  .demo-verdicts{display:flex;flex-wrap:wrap;gap:6px}
-  .demo-verdicts .b-tag{max-width:100%;box-sizing:border-box;white-space:normal}
-  .demo-verdicts .tx{min-width:0;overflow-wrap:anywhere}
-  .caps .cap-a,.hint{display:none}
-}
-
-/* Walkthrough */
-.pin2{display:flex;flex-direction:column;gap:28px;justify-content:center}
-.steps-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-rows:auto auto auto auto;column-gap:clamp(24px,5vw,80px);row-gap:28px;align-items:center;border-radius:20px;background:var(--panel);padding:clamp(20px,3vw,40px)}
-.steps-in .eyebrow{grid-column:1;grid-row:1;margin:0}
-.step{display:contents}
-.step .copy{grid-column:1;display:flex;flex-direction:column;gap:8px}
-.step .copy .n{font-family:var(--mono);font-size:12px;color:#8F8F8F}
-.step .copy p{margin:0}
-.step .copy .g{font-size:15px;line-height:23px}
-.step .copy a{display:inline-flex;align-items:center;min-height:24px;margin-top:6px;font-size:14px;color:var(--muted)}
-.step .copy a:hover{color:var(--text)}
-.s-1 .copy{grid-row:2}.s-2 .copy{grid-row:3}.s-3 .copy{grid-row:4}
-.step .win{grid-column:2;grid-row:1/5;width:100%;max-width:560px;justify-self:center;background:#1D1D1D;border-color:#4A4A4A;border-radius:13px;box-shadow:none}
-.step .win .win-bar,.step .win .f,.step .win .ps span:not(.on){color:#929292}
-.q{padding:20px;display:flex;flex-direction:column;gap:12px}
-.q .t{font-size:19px;letter-spacing:-0.015em}
-.q .fs{display:flex;gap:8px}
-.q .f{flex:1;display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
-.q .f b{height:38px;padding:0 12px;border-radius:9px;border:1px solid var(--line-2);background:var(--bg);display:flex;align-items:center;font-weight:400;font-size:14px;color:var(--text)}
-.q .ps{display:flex;gap:6px;flex-wrap:wrap}
-.q .ps span{height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;font-size:12px;color:var(--muted)}
-.q .ps span.on{border-color:var(--line-3);background:var(--raise);color:var(--text)}
-.picks{padding:16px;display:flex;flex-direction:column;gap:6px}
-.pk{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;border:1px solid var(--line)}
-.pk.on{background:var(--raise);border-color:var(--line-2)}
-.pk div{flex:1;display:flex;flex-direction:column;gap:1px}
-.pk b{font-weight:400;font-size:13px}.pk small{font-size:12px}
-.pk em{font-style:normal;font-size:12px;font-family:var(--mono)}
-.step .win small,.step .win em{color:#9A9A9A}
-
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.card{min-height:240px;padding:24px;border-radius:16px;background:var(--panel);display:flex;flex-direction:column;gap:6px;transition:background-color .2s}
-.card:hover{background:var(--panel-2)}
-.card .k{font-size:13px;color:var(--muted)}
-.card .t{margin-top:auto;font-size:20px;letter-spacing:-0.015em}
-.card .d{font-size:14px;line-height:21px;color:var(--muted)}
-.card.light{background:#EDEDED;color:var(--ink)}
-.card.light:hover{background:#FFFFFF;color:var(--ink)}
-.card.light .k,.card.light .d{color:#5A5A5A}
-
-.verdicts{display:flex;gap:8px;flex-wrap:wrap}
-.verdicts .b-tag{position:static}
-.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
-.grid4 > div{padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-height:170px}
-.grid4 .t{font-size:16px}
+/* sections below */
+.block{padding:96px 0 0;display:flex;flex-direction:column;gap:24px}
+.block .lede{max-width:640px;text-wrap:balance}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none}
+.steps li{padding:24px;border-radius:20px;background:var(--panel);display:flex;flex-direction:column;gap:6px}
+.steps .n{font:500 12px/1 var(--mono);color:var(--accent)}
+.steps b{font-size:18px;font-weight:600;letter-spacing:-0.015em;margin-top:18px}
+.steps span{font-size:14px;line-height:21px;color:var(--muted)}
+.verdicts{display:flex;gap:6px;flex-wrap:wrap}
+.verdicts .b-tag{margin:0}
+.fit-estimate{margin:0;font-size:13px;color:var(--muted)}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.grid4 > div{padding:20px;border-radius:20px;background:var(--panel);display:flex;flex-direction:column;gap:6px;min-height:150px;justify-content:flex-end}
+.grid4 .t{font-size:16px;font-weight:600}
 .grid4 .d{font-size:14px;line-height:21px;color:var(--muted)}
-
-.money{padding:140px 24px 160px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
-.money .lede{font-size:clamp(32px,5vw,64px);line-height:1.08;letter-spacing:-0.035em}
-.money p.g{margin:0;max-width:640px;font-size:16px;line-height:25px}
-
-@media (max-width:820px){
-  .steps-in{grid-template-columns:1fr;grid-template-rows:none;row-gap:20px}
-  .step{display:flex;flex-direction:column;gap:14px}
-  .step .win{grid-column:auto;grid-row:auto;max-width:none}
-  .steps-in .eyebrow{grid-row:auto}
-  .cards{grid-template-columns:1fr}.card{min-height:160px}
-  .grid4{grid-template-columns:1fr 1fr}
-}
-@media (max-width:520px){.grid4{grid-template-columns:1fr}}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.card{min-height:150px;padding:24px;border-radius:20px;background:var(--panel);display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s}
+.card:hover{box-shadow:0 0 0 1px var(--line-2)}
+.card .t{margin-top:auto;font-size:18px;font-weight:600;letter-spacing:-0.015em}
+.card .d{font-size:14px;line-height:21px;color:var(--muted)}
+.card .go{font-size:13px;color:var(--accent)}
+.money{padding:120px 0 120px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
+.money .lede{font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-0.04em}
+.money p.g{margin:0;max-width:520px;font-size:16px;line-height:25px}
 
 footer{border-top:1px solid var(--line)}
-.foot{padding:48px 24px 64px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;font-size:14px}
+.foot{padding:48px 24px 40px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;font-size:14px}
 .foot .cols{display:flex;gap:64px;flex-wrap:wrap}
 .foot .col{display:flex;flex-direction:column;gap:10px}
+.foot .col span{font-weight:600}
 .foot .col a{display:inline-flex;align-items:center;min-height:24px;color:var(--muted)}.foot .col a:hover{color:var(--text)}
+.legal-row{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px}
 
-/* Pair each example with its instructions in reading order. */
-.pin2{padding-block:clamp(32px,5vw,72px)}
-@media(min-width:821px){
-  .s-1 .win{grid-row:2}.s-2 .win{grid-row:3}.s-3 .win{grid-row:4}
+@media (max-width:820px){
+  .slots,.grid4{grid-template-columns:1fr 1fr}
+  .steps,.cards{grid-template-columns:1fr}
+  .block{padding-top:72px}
 }
-@media(pointer:coarse){.step .copy a,.foot .col a{min-height:44px;min-width:44px}}
-@media (min-width:821px) and (prefers-reduced-motion:no-preference){
-@keyframes rise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
-@keyframes lift{from{opacity:0;transform:translateY(90px) scale(.92)}to{opacity:1;transform:none}}
-@keyframes sink{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-40px) scale(.98)}}
-@keyframes win-in{from{opacity:0;transform:translateY(60px) scale(.94)}to{opacity:1;transform:none}}
-@keyframes win-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-60px) scale(.94)}}
-@keyframes dim{from{opacity:1}to{opacity:.28}}
-@keyframes lit{from{opacity:.28;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-@keyframes pulse{0%{opacity:.28;transform:translateY(10px)}24%{opacity:1;transform:none}76%{opacity:1;transform:none}100%{opacity:.28;transform:none}}
-@keyframes win-thru{0%{opacity:0;transform:translateY(60px) scale(.94)}32%{opacity:1;transform:none}74%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-60px) scale(.94)}}
-@keyframes tick{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
-@supports (animation-timeline:view()){
-  .step .win{grid-row:1/5}
-  .hero{animation:sink linear both;animation-timeline:scroll(root);animation-range:0 420px}
-
-  /* how it works: three steps, one pinned screen; text lights up as the window swaps */
-  .steps{height:340vh;view-timeline-name:--steps}
-  .start{height:220vh;view-timeline-name:--start}
-  .checks{height:300vh;view-timeline-name:--checks}
-  .pin2{position:sticky;top:0;height:100vh;box-sizing:border-box;padding-top:64px}
-  .step .copy{animation:dim linear both;animation-timeline:--steps}
-  .s-1 .copy{animation-range:cover 42% cover 47%}
-  .s-2 .copy{animation:pulse linear both;animation-timeline:--steps;animation-range:cover 42% cover 63%}
-  .s-3 .copy{opacity:.28;animation:lit linear both;animation-timeline:--steps;animation-range:cover 58% cover 63%}
-  .v-1{animation:win-out cubic-bezier(.4,0,.6,1) both;animation-timeline:--steps;animation-range:cover 42% cover 47%}
-  .v-2{animation:win-thru linear both;animation-timeline:--steps;animation-range:cover 44% cover 63%}
-  .v-3{opacity:0;animation:win-in cubic-bezier(.2,.7,.2,1) both;animation-timeline:--steps;animation-range:cover 60% cover 66%}
-  .steps-in{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:--steps;animation-range:cover 18% cover 30%}
-
-  /* where to start: the three cards slide up one after another and hold */
-  .start .lede{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:--start;animation-range:cover 30% cover 40%}
-  .cards .card{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:--start}
-  .cards .c-1{animation-range:cover 36% cover 48%}
-  .cards .c-2{animation-range:cover 44% cover 56%}
-  .cards .c-3{animation-range:cover 52% cover 64%}
-
-  /* what we check: the grid draws itself alongside the verdict labels */
-  .checks .lede{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:--checks;animation-range:cover 30% cover 38%}
-  .verdicts .b-tag{transform-origin:left center;animation:tick cubic-bezier(.2,.7,.2,1) both;animation-timeline:--checks}
-  .verdicts .k-1{animation-range:cover 48% cover 52%}.verdicts .k-2{animation-range:cover 53% cover 57%}.verdicts .k-3{animation-range:cover 58% cover 62%}
-  .grid4{animation:wipe linear both;animation-timeline:--checks;animation-range:cover 40% cover 50%}
-  .grid4 > div .t,.grid4 > div .d{opacity:1}
-  .grid4 > div{animation:none}
-
-  /* the close: headline, then the why, then the button, as the page bottoms out */
-  .m-1{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% entry 90%}
-  .m-2{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 35%}
-  .m-3{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 60%}
-  .foot > *{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% entry 100%}
-  .foot .col:nth-child(2){animation-range:entry 20% cover 20%}
+@media (max-width:520px){
+  .hero{padding-top:32px}
+  .size-form{flex-wrap:wrap;justify-content:center;border-radius:20px;padding:10px}
+  .size-form .pill{flex:1 0 100%;margin:4px 0 0}
+  .grid4{grid-template-columns:1fr}
 }
+@media (pointer:coarse){
+  .chip,.size-form .unit button,.foot .col a,.card{min-height:44px}
+  .size-form .unit button{min-width:44px;height:40px}
 }
-@media (max-width:820px) and (prefers-reduced-motion:no-preference){
-  @supports (animation-timeline:view()){
-    .step .win,.cards .card{animation:enter-example linear both;animation-timeline:view();animation-range:entry 0% entry 85%}
-    @keyframes enter-example{from{transform:translateY(20px)}to{transform:none}}
-  }
-}
+@media (prefers-reduced-motion:reduce){.dither{display:none}}
 </style>
 </head>
 <body>
@@ -244,148 +134,100 @@ footer{border-top:1px solid var(--line)}
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
   <a href="/home" class="sv-brand"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="sv-links">
-    <a class="l" href="#story" aria-label="How it works"><span class="nav-full">How it works</span></a>
-    <a class="l" href="#checks" aria-label="Checks we run"><span class="nav-full">Checks we run</span></a>
-    <a class="l" href="/builder" aria-label="Builder">Builder</a>
+    <a class="l" href="/builder">Builder</a>
+    <a class="l l-wide" href="/gear">Gear</a>
+    <a class="l l-wide" href="/setups">Setups</a>
   </div>
-  <a class="pill pill-light pill-sm nav-cta" href="/desk" aria-label="Find my setup"><span class="nav-full">Find my setup</span></a>
+  <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
 </div></nav>
 
 <main>
   <div class="wrap">
     <section class="hero">
+      <a class="badge" href="/gear"><i></i>Free · sizes from manufacturer drawings</a>
       <h1>Will it fit on your desk?</h1>
-      <p class="g" style="margin:0;max-width:520px;font-size:17px;line-height:26px">Try real gear on a scale drawing of your desk before you buy.</p>
-      <p class="g" style="margin:0;max-width:520px;font-size:14px;line-height:22px;color:#8F8F8F">Sizes come from manufacturer drawings and spec sheets. <a href="/gear" style="color:inherit">See every measurement</a>.</p>
-      <div class="row">
-        <a href="/desk" class="pill pill-light pill-lg">Enter my desk size <span class="arrow">→</span></a>
-        <a href="/builder" class="pill pill-dark pill-lg">Open builder</a>
-      </div>
+      <p class="sub">Try real gear on a scale drawing of your desk before you buy.</p>
+      <form class="size-form" id="sizeForm" action="/builder" novalidate>
+        <label>W <input id="hw" inputmode="decimal" autocomplete="off" value="55.1" aria-label="Desk width" disabled></label>
+        <span class="x" aria-hidden="true">×</span>
+        <label>D <input id="hd" inputmode="decimal" autocomplete="off" value="27.6" aria-label="Desk depth" disabled></label>
+        <span class="unit" role="group" aria-label="Unit"><button type="button" data-unit="in" aria-pressed="true">in</button><button type="button" data-unit="cm" aria-pressed="false">cm</button></span>
+        <button class="pill pill-primary" type="submit">Plan my desk</button>
+      </form>
+      <p class="size-err" id="sizeErr" role="alert"></p>
+      <div class="chips" id="sizeChips"><button type="button" class="chip" data-w="1200" data-d="600">Small desk</button><button type="button" class="chip" data-w="1400" data-d="700">Standard desk</button><button type="button" class="chip" data-w="1600" data-d="800">Large desk</button><a class="chip" href="/desk">Not sure? Answer 4 questions</a></div>
     </section>
 
-    <section class="story" aria-label="Try a keyboard on the example desk">
-      <div class="pin">
-        <div class="stage shot">
-          <div class="win">
-            <div class="win-bar"><i></i><i></i><i></i><span>Your setup · desk 55.1 × 27.6 in</span></div>
-            <div class="mini">
-              <div class="mini-desk">
-                <label class="demo-controls">Try a keyboard <select id="demoKeyboard"><option value="k75">Compact · MX Mechanical Mini</option><option value="full">Full size · MX Keys S</option></select></label>
-                <div class="cap"><span>Width 55.1 in</span><span>Depth 27.6 in</span></div>
-                <div class="board desk-dots" id="demoBoard" role="group" aria-label="Desk from above. Drag a piece, or use the arrow keys.">
-                  <button type="button" class="piece b-mon st-1" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></button>
-                  <button type="button" class="piece b-pad st-3" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%" aria-label="SteelSeries QcK Heavy Large, fits. Drag to move."></button>
-                  <button type="button" class="piece b-kb st-2" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%" aria-label="Logitech MX Mechanical Mini, fits. Drag to move."></button>
-                  <button type="button" class="piece b-mouse st-4" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%" aria-label="Razer DeathAdder V3, fits. Drag to move."></button>
-                  <span class="b-tag tg-1" data-tag="monitor" style="left:28.21%;top:4.86%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Monitor fits</span></span>
-                  <span class="b-tag tg-2" data-tag="keyboard" style="left:27.14%;top:54.86%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Keyboard fits</span></span>
-                  <span class="b-tag tg-3" data-tag="pad" style="left:58.57%;top:30.57%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Pad fits</span></span>
-                  <span class="b-tag tg-4" data-tag="mouse" style="left:62.00%;top:53.43%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits on the desk</span></span>
-                </div>
-                <div class="demo-verdicts" role="list" aria-label="Fit checks">
-                  <span class="b-tag" data-tag="monitor" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Monitor fits</span></span>
-                  <span class="b-tag" data-tag="keyboard" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Keyboard fits</span></span>
-                  <span class="b-tag" data-tag="pad" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Pad fits</span></span>
-                  <span class="b-tag" data-tag="mouse" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits on the desk</span></span>
-                </div>
-                <div class="cap caps"><span class="cap-b st-5" id="demoSum"><i class="dot" style="background:#5BE38A"></i><span class="tx">4 fit</span></span><span class="st-5" id="demoUsed">27% of the desk used</span></div>
-              </div>
-              <div class="mini-side" id="demoSide">
-                <div class="h"><span>Your setup</span><a id="demoTry" href="/builder?s=eyJ2IjoxLCJkIjpbMTQwMCw3MDBdLCJwIjp7Im0iOiJtb24yNyIsImsiOiJrNzUiLCJwIjoiY2xvdGgiLCJvIjoiZGEzIn0sIngiOnsibSI6WzM5NSwyMF0sImsiOlszODAsNDQwXSwicCI6WzgyMCwyNzBdLCJvIjpbOTQwLDQzMF19LCJhIjpbIiIsIiIsIiJdfQ">Try it in the builder</a></div>
-                <div class="mslot st-1" data-cat="monitor"><span class="c">Monitor</span><span class="n">Dell 27 Plus QHD (S2725DS)</span><span class="m">Stand 9.8 × 7.1 in</span></div>
-                <div class="mslot st-2" data-cat="keyboard"><span class="c">Keyboard</span><span class="n">Logitech MX Mechanical Mini</span><span class="m">12.3 × 5.2 in</span></div>
-                <div class="mslot st-4 on" data-cat="mouse"><span class="c">Mouse</span><span class="n">Razer DeathAdder V3</span><span class="m">2.7 × 5 in · 59 g</span></div>
-                <div class="mslot st-3" data-cat="pad"><span class="c">Mouse pad</span><span class="n">SteelSeries QcK Heavy Large</span><span class="m">17.7 × 15.7 in · cloth</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="hint g">Scroll to build the desk</p>
+    <section class="preview" id="preview" aria-label="Try gear on the example desk">
+      <div class="preview-top">
+        <label>Try a keyboard <select id="demoKeyboard"><option value="k75">Compact · MX Mechanical Mini</option><option value="full">Full size · MX Keys S</option></select></label>
+        <span id="demoSize">Desk 55.1 × 27.6 in</span>
       </div>
+      <div class="board-wrap">
+        <div class="board desk-dots" id="demoBoard" role="group" aria-label="Desk from above. Drag a piece, or use the arrow keys.">
+          <button type="button" class="piece b-mon" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></button>
+          <button type="button" class="piece b-pad" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%" aria-label="SteelSeries QcK Heavy Large, fits. Drag to move."></button>
+          <button type="button" class="piece b-kb" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%" aria-label="Logitech MX Mechanical Mini, fits. Drag to move."></button>
+          <button type="button" class="piece b-mouse" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%" aria-label="Razer DeathAdder V3, fits. Drag to move."></button>
+        </div>
+        <canvas class="dither" id="dither" aria-hidden="true"></canvas>
+      </div>
+      <div class="caps"><span class="cap-b" id="demoSum"><i class="dot" style="background:#1F9D55"></i><span class="tx">4 fit</span></span><span id="demoUsed">27% of the desk used</span></div>
+      <div class="slots" id="demoSide" role="list" aria-label="Gear on the example desk">
+        <div class="mslot" data-cat="monitor" role="listitem"><span class="c">Monitor</span><span class="n">Dell 27 Plus QHD (S2725DS)</span><span class="m">Stand 9.8 × 7.1 in</span><span class="b-tag" data-tag="monitor"><i class="dot" style="background:#1F9D55"></i><span class="tx">Monitor fits</span></span></div>
+        <div class="mslot" data-cat="keyboard" role="listitem"><span class="c">Keyboard</span><span class="n">Logitech MX Mechanical Mini</span><span class="m">12.3 × 5.2 in</span><span class="b-tag" data-tag="keyboard"><i class="dot" style="background:#1F9D55"></i><span class="tx">Keyboard fits</span></span></div>
+        <div class="mslot on" data-cat="mouse" role="listitem"><span class="c">Mouse</span><span class="n">Razer DeathAdder V3</span><span class="m">2.7 × 5 in · 59 g</span><span class="b-tag" data-tag="mouse"><i class="dot" style="background:#1F9D55"></i><span class="tx">Mouse fits on the desk</span></span></div>
+        <div class="mslot" data-cat="pad" role="listitem"><span class="c">Mouse pad</span><span class="n">SteelSeries QcK Heavy Large</span><span class="m">17.7 × 15.7 in · cloth</span><span class="b-tag" data-tag="pad"><i class="dot" style="background:#1F9D55"></i><span class="tx">Pad fits</span></span></div>
+      </div>
+      <div class="preview-foot"><p>Drag any piece. Swap any of them in the builder.</p><a id="demoTry" class="pill pill-secondary" href="/builder?s=eyJ2IjoxLCJkIjpbMTQwMCw3MDBdLCJwIjp7Im0iOiJtb24yNyIsImsiOiJrNzUiLCJwIjoiY2xvdGgiLCJvIjoiZGEzIn0sIngiOnsibSI6WzM5NSwyMF0sImsiOlszODAsNDQwXSwicCI6WzgyMCwyNzBdLCJvIjpbOTQwLDQzMF19LCJhIjpbIiIsIiIsIiJdfQ">Open this desk in the builder <span class="arrow">→</span></a></div>
     </section>
-  <section id="story" class="steps wrap" aria-label="How it works">
-    <div class="pin2">
-      <div class="steps-in">
-        <p class="eyebrow">How it works</p>
-        <div class="step s-1">
-          <div class="copy"><span class="n">01</span><p class="lede">Start with your desk size.</p><p class="g">Enter the width and depth of your desktop. If you want help choosing a mouse, add your hand size and grip.</p><a href="/desk">Start with your desk →</a></div>
-          <div class="win v-1"><div class="win-bar"><i></i><i></i><i></i><span>Question 1 of 4</span></div>
-            <div class="q">
-              <span class="t">How big is the desk?</span>
-              <div class="fs"><div class="f">Width<b>55.1 in</b></div><div class="f">Depth<b>27.6 in</b></div></div>
-              <div class="ps"><span>Small</span><span class="on">Standard · 55.1 × 27.6</span><span>Large · 63 × 31.5</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="step s-2">
-          <div class="copy"><span class="n">02</span><p class="lede">Choose a mouse.</p><p class="g">Compare mice by shape, weight and how you hold them.</p><a href="/hand">Measure your hand →</a></div>
-          <div class="win v-2"><div class="win-bar"><i></i><i></i><i></i><span>Mice for a palm grip, large hands</span></div>
-            <div class="picks">
-              <div class="pk on"><div><b>Razer DeathAdder V3</b><small>Long body with a raised back.</small></div><em>59 g</em></div>
-              <div class="pk"><div><b>Logitech G Pro X Superlight 2</b><small>Symmetrical shape, with buttons on the left.</small></div><em>60 g</em></div>
-              <div class="pk"><div><b>DeathAdder V3 HyperSpeed</b><small>Shorter palm-grip option.</small></div><em>55 g</em></div>
-            </div>
-          </div>
-        </div>
-        <div class="step s-3">
-          <div class="copy"><span class="n">03</span><p class="lede">Try the layout.</p><p class="g">Drag the keyboard or swap the monitor to see how much room you have left.</p><a href="/builder">Open the builder →</a></div>
-          <div class="win v-3"><div class="win-bar"><i></i><i></i><i></i><span>Desk from above</span></div>
-            <div style="padding:16px">
-              <div class="board desk-dots">
-                <div class="b-mon" style="left:28.07%;top:8%;width:43.86%;height:30%"><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></div>
-                <div class="b-pad" style="left:61%;top:42%;width:32%;height:50%"></div>
-                <div class="b-kb" style="left:30%;top:66%;width:26%;height:20%"></div>
-                <div class="b-mouse" style="left:74%;top:60%;width:5%;height:18%"></div>
-                <span class="b-tag" style="left:6%;top:10%"><i class="dot" style="background:#5BE38A"></i>3 fit, 1 tight</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="start" class="start wrap" aria-label="Where to start">
-    <div class="pin2">
-      <p class="lede">Where do you want to start? <span class="g">Answer a few questions, or go straight to the parts.</span></p>
-      <div class="cards">
-        <a href="/desk" class="card light c-1"><span class="k">Recommended</span><span class="t">Help me pick</span><span class="d">Start with your desk size, then choose whether to answer the mouse questions.</span></a>
-        <a href="/builder" class="card c-2"><span class="t">I know what I want</span><span class="d">Search for your products and check how they fit.</span></a>
-        <a href="#demoBoard" class="card c-3"><span class="t">Try the example desk</span><span class="d">Open the example desk, then swap any piece.</span></a>
-      </div>
-    </div>
-  </section>
+    <section id="how" class="block" aria-labelledby="howH">
+      <p class="lede" id="howH">Three steps. <span class="g">No account, nothing to install.</span></p>
+      <ol class="steps">
+        <li><span class="n">1</span><b>Enter your desk size</b><span>Width and depth of the desktop. A rough guess is fine.</span></li>
+        <li><span class="n">2</span><b>Try real gear</b><span>Pick a monitor, keyboard, mouse and pad, or type the size of something we don't list.</span></li>
+        <li><span class="n">3</span><b>Buy what fits</b><span>Each piece says fits, tight or won't fit, with a link to today's price.</span></li>
+      </ol>
+    </section>
 
-  <section id="checks" class="checks wrap" aria-label="What we check">
-    <div class="pin2">
-      <p class="lede">What does the builder check? <span class="g">Move a piece to see where it overlaps or hangs off the desk.</span></p>
-      <p class="muted fit-estimate">Estimated fit—verify measurements before buying</p>
-      <div class="verdicts">
-        <span class="b-tag k-1"><i class="dot" style="background:#5BE38A"></i>Fits</span><span class="b-tag k-2"><i class="dot" style="background:#F5C542"></i>Tight</span><span class="b-tag k-3"><i class="dot" style="background:#FF6B5B"></i>Won't fit</span>
-      </div>
+    <section id="checks" class="block" aria-labelledby="checksH">
+      <p class="lede" id="checksH">What the builder checks. <span class="g">Move a piece and it tells you where it overlaps or hangs off the desk.</span></p>
+      <p class="fit-estimate">Estimated fit—verify measurements before buying</p>
+      <div class="verdicts"><span class="b-tag"><i class="dot" style="background:#1F9D55"></i>Fits</span><span class="b-tag"><i class="dot" style="background:#B7791F"></i>Tight</span><span class="b-tag"><i class="dot" style="background:#D2463A"></i>Won't fit</span></div>
       <div class="grid4">
-        <div class="g-1"><span class="t">Desk edges</span><span class="d">See when a piece sits close to the edge or hangs over it.</span></div>
-        <div class="g-2"><span class="t">Mouse size and grip</span><span class="d">See which hand sizes and grips our guide pairs with each mouse.</span></div>
-        <div class="g-3"><span class="t">Mouse pad space</span><span class="d">Check whether the mouse sits fully on the pad and where the keyboard overlaps it.</span></div>
-        <div class="g-4"><span class="t">Monitor stand</span><span class="d">See whether the stand overlaps your keyboard or pad.</span></div>
+        <div><span class="t">Desk edges</span><span class="d">See when a piece sits close to the edge or hangs over it.</span></div>
+        <div><span class="t">Monitor stand</span><span class="d">See whether the stand overlaps your keyboard or pad.</span></div>
+        <div><span class="t">Mouse pad space</span><span class="d">Check whether the mouse sits fully on the pad and where the keyboard overlaps it.</span></div>
+        <div><span class="t">Mouse size and grip</span><span class="d">See which hand sizes and grips our guide pairs with each mouse.</span></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="money wrap">
-    <p class="lede m-1">SetupViz is free to use.</p>
-    <p class="g m-2">If you buy through an Amazon product link, we may earn a commission. You pay the same price.</p>
-    <a href="/desk" class="pill pill-light pill-lg m-3">Find my setup <span class="arrow">→</span></a>
-  </section>
+    <section id="more" class="block" aria-labelledby="moreH">
+      <p class="lede" id="moreH">More ways in.</p>
+      <div class="cards">
+        <a href="/setups" class="card"><span class="t">Setups people planned</span><span class="d">Real desks, drawn to scale. Try any of them on yours.</span><span class="go">Browse setups →</span></a>
+        <a href="/gear" class="card"><span class="t">Gear dimensions</span><span class="d">Every measurement we use, with where it came from.</span><span class="go">See the gear →</span></a>
+        <a href="/hand" class="card"><span class="t">Pick a mouse for your hand</span><span class="d">Measure your hand and grip, then compare mice that suit it.</span><span class="go">Measure my hand →</span></a>
+      </div>
+    </section>
+
+    <section class="money">
+      <p class="lede">SetupViz is free to use.</p>
+      <p class="g">If you buy through an Amazon product link, we may earn a commission. You pay the same price.</p>
+      <a href="/desk" class="pill pill-primary pill-lg">Plan my desk <span class="arrow">→</span></a>
+    </section>
+  </div>
 </main>
 
 <footer><div class="wrap foot">
   <a href="/home" class="sv-brand" style="align-self:flex-start"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="cols">
-    <div class="col"><span>Product</span><a href="/desk">Find my setup</a><a href="/builder">Builder</a><a href="/share">Share a setup</a></div>
-    <div class="col"><span>Help</span><a href="#story">How it works</a><a href="#checks">What we check</a><a href="/builder#request">Request a product</a><a href="/gear">Gear dimensions</a></div>
+    <div class="col"><span>Plan</span><a href="/desk">Plan my desk</a><a href="/builder">Builder</a><a href="/share">Share a setup</a></div>
+    <div class="col"><span>Browse</span><a href="/setups">Setups</a><a href="/gear">Gear dimensions</a><a href="/fit">Will it fit?</a></div>
+    <div class="col"><span>Help</span><a href="#how">How it works</a><a href="#checks">What we check</a><a href="/builder#request">Request a product</a></div>
   </div>
-<div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/setups" class="sv-legal-link">Setups gallery</a><a href="/fit" class="sv-legal-link">Will it fit?</a><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
+  <div class="legal-row"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
 </div>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer>
 <script src="/data.js"></script>

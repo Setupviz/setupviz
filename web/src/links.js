@@ -12,6 +12,7 @@ export function cartLink(asins, from){
   return '/go/cart?a=' + asins.join(',') + '&from=' + encodeURIComponent(from || 'other');
 }
 export function measurementInfo(item){
+  if (item.custom) return '';
   var source = item.dimsSource;
   var safe = typeof source === 'string' && /^https:\/\//.test(source);
   var href = safe ? esc(source) : '';
@@ -22,6 +23,7 @@ export function measurementInfo(item){
     '</p></details>';
 }
 export function buyLine(item, from){
+  if (item.custom) return '';
   if (!forSale(item)) return '<p class="unavail">Not currently available</p>';
   if (!item.asin) return '<a class="amz" href="https://www.amazon.com/s?k=' + encodeURIComponent(item.name) + '" rel="noopener" target="_blank">Find this model on Amazon</a>';
   return '<p class="paid">Paid link · We may earn a commission.</p><a class="amz" href="' + amazonLink(item.asin, from || 'builder') + '" rel="sponsored nofollow noopener" target="_blank" aria-label="See today\'s price on Amazon (opens in a new tab)">See today\'s price on Amazon</a>';

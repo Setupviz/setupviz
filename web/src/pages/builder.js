@@ -186,7 +186,27 @@ try {
         var delta = current && s.w - current.w;
         var difference = id === 'keyboard' && delta ? ' · ' + one(Math.abs(delta)) + (delta < 0 ? ' narrower' : ' wider') : '';
         return '<button type="button" class="opt" data-pid="' + s.id + '"><span class="opt-name">' + esc(s.name) + '</span>' + priceLabel(s) + '<span class="opt-detail">' + withUnits(s.alt) + (id === 'mouse' ? ' ' + esc(SV.matchReason(id, s, A)) : '') + '</span><span class="opt-dims">' + esc(dims(id, s) + difference) + '</span>' + (s.id === state.pick[id] ? '<span class="on">In your setup</span>' : s.id === rec[id] ? '<span class="rec">Our pick for you</span>' : '') + '</button>';
-      }).join('') + '</div><p class="muted no-matches" role="status" hidden>No matches. Try a brand or model name.</p><button type="button" class="keep" hidden>Keep</button></div>';
+      }).join('') + '</div><p class="muted no-matches" role="status" hidden>No matches. Try a brand or model name, or enter its size below.</p><button type="button" class="keep" hidden>Keep</button>' + customHtml(id) + '</div>';
+  }
+  // "Not in the list?": the visitor's own measurements, prefilled with the piece on the desk.
+  var customFields = { monitor: [['w', 'Total width'], ['d', 'Stand depth'], ['s', 'Stand width']], keyboard: [['w', 'Width'], ['d', 'Depth']], mouse: [['w', 'Width'], ['d', 'Length']], pad: [['w', 'Width'], ['d', 'Depth']] };
+  function customHtml(id){
+    var s = spec(id), now = s ? { w: s.w, d: id === 'monitor' ? s.base[1] : s.d, s: id === 'monitor' ? s.base[0] : 0 } : {};
+    return '<div class="custom"><span class="custom-h">Not in the list? Enter its size</span><div class="custom-row">' + customFields[id].map(function(f){
+      return '<label>' + f[1] + '<span class="row"><input type="text" inputmode="decimal" autocomplete="off" data-dim="' + f[0] + '" value="' + (now[f[0]] ? num(now[f[0]]) : '') + '"><span class="unit">' + state.unit + '</span></span></label>';
+    }).join('') + '</div><p class="field-error custom-err" aria-live="polite"></p><button type="button" class="custom-add">Use this size</button></div>';
+  }
+  function addCustom(id, box){
+    var mm = {};
+    box.querySelectorAll('[data-dim]').forEach(function(input){ mm[input.dataset.dim] = SV.deskMm(input.value, state.unit); });
+    var pid = SV.customId(id, mm.w, mm.d, mm.s), lim = SV.customLimits[id];
+    if (!pid) {
+      box.querySelector('.custom-err').textContent = 'Sizes we can draw: ' + customFields[id].map(function(f, i){ return f[1] + ' ' + num(lim[i][0]) + '–' + one(lim[i][1]); }).join(', ') + '.' +
+        (id === 'monitor' ? ' The stand can\'t be wider than the monitor.' : '');
+      return;
+    }
+    SV.track('custom_item');
+    choose(id, pid);
   }
 
   function render(deskOnly){
@@ -331,6 +351,7 @@ try {
       return choose(id, opt.dataset.pid);
     }
     if (e.target.closest('.keep')) return choose(id, state.previewPid);
+    if (e.target.closest('.custom-add')) return addCustom(id, e.target.closest('.custom'));
     if (e.target.closest('.menu')) return;
     if (act && act.dataset.act === 'remove') return remove(id);
     if (act && act.dataset.act === 'change') { endPreview(); if (state.open === id) state.focusSlot = id; state.open = state.open === id ? null : id; state.focusMenu = true; if (has(id)) state.sel = id; return render(); }
@@ -338,7 +359,7 @@ try {
     if (has(id)) { state.sel = id; render(); }
   });
   $('items').addEventListener('input', function(e){
-    if (!e.target.matches('.menu input')) return;
+    if (!e.target.matches('.menu input[type="search"]')) return;
     var q = e.target.value.trim().toLowerCase();
     e.target.parentNode.querySelectorAll('.opt').forEach(function(o){ o.hidden = q && o.textContent.toLowerCase().indexOf(q) < 0; });
     var menu = e.target.parentNode;
@@ -348,6 +369,10 @@ try {
   $('items').addEventListener('pointerout', function(e){ if (coarse || !e.target.closest('.opt')) return; var to = e.relatedTarget; if (!to || !to.closest || !(to.closest('.opt') || to.closest('.keep'))) clearGhost(); });
   $('items').addEventListener('focusin', function(e){ if (coarse) return; var o = e.target.closest('.opt'); if (o) preview(o.closest('.slot').dataset.id, o.dataset.pid); });
   $('items').addEventListener('focusout', function(e){ if (coarse) return; var to = e.relatedTarget; if (!to || !to.closest || !to.closest('.menu')) clearGhost(); });
+  $('items').addEventListener('keydown', function(e){
+    var box = e.key === 'Enter' && e.target.closest('.custom');
+    if (box) { e.preventDefault(); addCustom(box.closest('.slot').dataset.id, box); }
+  });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && state.open) { state.focusSlot = state.open; state.open = null; endPreview(); render(); } });
   document.addEventListener('click', function(e){ if (state.open && !e.target.closest('.slot')) { state.open = null; endPreview(); render(); } });
   $('reset').onclick = function(){ endPreview(); state.open = null; state.pick = SV.recommend(A, DESK); state.pos = SV.layout(DESK, state.pick); state.sel = 'mouse'; save(); render(); };

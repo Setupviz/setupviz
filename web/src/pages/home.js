@@ -5,7 +5,7 @@ import { lengths } from '../units.js';
 import { FIT_COLORS } from '../fit-words.js';
 import { placePiece } from '../draw.js';
 import { readStored, writeStored, savedUnit } from '../storage.js';
-import { ditherInto, heroDots } from '../dither.js';
+import { ditherInto } from '../dither.js';
 
 var desk = { w: 1400, d: 700 }, order = ['monitor', 'keyboard', 'pad', 'mouse'];
 var pick = { monitor: 'mon27', keyboard: 'k75', pad: 'cloth', mouse: 'da3' }, pos = SV.layout(desk, pick);
@@ -44,7 +44,7 @@ function paint(deskOnly){
   document.querySelector('#demoSum .tx').textContent = bad ? bad + " won't fit" : fit + ' fit' + (tight ? ', ' + tight + ' tight' : '');
   document.getElementById('demoUsed').textContent = SV.usedPercent(SV.usedArea({ desk: desk, pick: pick, pos: pos }), desk.w * desk.d) + '% of the desk used';
   document.getElementById('demoTry').href = '/builder?s=' + SV.encode({ desk: desk, pick: pick, pos: pos }, { grip: '', hand: '', use: '' });
-  drawHero();
+  drawScene();
   document.getElementById('demoSize').textContent = 'Desk ' + SV.measureText(desk.w, unit) + ' × ' + SV.measureText(desk.d, unit) + ' ' + unit;
 }
 board.addEventListener('pointerdown', function(e){
@@ -73,18 +73,20 @@ document.getElementById('demoKeyboard').onchange = function(){
   paint();
 };
 
-// The hero's dotted desk mirrors the example desk. Back to front: pad, stand, panel, keyboard, mouse.
-var heroCanvas = document.getElementById('heroDots'), hero = heroDots(heroCanvas, heroCanvas.closest('.hero'));
-function drawHero(){
-  var m = SV.get('monitor', pick.monitor), mp = pos.monitor, front = m.d * m.panelFrontPct / 100;
-  function box(c, tone, keys){ var g = SV.get(c, pick[c]); return { x: pos[c].x, y: pos[c].y, w: g.w, d: g.d, tone: tone, keys: keys }; }
-  hero(desk, [
-    box('pad', 0.4),
-    { x: mp.x + (m.w - m.base[0]) / 2, y: mp.y + m.d - m.base[1], w: m.base[0], d: m.base[1], tone: 0.65 },
-    { x: mp.x, y: mp.y + front - m.panelDepth, w: m.w, d: m.panelDepth, tone: 1 },
-    box('keyboard', 1, true),
-    box('mouse', 1)
-  ]);
+// The opening scene's desk takes the same size, with its own fixed gear, laid out the usual way.
+var scene = document.getElementById('how'), sceneDesk = document.getElementById('sceneDesk');
+var scenePick = { monitor: 'mon27', keyboard: 'k75', pad: 'cloth', mouse: 'da3' };
+function drawScene(){
+  var spos = SV.layout(desk, scenePick), st = SV.check({ desk: desk, pick: scenePick, pos: spos }, one), bad = 0, tight = 0;
+  scene.style.setProperty('--ar', desk.w / desk.d);
+  order.forEach(function(c){
+    var s = SV.get(c, scenePick[c]), el = sceneDesk.querySelector('[data-cat="' + c + '"]');
+    placePiece(el, desk, { x: spos[c].x, y: spos[c].y, w: s.w, d: s.d });
+    bad += st[c].lvl === 2; tight += st[c].lvl === 1;
+  });
+  var used = SV.usedPercent(SV.usedArea({ desk: desk, pick: scenePick, pos: spos }), desk.w * desk.d);
+  document.getElementById('sceneDot').style.background = colors[bad ? 2 : tight ? 1 : 0];
+  document.getElementById('sceneSum').textContent = (bad ? bad + " won't fit on this desk" : tight ? 'It fits, with ' + tight + ' tight' : 'Everything fits') + ', and ' + used + '% of the desk is used.';
 }
 
 // The robot says one honest thing about the size typed in.
@@ -158,18 +160,18 @@ if (window.IntersectionObserver && !matchMedia('(prefers-reduced-motion: reduce)
   seen.observe(board);
 }
 
-// How it works: each beat that reaches the middle of the screen drops its piece onto the desk.
-// Without this script every piece is simply shown.
-var build = document.getElementById('how');
-if (window.IntersectionObserver) {
-  var pieces = build.querySelectorAll('[data-at]');
-  build.classList.add('armed');
-  var beat = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (!e.isIntersecting) return;
-      var step = +e.target.dataset.step || 0;
-      pieces.forEach(function(p){ p.classList.toggle('in', +p.dataset.at <= step); });
-    });
-  }, { rootMargin: '-50% 0px -50% 0px' });
-  build.querySelectorAll('.beats li').forEach(function(li){ beat.observe(li); });
+// Scrolling through the scene: the paper slides off, then each beat drops its piece.
+// The light drifts with progress. Without this script the scene is one still picture.
+var pieces = sceneDesk.querySelectorAll('[data-at]'), beat = -1;
+scene.classList.add('armed');
+function onScroll(){
+  var r = scene.getBoundingClientRect(), range = r.height - scene.querySelector('.view').offsetHeight;
+  var p = Math.min(1, Math.max(0, -r.top / Math.max(1, range))), now = Math.min(4, Math.floor(p * 5));
+  scene.style.setProperty('--p', p.toFixed(3));
+  if (now === beat) return;
+  beat = now; scene.dataset.beat = now;
+  pieces.forEach(function(el){ el.classList.toggle('in', +el.dataset.at <= now); });
 }
+var ticking = false;
+addEventListener('scroll', function(){ if (ticking) return; ticking = true; requestAnimationFrame(function(){ ticking = false; onScroll(); }); }, { passive: true });
+onScroll();

@@ -89,6 +89,16 @@ aside{flex:1 1 340px;min-width:0;border-radius:16px;background:#171717;border:0;
 .opt .opt-name{font-size:14px;font-weight:500;line-height:20px}
 .opt .opt-detail,.opt .opt-dims{font-size:12px;line-height:18px;color:#A3A3A3}
 .opt .opt-dims{color:#CFCFCF}
+.custom{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08)}
+.custom-h{font-size:13px;font-weight:500;color:#EDEDED}
+.custom-row{display:flex;gap:8px;flex-wrap:wrap}
+.custom label{display:flex;flex-direction:column;gap:4px;flex:1 1 90px;font-size:12px;color:#8F8F8F}
+.custom .row{display:flex;align-items:center;gap:6px}
+.custom .row input{width:auto;flex:1 1 0}
+.custom .unit{flex:none}
+.custom .field-error{min-height:0;max-width:none}
+.custom-add{height:32px;border:1px solid rgba(255,255,255,0.15);border-radius:8px;background:transparent;color:#EDEDED;font-size:13px;font-family:inherit;cursor:pointer}
+.custom-add:hover{border-color:rgba(255,255,255,0.3)}
 .keep{height:32px;margin-top:2px;border:0;border-radius:8px;background:#EDEDED;color:#121212;font-size:13px;cursor:pointer}
 .opt .on{font-size:12px;line-height:18px;color:#5BE38A}
 .buyall{height:42px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#EDEDED;color:#121212;font-size:14px;font-weight:400}
@@ -134,8 +144,8 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
 }
 @media (pointer:coarse){
   .seg button{min-width:44px;min-height:44px;height:44px}
-  .btn-outline,.linkbtn,.muted a,.slot .acts button,.slot .acts a,.slot .amz,.slot .add,.opt,.keep,.req .open,.req .acts button,.buyall{min-height:44px;min-width:44px}
-  .btn-outline,.slot .acts button,.req .acts button,.slot .add,.buyall,.menu input,.req input,.size input{height:44px;min-height:44px}
+  .btn-outline,.linkbtn,.muted a,.slot .acts button,.slot .acts a,.slot .amz,.slot .add,.opt,.keep,.custom-add,.req .open,.req .acts button,.buyall{min-height:44px;min-width:44px}
+  .btn-outline,.slot .acts button,.req .acts button,.slot .add,.buyall,.custom-add,.menu input,.req input,.size input{height:44px;min-height:44px}
 }
 @media (pointer:coarse) and (max-height:500px){
   body{--sv-bar:46px}
@@ -231,7 +241,7 @@ button.buyall:disabled,button.linkbtn:disabled,a.buyall[aria-disabled="true"]{op
       </div>
       <div class="req" id="request">
         <strong>Missing a product?</strong>
-        <span>Email the brand and model to <a class="sv-mail" href="mailto:hello@setupviz.com?subject=SetupViz%20product%20request">hello@setupviz.com</a>.</span>
+        <span>Open Change on any piece and enter its size. To get it added to the list, email the brand and model to <a class="sv-mail" href="mailto:hello@setupviz.com?subject=SetupViz%20product%20request">hello@setupviz.com</a>.</span>
       </div>
     </aside>
   </main>

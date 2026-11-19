@@ -12,7 +12,7 @@
 //                       per setup, per day without storing the network's address.
 
 // Counted from the page. Short links, publishing and votes are counted where they're stored.
-const EVENTS = ['setup_changed', 'share_link', 'save_image', 'try_click'];
+const EVENTS = ['setup_changed', 'share_link', 'save_image', 'try_click', 'custom_item'];
 const ID_CHARS = 'abcdefghijkmnpqrstuvwxyz23456789';
 const PAGE_SIZE = 24;
 const DESK_SIZES = { small: [0, 1200], medium: [1200, 1500], large: [1500, 100000] };

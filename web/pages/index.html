@@ -20,15 +20,12 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="/sv.css">
 <style>
-/* One short path: desk size in the hero, the plan right under it, then the gear that fits. */
+/* One short path: desk size on the opening scene, a desk to try right under it, then the gear that fits. */
 .wrap{max-width:var(--sv-content);margin:0 auto;padding:0 24px;box-sizing:border-box}
 section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
-#how,#checks,#more,.money,footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
+footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
 
-/* hero */
-.hero{padding:48px 0 32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
-.hero h1{margin:0;max-width:760px;font-size:clamp(36px,6vw,64px);line-height:1.02;font-weight:600;letter-spacing:-0.045em;text-wrap:balance}
-.hero .sub{margin:0;max-width:460px;font-size:17px;line-height:26px;color:var(--muted);text-wrap:balance}
+/* the size form on the paper */
 .size-form{display:flex;align-items:center;gap:6px;margin-top:8px;padding:6px 6px 6px 20px;border-radius:999px;background:var(--panel);box-shadow:0 1px 0 var(--line),0 12px 32px rgba(22,24,29,0.06);max-width:100%;box-sizing:border-box}
 .size-form label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .size-form input{width:3.4em;height:40px;padding:0;border:0;background:transparent;font:500 17px/1 var(--mono);color:var(--text);outline:none}
@@ -39,67 +36,95 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .size-form .unit button{height:28px;min-height:24px;min-width:34px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:12px;cursor:pointer}
 .size-form .unit button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(22,24,29,0.12)}
 .size-form .pill{margin-left:4px}
-.size-err{margin:0;font-size:13px;line-height:20px;color:#B42318}
+.size-err{margin:0;font-size:13px;line-height:20px;color:#B42318;background:#FFFFFF;padding:4px 10px;border-radius:8px}
 .size-err:empty{display:none}
-.source{margin:4px 0 0;font-size:13px;color:var(--muted)}
-.source a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
-.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.source{margin:4px 0 0;font-size:13px}
+.source a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--muted);font:400 13px/1 var(--font);cursor:pointer}
 .chip:hover{color:var(--text);border-color:var(--line-3)}
 a.chip{color:var(--text)}
 
-/* the preview: the example desk, drawn to scale, with the gear on it in cards below */
-.preview{position:relative;border-radius:24px;background:var(--panel);padding:clamp(12px,2vw,24px);display:flex;flex-direction:column;gap:16px}
-.preview-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-.preview-top label{display:flex;align-items:center;gap:8px;white-space:nowrap;min-width:0}
-.preview-top select{min-width:0;max-width:100%}
-.preview-top select{font:inherit;color:var(--text);background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 10px}
-.board-wrap{position:relative}
-.board{position:relative;width:100%;aspect-ratio:2/1;border-radius:14px;border:1px solid var(--line);background-size:2.5% 5%;background-position:1.25% 2.5%;overflow:hidden}
-#demoBoard{touch-action:none;overflow:visible}
-.board > *{position:absolute;box-sizing:border-box}
-:where(.board .piece){padding:0;border:0;background:transparent;font:inherit;color:inherit;cursor:grab;touch-action:none;appearance:none}
-.board .drag{cursor:grabbing}
-/* Dots that resolve into the drawing once, as the preview scrolls into view. Decorative only. */
-.dither{position:absolute;inset:0;width:100%;height:100%;border-radius:14px;pointer-events:none;opacity:0}
-.dither.on{opacity:1}
-.dither.out{opacity:0;transition:opacity .9s ease .35s}
-.caps{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-.caps .cap-b{display:inline-flex;align-items:center;gap:6px;color:var(--text)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
-.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.mslot{padding:14px;border-radius:14px;background:var(--panel-2);border:1px solid transparent;display:flex;flex-direction:column;gap:2px;min-width:0}
-.mslot.on{border-color:var(--line-2);background:var(--panel)}
-.mslot .c{font-size:12px;color:var(--muted)}
-.mslot .n{font-size:14px;font-weight:600;line-height:20px}
-.mslot .m{font-size:12px;color:var(--muted)}
 .b-tag{align-self:flex-start;margin-top:8px;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--panel);border:1px solid var(--line-2);display:inline-flex;align-items:center;gap:6px}
-.preview-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.preview-foot p{margin:0;font-size:13px;color:var(--muted)}
 
-/* sections below */
-.block{padding:96px 0 0;display:flex;flex-direction:column;gap:24px}
-.block h2,.money h2{margin:0;font-size:clamp(24px,3vw,32px);line-height:1.15;font-weight:600;letter-spacing:-0.03em}
-/* a real sequence, so it is numbered; plain columns, not cards */
-.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin:0;padding:0;list-style:none;counter-reset:step}
-.steps li{display:flex;flex-direction:column;gap:6px;counter-increment:step}
-.steps li::before{content:counter(step);width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:14px;font-weight:600;margin-bottom:8px}
-.steps b{font-size:18px;font-weight:600;letter-spacing:-0.015em}
-.steps span{font-size:15px;line-height:23px;color:var(--muted);max-width:34ch}
+/* The opening is one surface, not a page: a desk on a blue rug, seen from above, with the
+   headline on a sheet of paper. Scrolling slides the paper away and drops the gear on, one beat
+   at a time. Without the script it is a single still scene with the beats listed under it. */
+.scene{--ar:2;position:relative;color:#FFFFFF}
+.scene.armed{height:calc(6.3 * (100svh - var(--sv-bar)))}
+.view{position:relative;height:calc(100svh - var(--sv-bar));min-height:600px;overflow:hidden;background:#3457CC}
+.scene.armed .view{position:sticky;top:var(--sv-bar)}
+.rug{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .14 0 0 0 0 .35 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23r)'/%3E%3C/svg%3E"),radial-gradient(120% 90% at 30% 20%,#4A6FE6,#3457CC 70%,#2D4DB8)}
+.top{position:absolute;right:5vw;top:50%;width:min(58vw,calc((100svh - var(--sv-bar) - 120px) * var(--ar)));aspect-ratio:var(--ar);transform:translateY(-50%);border-radius:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .22' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .15 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='600' height='300' filter='url(%23g)'/%3E%3C/svg%3E") center/100% 100%,linear-gradient(160deg,#EADCC6,#DCC8AA);box-shadow:0 1px 0 rgba(255,255,255,0.35) inset,0 2px 2px rgba(10,20,60,0.35),24px 40px 60px rgba(10,20,60,0.45);transition:width .5s ease}
+.top > div{position:absolute;box-sizing:border-box}
+.top .art{display:block;width:100%;height:100%;overflow:visible}
+/* sunlight from the top left: a tight contact shadow plus a long soft one */
+.g-kb,.g-mouse,.g-mon{filter:drop-shadow(0 1px 1px rgba(40,28,14,0.45)) drop-shadow(8px 12px 10px rgba(40,28,14,0.28))}
+.g-pad{filter:drop-shadow(0 1px 0.5px rgba(40,28,14,0.35)) drop-shadow(3px 4px 4px rgba(40,28,14,0.18))}
+.g-mon .stand-outline{fill:#D7D9DD;stroke:#A9ADB4}
+.g-mon .stand-post{stroke:#B9BCC2}
+.g-mon .panel-housing{fill:#26292E;stroke:#121417}
+.g-mon .panel-face{stroke:#5B6068}
+/* light through a window, across everything; it drifts a little as you scroll */
+.light{position:absolute;inset:-25%;background:linear-gradient(118deg,rgba(255,250,240,0.22),transparent 40%),repeating-linear-gradient(118deg,transparent 0 6%,rgba(10,16,40,0.12) 6% 10%);filter:blur(18px);transform:translateX(calc(var(--p, 0) * -8%));pointer-events:none}
+.paper{position:absolute;left:5vw;top:50%;z-index:1;width:min(460px,38vw);box-sizing:border-box;padding:36px 32px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:16px;color:var(--text);background:#FBFAF7;border-radius:3px;transform:translateY(-50%) rotate(-2deg);box-shadow:0 1px 1px rgba(10,20,60,0.25),20px 34px 44px rgba(10,20,60,0.38);transition:transform .9s cubic-bezier(.3,.7,.2,1),opacity .5s ease .2s,visibility 0s}
+.paper h1{margin:0;font-size:clamp(36px,4.4vw,60px);line-height:1;font-weight:600;letter-spacing:-0.045em;text-wrap:balance}
+.paper .sub{margin:0;font-size:16px;line-height:24px;color:var(--muted);text-wrap:pretty}
+.paper .size-form{margin-top:0;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--line)}
+.bot{margin:4px 0 0;display:flex;align-items:center;gap:10px}
+.bot img{width:40px;height:40px;border-radius:12px}
+.bot span{background:var(--raise);color:var(--text);font-size:14px;line-height:20px;padding:8px 14px;border-radius:16px 16px 16px 4px}
+.bot span.pop{animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.92)}}
+.lines{position:relative;z-index:1;margin:0;padding:0;list-style:none}
+.scene.armed .lines{position:absolute;inset:0;pointer-events:none}
+.lines li{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.scene.armed .lines li{position:absolute;left:5vw;top:50%;width:min(420px,34vw);opacity:0;visibility:hidden;transform:translateY(calc(-50% + 20px));pointer-events:none}
+/* transitions start a frame after arming, so nothing fades on load */
+.scene.live .lines li{transition:opacity .45s ease,transform .7s cubic-bezier(.2,.8,.2,1),visibility 0s .45s}
+.lines .n{font-size:14px;color:rgba(255,255,255,0.85)}
+.lines h2{margin:0;font-size:clamp(48px,6.4vw,96px);line-height:.95;font-weight:600;letter-spacing:-0.05em}
+.lines p{margin:0;font-size:17px;line-height:26px;text-shadow:0 1px 12px rgba(10,20,60,0.35)}
+.lines .verdict{display:flex;align-items:center;gap:8px}
+.lines .verdict .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:0 0 0 2px #FFFFFF}
+.scene.live [data-at]{transition:transform .8s cubic-bezier(.2,.9,.3,1.25),opacity .35s ease,filter .8s ease}
+.scene.armed [data-at]:not(.in){opacity:0;transform:translateY(-24px) scale(1.1) rotate(-4deg);filter:drop-shadow(18px 40px 24px rgba(40,28,14,0.3))}
+.scene.armed:not([data-beat="0"]) .paper{transform:translate(-115%,-60%) rotate(-16deg);opacity:0;visibility:hidden;transition-delay:0s,.2s,.9s;pointer-events:none}
+.scene.armed .lines li.on{opacity:1;visibility:visible;transition-delay:0s;transform:translateY(-50%);pointer-events:auto}
+.stage3d{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s ease}
+.scene.three .stage3d{opacity:1}
+.scene.three .rug,.scene.three .top,.scene.three .light{visibility:hidden}
+.scene.three .view{background:#14161B}
+.scene.three .view::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scene.holding .lines{opacity:0;transition:opacity .3s ease}
+.lines .chk{padding-top:12px;border-top:1px solid rgba(255,255,255,0.28);font-size:15px;line-height:23px;align-self:stretch}
+.lines .more{font-size:14px;line-height:22px}
+.lines p a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.lines .fit-estimate{color:rgba(255,255,255,0.85)}
+.lines .b-tag{margin:0;background:#FFFFFF;color:#16181D}
+.scene.three.armed .lines li{left:4vw;width:min(440px,36vw);padding:26px 28px 28px;border-radius:22px;background:#2D4DB8;box-shadow:0 30px 60px -30px rgba(10,20,60,0.6)}
+.scene.three .lines h2{font-size:clamp(40px,4.8vw,72px)}
+.scene.three .lines p{text-shadow:none}
+@media (max-width:820px){.scene.three.armed .lines li{left:16px;right:16px;width:auto;padding:18px 20px 20px}}
+.scene:not(.armed) .lines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 24px;padding:32px 5vw;background:#2D4DB8}
+.scene:not(.armed) .lines h2{font-size:32px}
+@media (max-width:820px){
+  .top{left:4vw;right:auto;top:auto;bottom:5svh;width:92vw;max-height:40svh;transform:none}
+  .paper{left:4vw;right:4vw;top:12px;width:auto;padding:24px 20px 20px;gap:12px;transform:none}
+  .scene.armed:not([data-beat="0"]) .paper{transform:translate(-110%,-20%) rotate(-12deg)}
+  .scene.armed .lines li{top:24px;left:5vw;width:auto;right:5vw;transform:translateY(20px)}
+  .scene.armed .lines li.on{transform:none}
+  .scene:not(.armed) .lines{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .scene.live [data-at],.paper,.scene.live .lines li,.top{transition:opacity .2s ease}
+  .scene.armed [data-at]:not(.in){transform:none;filter:none}
+  .light{transform:none}
+}
 .verdicts{display:flex;gap:6px;flex-wrap:wrap}
 .verdicts .b-tag{margin:0}
 .fit-estimate{margin:0;font-size:13px;color:var(--muted)}
-.checks{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;max-width:880px}
-.checks div{padding:16px 0;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:4px}
-.checks dt{font-weight:600}
-.checks dd{margin:0;font-size:15px;line-height:23px;color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.card{padding:24px;border-radius:16px;background:var(--panel);display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s}
-.card:hover{box-shadow:0 0 0 1px var(--line-2)}
-.card .t{font-size:18px;font-weight:600;letter-spacing:-0.015em}
-.card .d{font-size:14px;line-height:21px;color:var(--muted)}
-.money{padding:120px 0 120px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
-.money p{margin:0;max-width:520px;font-size:16px;line-height:25px;color:var(--muted)}
 
 footer{border-top:1px solid var(--line)}
 .foot{padding:48px 24px 40px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;font-size:14px}
@@ -110,20 +135,15 @@ footer{border-top:1px solid var(--line)}
 .legal-row{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px}
 
 @media (max-width:820px){
-  .slots{grid-template-columns:1fr 1fr}
-  .steps,.cards,.checks{grid-template-columns:1fr}
-  .block{padding-top:72px}
 }
 @media (max-width:520px){
-  .hero{padding-top:32px}
   .size-form{flex-wrap:wrap;justify-content:center;border-radius:20px;padding:10px}
   .size-form .pill{flex:1 0 100%;margin:4px 0 0}
 }
 @media (pointer:coarse){
-  .chip,.size-form .unit button,.foot .col a,.card{min-height:44px}
+  .chip,.size-form .unit button,.foot .col a{min-height:44px}
   .size-form .unit button{min-width:44px;height:40px}
 }
-@media (prefers-reduced-motion:reduce){.dither{display:none}}
 </style>
 </head>
 <body>
@@ -134,14 +154,23 @@ footer{border-top:1px solid var(--line)}
     <a class="l" href="/builder">Builder</a>
     <a class="l l-wide" href="/gear">Gear</a>
     <a class="l l-wide" href="/setups">Setups</a>
+    <details class="sv-menu"><summary><span class="o">Menu</span><span class="c">Close</span></summary><div class="sv-menu-card"><a href="/builder">Builder</a><a href="/gear">Gear</a><a href="/setups">Setups</a></div></details>
   </div>
   <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
 </div></nav>
 
 <main>
-  <div class="wrap">
-    <section class="hero">
-      <h1>Will it fit on your desk?</h1>
+  <section class="scene" id="how" aria-labelledby="sceneH">
+    <div class="view">
+      <div class="rug" aria-hidden="true"></div>
+      <div class="top" id="sceneDesk" aria-hidden="true">
+        <div class="g-pad" data-at="3" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%"><svg class="art" viewBox="0 0 450 400" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="cloth" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .52  0 0 0 0 .56  0 0 0 .09 0"/><feComposite in2="SourceGraphic" operator="in"/></filter><linearGradient id="padTone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A2D33"/><stop offset="1" stop-color="#1B1D21"/></linearGradient></defs><rect width="450" height="400" rx="10" fill="url(#padTone)"/><rect width="450" height="400" rx="10" fill="#000" filter="url(#cloth)"/><rect x="1.5" y="1.5" width="447" height="397" rx="9" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2"/></svg></div>
+        <div class="g-mon" data-at="1" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%"><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></div>
+        <div class="g-kb" data-at="2" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%"><svg class="art" viewBox="0 0 313 132" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="kbBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4E55"/><stop offset="1" stop-color="#2A2D32"/></linearGradient><linearGradient id="kbCap" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A5F67"/><stop offset=".55" stop-color="#43474E"/><stop offset="1" stop-color="#3A3E44"/></linearGradient></defs><rect width="313" height="132" rx="9" fill="url(#kbBody)"/><rect x="1" y="1" width="311" height="130" rx="8" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1"/><rect x="8.05" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="9.65" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="26.68" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="28.28" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="45.30" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="46.90" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="63.92" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="65.52" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="82.55" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="84.15" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="101.17" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="102.77" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="119.80" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="121.40" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="138.43" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="140.03" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="157.05" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="158.65" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="175.68" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="177.28" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="194.30" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="195.90" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="212.93" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="214.53" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="231.55" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="233.15" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="250.18" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="251.78" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="268.80" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="270.40" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="289.03" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="26.68" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="28.28" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="45.30" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="46.90" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="63.92" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="65.52" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="82.55" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="84.15" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="101.17" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="102.77" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="119.80" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="121.40" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="138.43" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="140.03" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="157.05" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="158.65" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="175.68" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="177.28" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="194.30" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="195.90" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="212.93" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="214.53" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="231.55" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="233.15" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="250.18" y="22.96" width="36.15" height="17.52" rx="2.2" fill="#1E2024"/><rect x="251.78" y="24.06" width="32.95" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="41.58" width="26.84" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="42.68" width="23.64" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="35.99" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="37.59" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="54.61" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="56.21" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="73.24" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="74.84" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="91.86" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="93.46" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="110.49" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="112.09" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="129.11" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="130.71" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="147.74" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="149.34" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="166.36" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="167.96" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="184.99" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="186.59" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="203.61" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="205.21" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="222.24" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="223.84" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="240.86" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="242.46" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="259.49" y="41.58" width="26.84" height="17.52" rx="2.2" fill="#1E2024"/><rect x="261.09" y="42.68" width="23.64" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="60.21" width="31.49" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="61.31" width="28.29" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="40.64" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="42.24" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="59.27" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="60.87" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="77.89" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="79.49" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="96.52" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="98.12" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="115.14" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="116.74" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="133.77" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="135.37" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="152.39" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="153.99" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="171.02" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="172.62" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="189.64" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="191.24" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="208.27" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="209.87" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="226.89" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="228.49" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="245.52" y="60.21" width="40.81" height="17.52" rx="2.2" fill="#1E2024"/><rect x="247.12" y="61.31" width="37.61" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="78.83" width="40.81" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="79.93" width="37.61" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="49.96" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="51.56" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="68.58" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="70.18" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="87.21" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="88.81" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="105.83" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="107.43" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="124.46" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="126.06" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="143.08" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="144.68" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="161.71" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="163.31" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="180.33" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="181.93" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="198.96" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="200.56" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="217.58" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="219.18" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="236.21" y="78.83" width="31.49" height="17.52" rx="2.2" fill="#1E2024"/><rect x="237.81" y="79.93" width="28.29" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="268.80" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="270.40" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="97.46" width="22.18" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="98.56" width="18.98" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="31.33" y="97.46" width="22.18" height="17.52" rx="2.2" fill="#1E2024"/><rect x="32.93" y="98.56" width="18.98" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="54.61" y="97.46" width="22.18" height="17.52" rx="2.2" fill="#1E2024"/><rect x="56.21" y="98.56" width="18.98" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="77.89" y="97.46" width="115.31" height="17.52" rx="2.2" fill="#1E2024"/><rect x="79.49" y="98.56" width="112.11" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="194.30" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="195.90" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="212.93" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="214.53" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="231.55" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="233.15" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="250.18" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="251.78" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="268.80" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="270.40" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/></svg></div>
+        <div class="g-mouse" data-at="4" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%"><svg class="art" viewBox="0 0 68 128" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="msBody" cx=".42" cy=".62" r=".7"><stop offset="0" stop-color="#3A3D43"/><stop offset=".6" stop-color="#25272B"/><stop offset="1" stop-color="#141518"/></radialGradient><radialGradient id="msHi" cx=".38" cy=".6" r=".35"><stop offset="0" stop-color="rgba(255,255,255,.18)"/><stop offset="1" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><path d="M34 2 C49 2 58 8 61 22 C64 38 67 58 67 80 C67 104 58 125 36 126.5 C14 127.5 3 112 2 92 C1 72 5 52 7 34 C9 14 18 2 34 2 Z" fill="url(#msBody)"/><path d="M34 2 C49 2 58 8 61 22 C64 38 67 58 67 80 C67 104 58 125 36 126.5 C14 127.5 3 112 2 92 C1 72 5 52 7 34 C9 14 18 2 34 2 Z" fill="url(#msHi)"/><path d="M34 3 V50" stroke="#0E0F11" stroke-width="1.2"/><path d="M8 50 C20 46 48 46 63 50" fill="none" stroke="#0E0F11" stroke-width="1"/><rect x="30.5" y="16" width="7" height="20" rx="3.5" fill="#0C0D0F"/><rect x="31.6" y="17.5" width="4.8" height="17" rx="2.4" fill="#54585F"/><rect x="31.6" y="18.5" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="20.7" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="22.9" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="25.1" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="27.3" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="29.5" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="31.7" width="4.8" height=".7" fill="#2E3136"/><path d="M3.5 56 C3 62 3 68 3.2 72" stroke="#55595F" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M3.2 76 C3 81 3.1 86 3.4 90" stroke="#55595F" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M34 2 C49 2 58 8 61 22 C64 38 67 58 67 80 C67 104 58 125 36 126.5 C14 127.5 3 112 2 92 C1 72 5 52 7 34 C9 14 18 2 34 2 Z" fill="none" stroke="rgba(255,255,255,.12)" stroke-width=".8"/></svg></div>
+      </div>
+      <div class="paper">
+      <h1 id="sceneH">Will it fit on your desk?</h1>
       <p class="sub">Type in your desk size and we’ll lay out real gear on it, to scale, so you know what fits before you buy anything.</p>
       <form class="size-form" id="sizeForm" action="/builder" novalidate>
         <label>W <input id="hw" inputmode="decimal" autocomplete="off" value="55.1" aria-label="Desk width" disabled></label>
@@ -153,68 +182,20 @@ footer{border-top:1px solid var(--line)}
       <p class="size-err" id="sizeErr" role="alert"></p>
       <div class="chips" id="sizeChips"><button type="button" class="chip" data-w="1200" data-d="600">Small desk</button><button type="button" class="chip" data-w="1400" data-d="700">Standard desk</button><button type="button" class="chip" data-w="1600" data-d="800">Large desk</button><a class="chip" href="/desk">Not sure? Answer 4 questions</a></div>
       <p class="source">Free to use. Sizes come from each maker’s drawings and spec sheets. <a href="/gear">See every measurement</a></p>
-    </section>
-
-    <section class="preview" id="preview" aria-label="Try gear on the example desk">
-      <div class="preview-top">
-        <label>Try a keyboard <select id="demoKeyboard"><option value="k75">Compact (MX Mechanical Mini)</option><option value="full">Full size (MX Keys S)</option></select></label>
-        <span id="demoSize">Desk 55.1 × 27.6 in</span>
+        <p class="bot"><img src="/apple-touch-icon.png" alt="" width="40" height="40"><span id="botSay">How big is your desk?</span></p>
       </div>
-      <div class="board-wrap">
-        <div class="board desk-dots" id="demoBoard" role="group" aria-label="Desk from above. Drag a piece, or use the arrow keys.">
-          <button type="button" class="piece b-mon" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></button>
-          <button type="button" class="piece b-pad" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%" aria-label="SteelSeries QcK Heavy Large, fits. Drag to move."></button>
-          <button type="button" class="piece b-kb" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%" aria-label="Logitech MX Mechanical Mini, fits. Drag to move."></button>
-          <button type="button" class="piece b-mouse" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%" aria-label="Razer DeathAdder V3, fits. Drag to move."></button>
-        </div>
-        <canvas class="dither" id="dither" aria-hidden="true"></canvas>
-      </div>
-      <div class="caps"><span class="cap-b" id="demoSum"><i class="dot" style="background:#1F9D55"></i><span class="tx">4 fit</span></span><span id="demoUsed">27% of the desk used</span></div>
-      <div class="slots" id="demoSide" role="list" aria-label="Gear on the example desk">
-        <div class="mslot" data-cat="monitor" role="listitem"><span class="c">Monitor</span><span class="n">Dell 27 Plus QHD (S2725DS)</span><span class="m">Stand 9.8 × 7.1 in</span><span class="b-tag" data-tag="monitor"><i class="dot" style="background:#1F9D55"></i><span class="tx">Monitor fits</span></span></div>
-        <div class="mslot" data-cat="keyboard" role="listitem"><span class="c">Keyboard</span><span class="n">Logitech MX Mechanical Mini</span><span class="m">12.3 × 5.2 in</span><span class="b-tag" data-tag="keyboard"><i class="dot" style="background:#1F9D55"></i><span class="tx">Keyboard fits</span></span></div>
-        <div class="mslot on" data-cat="mouse" role="listitem"><span class="c">Mouse</span><span class="n">Razer DeathAdder V3</span><span class="m">2.7 × 5 in, 59 g</span><span class="b-tag" data-tag="mouse"><i class="dot" style="background:#1F9D55"></i><span class="tx">Mouse fits on the desk</span></span></div>
-        <div class="mslot" data-cat="pad" role="listitem"><span class="c">Mouse pad</span><span class="n">SteelSeries QcK Heavy Large</span><span class="m">17.7 × 15.7 in, cloth</span><span class="b-tag" data-tag="pad"><i class="dot" style="background:#1F9D55"></i><span class="tx">Pad fits</span></span></div>
-      </div>
-      <div class="preview-foot"><p>Drag things around to see how much room is left.</p><a id="demoTry" class="pill pill-secondary" href="/builder?s=eyJ2IjoxLCJkIjpbMTQwMCw3MDBdLCJwIjp7Im0iOiJtb24yNyIsImsiOiJrNzUiLCJwIjoiY2xvdGgiLCJvIjoiZGEzIn0sIngiOnsibSI6WzM5NSwyMF0sImsiOlszODAsNDQwXSwicCI6WzgyMCwyNzBdLCJvIjpbOTQwLDQzMF19LCJhIjpbIiIsIiIsIiJdfQ">Change the gear in the builder</a></div>
-    </section>
-
-    <section id="how" class="block" aria-labelledby="howH">
-      <h2 id="howH">How it works</h2>
-      <ol class="steps">
-        <li><b>Measure your desk</b><span>Just the width and depth of the top. A rough guess works.</span></li>
-        <li><b>Add your gear</b><span>Pick a monitor, keyboard, mouse and pad. If yours isn’t listed, type in its size.</span></li>
-        <li><b>Check before you buy</b><span>Each piece is marked fits, tight or won’t fit, and the buy links are right there.</span></li>
+      <div class="light" aria-hidden="true"></div>
+      <ol class="lines">
+        <li data-beat="1"><span class="n">1 of 4</span><h2>Monitor</h2><p>The stand takes the room, not the screen. A 27-inch monitor is about 24 in wide, but only its feet sit on the desk.</p><p class="chk">We check whether that foot runs into your keyboard or pad.</p></li>
+        <li data-beat="2"><span class="n">2 of 4</span><h2>Keyboard</h2><p>A compact board, about 12 in wide. Going compact leaves the mouse more room to move.</p><p class="chk">We check that it isn’t hanging off the front edge.</p></li>
+        <li data-beat="3"><span class="n">3 of 4</span><h2>Mouse pad</h2><p>A large one, so the mouse never runs out of room.</p><p class="chk">We check that it clears the monitor stand, and show where the keyboard covers it.</p></li>
+        <li data-beat="4"><span class="n">4 of 4</span><h2>Mouse</h2><p>Small, but it needs space around it.</p><p class="chk">We check it has room to swing. <a href="/hand">Our guide</a> says which hand sizes and grips it suits.</p></li>
+        <li data-beat="5" id="checks"><span class="n">All together</span><h2>The full setup</h2><p class="verdict"><span class="dot" id="sceneDot" style="background:#1F9D55"></span><span id="sceneSum">Everything fits, and 27% of the desk is used.</span></p><p class="chk">Every piece gets one of three answers.</p><div class="verdicts" aria-label="What the colors mean"><span class="b-tag"><i class="dot" style="background:#1F9D55"></i>Fits</span><span class="b-tag"><i class="dot" style="background:#B7791F"></i>Tight</span><span class="b-tag"><i class="dot" style="background:#D2463A"></i>Won’t fit</span></div><p class="fit-estimate">Estimated fit—verify measurements before buying</p><a class="pill pill-secondary" href="/builder">Open it in the builder</a></li>
+        <li data-beat="6"><span class="n">Your turn</span><h2>SetupViz is free.</h2><p>Some product links are Amazon affiliate links. If you buy through one, we may earn a small commission. You pay the same price.</p><a href="/desk" class="pill pill-secondary">Plan my desk</a><p class="more">Or start from <a href="/setups">setups other people planned</a>, the <a href="/gear">gear sizes</a>, or <a href="/hand">a mouse for your hand</a>.</p></li>
       </ol>
-    </section>
+    </div>
+  </section>
 
-    <section id="checks" class="block" aria-labelledby="checksH">
-      <h2 id="checksH">What it checks</h2>
-      <p class="fit-estimate">Estimated fit—verify measurements before buying</p>
-      <dl class="checks">
-        <div><dt>Desk edges</dt><dd>Whether anything sits too close to the edge or hangs off it.</dd></div>
-        <div><dt>Monitor stand</dt><dd>Whether the stand’s foot runs into your keyboard or pad.</dd></div>
-        <div><dt>Mouse pad</dt><dd>Whether your mouse has room on the pad, and where the keyboard covers it.</dd></div>
-        <div><dt>Mouse fit</dt><dd>Which hand sizes and grips each mouse suits, from our guide.</dd></div>
-      </dl>
-      <div class="verdicts" aria-label="What the colors mean"><span class="b-tag"><i class="dot" style="background:#1F9D55"></i>Fits</span><span class="b-tag"><i class="dot" style="background:#B7791F"></i>Tight</span><span class="b-tag"><i class="dot" style="background:#D2463A"></i>Won't fit</span></div>
-    </section>
-
-    <section id="more" class="block" aria-labelledby="moreH">
-      <h2 id="moreH">Other ways to start</h2>
-      <div class="cards">
-        <a href="/setups" class="card"><span class="t">Setups other people planned</span><span class="d">Real desks, drawn to scale. Try any of them on your own.</span></a>
-        <a href="/gear" class="card"><span class="t">Gear sizes</span><span class="d">Every measurement we use, and where it came from.</span></a>
-        <a href="/hand" class="card"><span class="t">A mouse for your hand</span><span class="d">Measure your hand, pick your grip, and see which mice suit it.</span></a>
-      </div>
-    </section>
-
-    <section class="money">
-      <h2>SetupViz is free.</h2>
-      <p>Some product links are Amazon affiliate links. If you buy through one, we may earn a small commission. You pay the same price.</p>
-      <a href="/desk" class="pill pill-primary pill-lg">Plan my desk</a>
-    </section>
-  </div>
 </main>
 
 <footer><div class="wrap foot">
@@ -222,7 +203,7 @@ footer{border-top:1px solid var(--line)}
   <div class="cols">
     <div class="col"><span>Plan</span><a href="/desk">Plan my desk</a><a href="/builder">Builder</a><a href="/share">Share a setup</a></div>
     <div class="col"><span>Browse</span><a href="/setups">Setups</a><a href="/gear">Gear dimensions</a><a href="/fit">Will it fit?</a></div>
-    <div class="col"><span>Help</span><a href="#how">How it works</a><a href="#checks">What we check</a><a href="/builder#request">Request a product</a></div>
+    <div class="col"><span>Help</span><a href="#how">How it works</a><a href="#how">What we check</a><a href="/builder#request">Request a product</a></div>
   </div>
   <div class="legal-row"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
 </div>

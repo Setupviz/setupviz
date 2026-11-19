@@ -5,7 +5,7 @@ import { lengths } from '../units.js';
 import { FIT_COLORS } from '../fit-words.js';
 import { placePiece } from '../draw.js';
 import { readStored, writeStored, savedUnit } from '../storage.js';
-import { ditherInto } from '../dither.js';
+import { ditherInto, heroDots } from '../dither.js';
 
 var desk = { w: 1400, d: 700 }, order = ['monitor', 'keyboard', 'pad', 'mouse'];
 var pick = { monitor: 'mon27', keyboard: 'k75', pad: 'cloth', mouse: 'da3' }, pos = SV.layout(desk, pick);
@@ -44,6 +44,7 @@ function paint(deskOnly){
   document.querySelector('#demoSum .tx').textContent = bad ? bad + " won't fit" : fit + ' fit' + (tight ? ', ' + tight + ' tight' : '');
   document.getElementById('demoUsed').textContent = SV.usedPercent(SV.usedArea({ desk: desk, pick: pick, pos: pos }), desk.w * desk.d) + '% of the desk used';
   document.getElementById('demoTry').href = '/builder?s=' + SV.encode({ desk: desk, pick: pick, pos: pos }, { grip: '', hand: '', use: '' });
+  drawHero();
   document.getElementById('demoSize').textContent = 'Desk ' + SV.measureText(desk.w, unit) + ' × ' + SV.measureText(desk.d, unit) + ' ' + unit;
 }
 board.addEventListener('pointerdown', function(e){
@@ -72,6 +73,29 @@ document.getElementById('demoKeyboard').onchange = function(){
   paint();
 };
 
+// The hero's dotted desk mirrors the example desk. Back to front: pad, stand, panel, keyboard, mouse.
+var heroCanvas = document.getElementById('heroDots'), hero = heroDots(heroCanvas, heroCanvas.closest('.hero'));
+function drawHero(){
+  var m = SV.get('monitor', pick.monitor), mp = pos.monitor, front = m.d * m.panelFrontPct / 100;
+  function box(c, tone, keys){ var g = SV.get(c, pick[c]); return { x: pos[c].x, y: pos[c].y, w: g.w, d: g.d, tone: tone, keys: keys }; }
+  hero(desk, [
+    box('pad', 0.4),
+    { x: mp.x + (m.w - m.base[0]) / 2, y: mp.y + m.d - m.base[1], w: m.base[0], d: m.base[1], tone: 0.65 },
+    { x: mp.x, y: mp.y + front - m.panelDepth, w: m.w, d: m.panelDepth, tone: 1 },
+    box('keyboard', 1, true),
+    box('mouse', 1)
+  ]);
+}
+
+// The robot says one honest thing about the size typed in.
+var say = document.getElementById('botSay');
+function botSays(w){
+  var text = !w ? 'Hmm, check that number.' : w < 1000 ? "That's a small one. We'll make it count."
+    : w < 1300 ? 'Snug. A compact keyboard helps here.' : w < 1700 ? 'Good size. Most setups fit.' : 'Lots of room. Go big on the mouse pad.';
+  if (say.textContent === text) return;
+  say.textContent = text; say.classList.remove('pop'); void say.offsetWidth; say.classList.add('pop');
+}
+
 // The example desk takes the visitor's size, so the preview is their desk before they leave.
 function setDesk(w, d){
   desk = { w: w, d: d };
@@ -94,13 +118,19 @@ function readSize(){
   return bad ? null : { w: w.mm, d: d.mm };
 }
 function useSize(size){ if (!size) return; setDesk(size.w, size.d); writeStored('sv-desk', JSON.stringify(size)); }
+// While typing, the drawings follow along; the size is only saved on change.
+function typing(){
+  var w = SV.deskField(fields.w.value, unit, 'w'), d = SV.deskField(fields.d.value, unit, 'd');
+  if (w.ok && d.ok) { setDesk(w.mm, d.mm); botSays(w.mm); } else botSays(0);
+}
+fields.w.addEventListener('input', typing); fields.d.addEventListener('input', typing);
 fields.w.addEventListener('change', function(){ useSize(readSize()); });
 fields.d.addEventListener('change', function(){ useSize(readSize()); });
 form.querySelectorAll('[data-unit]').forEach(function(b){
   b.onclick = function(){ unit = b.dataset.unit; writeStored('sv-unit', unit); showSize(); paint(); };
 });
 document.querySelectorAll('#sizeChips [data-w]').forEach(function(b){
-  b.onclick = function(){ err.textContent = ''; useSize({ w: +b.dataset.w, d: +b.dataset.d }); showSize(); };
+  b.onclick = function(){ err.textContent = ''; useSize({ w: +b.dataset.w, d: +b.dataset.d }); showSize(); botSays(+b.dataset.w); };
 });
 form.addEventListener('submit', function(e){
   e.preventDefault();
@@ -111,7 +141,7 @@ form.addEventListener('submit', function(e){
 });
 
 var saved = SV.savedDesk(readStored('sv-desk'));
-if (saved.fallback) paint(); else setDesk(saved.desk.w, saved.desk.d);
+if (saved.fallback) paint(); else { setDesk(saved.desk.w, saved.desk.d); botSays(saved.desk.w); }
 showSize();
 fields.w.disabled = fields.d.disabled = false;
 

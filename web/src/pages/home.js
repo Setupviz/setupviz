@@ -175,3 +175,4 @@ function onScroll(){
 var ticking = false;
 addEventListener('scroll', function(){ if (ticking) return; ticking = true; requestAnimationFrame(function(){ ticking = false; onScroll(); }); }, { passive: true });
 onScroll();
+requestAnimationFrame(function(){ requestAnimationFrame(function(){ scene.classList.add('live'); }); });

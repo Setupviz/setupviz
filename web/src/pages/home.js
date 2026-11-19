@@ -176,3 +176,11 @@ var ticking = false;
 addEventListener('scroll', function(){ if (ticking) return; ticking = true; requestAnimationFrame(function(){ ticking = false; onScroll(); }); }, { passive: true });
 onScroll();
 requestAnimationFrame(function(){ requestAnimationFrame(function(){ scene.classList.add('live'); }); });
+
+// The same scene in 3D, where the browser can draw it and motion is welcome. It loads after
+// everything else and covers the drawn scene only once its first frame is ready.
+var saveData = navigator.connection && navigator.connection.saveData;
+if (window.WebGL2RenderingContext && !saveData && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  var load3d = function(){ import('/scene/scene3d.js').then(function(m){ return m.start(scene, function(){ return desk; }); }).catch(function(){}); };
+  if (window.requestIdleCallback) requestIdleCallback(load3d, { timeout: 2000 }); else setTimeout(load3d, 300);
+}

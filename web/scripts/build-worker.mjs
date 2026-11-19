@@ -48,6 +48,7 @@ const mime = {
   '.xml': 'application/xml',
   '.txt': 'text/plain',
   '.woff2': 'font/woff2',
+  '.glb': 'model/gltf-binary',
 };
 
 const sharedStyles = readFileSync(sources.get('sv.css'), 'utf8');

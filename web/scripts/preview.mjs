@@ -4,5 +4,5 @@ import { buildWorker, serveWorker } from './verify/serve.mjs';
 
 const port = Number(process.env.PORT) || 8787;
 await buildWorker();
-await serveWorker(port);
+await serveWorker(port, { fresh: true });
 console.log(`SetupViz preview: http://localhost:${port}/home  (Ctrl+C to stop)`);

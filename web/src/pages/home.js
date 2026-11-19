@@ -157,3 +157,19 @@ if (window.IntersectionObserver && !matchMedia('(prefers-reduced-motion: reduce)
   }, { threshold: 0.35 });
   seen.observe(board);
 }
+
+// How it works: each beat that reaches the middle of the screen drops its piece onto the desk.
+// Without this script every piece is simply shown.
+var build = document.getElementById('how');
+if (window.IntersectionObserver) {
+  var pieces = build.querySelectorAll('[data-at]');
+  build.classList.add('armed');
+  var beat = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      var step = +e.target.dataset.step || 0;
+      pieces.forEach(function(p){ p.classList.toggle('in', +p.dataset.at <= step); });
+    });
+  }, { rootMargin: '-50% 0px -50% 0px' });
+  build.querySelectorAll('.beats li').forEach(function(li){ beat.observe(li); });
+}

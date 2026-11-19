@@ -26,9 +26,22 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 #how,#checks,#more,.money,footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
 
 /* hero */
-.hero{padding:48px 0 32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
-.hero h1{margin:0;max-width:760px;font-size:clamp(36px,6vw,64px);line-height:1.02;font-weight:600;letter-spacing:-0.045em;text-wrap:balance}
-.hero .sub{margin:0;max-width:460px;font-size:17px;line-height:26px;color:var(--muted);text-wrap:balance}
+.hero{margin:8px 0 24px;padding:clamp(28px,5vw,64px);border-radius:28px;background:var(--accent);color:#FFFFFF;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(24px,4vw,56px);align-items:center}
+.hero-copy{display:flex;flex-direction:column;align-items:flex-start;gap:16px;min-width:0}
+.hero h1{margin:0;font-size:clamp(38px,5.4vw,68px);line-height:1;font-weight:600;letter-spacing:-0.045em;text-wrap:balance}
+.hero .sub{margin:0;max-width:440px;font-size:17px;line-height:26px;text-wrap:pretty}
+.hero-art{display:flex;flex-direction:column;align-items:flex-end;gap:8px;min-width:0}
+#heroDots{display:block;width:100%;aspect-ratio:16/9;touch-action:pan-y}
+.bot{margin:0;display:flex;align-items:center;gap:10px}
+.bot img{width:48px;height:48px;border-radius:14px;box-shadow:0 0 0 2px #FFFFFF}
+.bot span{background:#FFFFFF;color:var(--text);font-size:14px;line-height:20px;padding:8px 14px;border-radius:16px 16px 4px 16px}
+.bot span.pop{animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.92)}}
+.hero h1,.hero .sub{animation:settle .7s cubic-bezier(.2,.7,.2,1) both}
+.hero .sub{animation-delay:.08s}
+@keyframes settle{from{filter:blur(6px);transform:translateY(6px)}}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.hero-art{align-items:stretch}.bot{justify-content:flex-end}}
+@media (prefers-reduced-motion:reduce){.hero h1,.hero .sub,.bot span.pop{animation:none}}
 .size-form{display:flex;align-items:center;gap:6px;margin-top:8px;padding:6px 6px 6px 20px;border-radius:999px;background:var(--panel);box-shadow:0 1px 0 var(--line),0 12px 32px rgba(22,24,29,0.06);max-width:100%;box-sizing:border-box}
 .size-form label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .size-form input{width:3.4em;height:40px;padding:0;border:0;background:transparent;font:500 17px/1 var(--mono);color:var(--text);outline:none}
@@ -39,14 +52,17 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .size-form .unit button{height:28px;min-height:24px;min-width:34px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:12px;cursor:pointer}
 .size-form .unit button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(22,24,29,0.12)}
 .size-form .pill{margin-left:4px}
-.size-err{margin:0;font-size:13px;line-height:20px;color:#B42318}
+.size-err{margin:0;font-size:13px;line-height:20px;color:#B42318;background:#FFFFFF;padding:4px 10px;border-radius:8px}
 .size-err:empty{display:none}
-.source{margin:4px 0 0;font-size:13px;color:var(--muted)}
-.source a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
-.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.source{margin:4px 0 0;font-size:13px}
+.source a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--muted);font:400 13px/1 var(--font);cursor:pointer}
 .chip:hover{color:var(--text);border-color:var(--line-3)}
 a.chip{color:var(--text)}
+.hero .chip,.hero a.chip{color:#FFFFFF;border-color:rgba(255,255,255,0.55)}
+.hero .chip:hover{background:rgba(255,255,255,0.14);border-color:#FFFFFF}
+.hero a:focus-visible,.hero .chip:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
 
 /* the preview: the example desk, drawn to scale, with the gear on it in cards below */
 .preview{position:relative;border-radius:24px;background:var(--panel);padding:clamp(12px,2vw,24px);display:flex;flex-direction:column;gap:16px}
@@ -134,6 +150,7 @@ footer{border-top:1px solid var(--line)}
     <a class="l" href="/builder">Builder</a>
     <a class="l l-wide" href="/gear">Gear</a>
     <a class="l l-wide" href="/setups">Setups</a>
+    <details class="sv-menu"><summary><span class="o">Menu</span><span class="c">Close</span></summary><div class="sv-menu-card"><a href="/builder">Builder</a><a href="/gear">Gear</a><a href="/setups">Setups</a></div></details>
   </div>
   <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
 </div></nav>
@@ -141,6 +158,7 @@ footer{border-top:1px solid var(--line)}
 <main>
   <div class="wrap">
     <section class="hero">
+      <div class="hero-copy">
       <h1>Will it fit on your desk?</h1>
       <p class="sub">Type in your desk size and we’ll lay out real gear on it, to scale, so you know what fits before you buy anything.</p>
       <form class="size-form" id="sizeForm" action="/builder" novalidate>
@@ -153,6 +171,11 @@ footer{border-top:1px solid var(--line)}
       <p class="size-err" id="sizeErr" role="alert"></p>
       <div class="chips" id="sizeChips"><button type="button" class="chip" data-w="1200" data-d="600">Small desk</button><button type="button" class="chip" data-w="1400" data-d="700">Standard desk</button><button type="button" class="chip" data-w="1600" data-d="800">Large desk</button><a class="chip" href="/desk">Not sure? Answer 4 questions</a></div>
       <p class="source">Free to use. Sizes come from each maker’s drawings and spec sheets. <a href="/gear">See every measurement</a></p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <canvas id="heroDots"></canvas>
+        <p class="bot"><span id="botSay">How big is your desk?</span><img src="/apple-touch-icon.png" alt="" width="48" height="48"></p>
+      </div>
     </section>
 
     <section class="preview" id="preview" aria-label="Try gear on the example desk">

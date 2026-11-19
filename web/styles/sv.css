@@ -81,7 +81,7 @@ button{font-family:inherit}
 /* top bar: brand left, links in one rounded group, the call to action right.
    One 1200px column even when a page sets a wider --sv-content. */
 .sv-nav{--sv-content:1200px;position:sticky;top:0;z-index:20;background:var(--bg)}
-.sv-nav-in{max-width:var(--sv-content);margin:0 auto;padding:12px 24px;box-sizing:border-box;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:16px}
+.sv-nav-in{position:relative;max-width:var(--sv-content);margin:0 auto;padding:12px 24px;box-sizing:border-box;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:16px}
 .sv-brand img{border-radius:7px;flex:none}
 .sv-brand{justify-self:start;display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;letter-spacing:-0.02em}
 .sv-links{justify-self:center;display:flex;align-items:center;gap:2px;font-size:14px}
@@ -94,8 +94,21 @@ button{font-family:inherit}
   body{--sv-bar:48px}
   .sv-nav-in{grid-template-columns:1fr auto auto;align-items:center;padding:8px 12px;gap:8px}
   .sv-brand,.sv-links a.l,.sv-nav-in>.nav-cta{height:32px;box-sizing:border-box}
-  .sv-links a.l-wide{display:none}
+  .sv-links a.l{display:none}
+  .sv-nav .sv-menu{display:block}
 }
+
+/* phone menu: the Menu pill grows into a dark card with the links in big type */
+.sv-menu{display:none}
+.sv-menu summary{list-style:none;height:32px;box-sizing:border-box;padding:0 14px;display:inline-flex;align-items:center;border-radius:999px;background:var(--panel);color:var(--text);font-size:14px;cursor:pointer}
+.sv-menu summary::-webkit-details-marker{display:none}
+.sv-menu .c,.sv-menu[open] .o{display:none}
+.sv-menu[open] .c{display:inline}
+.sv-menu-card{position:absolute;left:12px;right:12px;top:calc(100% + 4px);padding:16px 24px 20px;border-radius:24px;background:var(--text);display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(22,24,29,0.28);animation:sv-grow .34s cubic-bezier(.2,.8,.2,1)}
+.sv-menu-card a{padding:6px 0;font-size:36px;line-height:1.1;font-weight:600;letter-spacing:-0.035em;color:rgba(255,255,255,0.72)}
+.sv-menu-card a:hover,.sv-menu-card a:focus-visible,.sv-menu-card a[aria-current="page"]{color:#FFFFFF}
+@keyframes sv-grow{from{clip-path:inset(0 22% 100% 40% round 999px)}to{clip-path:inset(0 0 0 0 round 24px)}}
+@media (prefers-reduced-motion:reduce){.sv-menu-card{animation:none}}
 
 /* buttons: one dark primary, one white secondary, one text-only */
 .pill{height:36px;min-height:24px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;border:1px solid transparent;font:600 14px/1 var(--font);cursor:pointer;white-space:nowrap;transition:background-color .15s,border-color .15s,color .15s}
@@ -139,8 +152,8 @@ a.sv-mail:hover{color:#000000;text-decoration-thickness:2px}
 a.sv-mail:focus{color:#000000;outline:2px solid var(--accent);outline-offset:3px}
 @media (pointer:coarse){
   body{--sv-bar:70px}
-  .sv-links a.l,.pill,.pill-sm,.pill-lg,.sv-brand,.brand{min-height:44px;min-width:44px}
-  .sv-links a.l,.pill,.pill-sm,.pill-lg{height:44px}
+  .sv-links a.l,.sv-menu summary,.pill,.pill-sm,.pill-lg,.sv-brand,.brand{min-height:44px;min-width:44px}
+  .sv-links a.l,.sv-menu summary,.pill,.pill-sm,.pill-lg{height:44px}
   a.pill{animation:none;transform:none}
   .sv-disclosure{min-height:44px}
   a.sv-legal-link,a.sv-mail{box-sizing:border-box;min-height:44px;min-width:44px;padding:10px 12px}

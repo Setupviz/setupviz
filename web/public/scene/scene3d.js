@@ -5,13 +5,13 @@ import * as THREE from '/vendor/three/three.module.min.js';
 import { GLTFLoader } from '/vendor/three/GLTFLoader.js';
 import { RGBELoader } from '/vendor/three/RGBELoader.js';
 
-// To swap in a new model, change `file`. `width` is the real width in metres: whatever units
-// the file uses, it is scaled so its widest side matches. `turn` spins it to face the user.
-// `beat` is the scroll step it lands on.
+// To swap in a new model, change `file`. A model built at real size, in metres, needs nothing
+// else. If it is not, give `width` (its real widest side in metres) and it is scaled to match.
+// `turn` spins it to face the user. `beat` is the scroll step it lands on.
 const GEAR = [
-  { id: 'monitor', beat: 1, file: '/models/monitor.glb', width: 0.605, turn: 0 },
-  { id: 'keyboard', beat: 2, file: '/models/keyboard.glb', width: 0.305, turn: 0 },
-  { id: 'pad', beat: 3, file: '/models/pad.glb', width: 0.49, turn: 0 },
+  { id: 'monitor', beat: 1, file: '/models/monitor.glb', turn: 0 },
+  { id: 'keyboard', beat: 2, file: '/models/keyboard.glb', turn: 0 },
+  { id: 'pad', beat: 3, file: '/models/pad.glb', turn: 0 },
   { id: 'mouse', beat: 4, file: '/models/mouse.glb', width: 0.1195, turn: Math.PI / 2 },
 ];
 const BEATS = 7, STEP = 1.5, DESK_TOP = 0.73, DESK_THICK = 0.03, DESK_Z = -(4 * STEP + 1.3);
@@ -85,7 +85,7 @@ export async function start(section, getDesk){
 
   // One warm lamp with shadows. It travels with the camera, so its shadow map only has to
   // cover the couple of metres in view and stays sharp.
-  const sun = new THREE.DirectionalLight('#FFE9CC', 2.8); sun.castShadow = true;
+  const sun = new THREE.DirectionalLight('#FFE9CC', 3.4); sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.004; sun.shadow.radius = 6;
   Object.assign(sun.shadow.camera, { left: -1.6, right: 1.6, top: 1.6, bottom: -1.6, near: 0.5, far: 8 });
   scene.add(sun, sun.target, new THREE.HemisphereLight('#AFC3FF', '#0B0C10', 0.7));
@@ -110,9 +110,9 @@ export async function start(section, getDesk){
   const loader = new GLTFLoader(), pieces = [];
   await Promise.all(GEAR.map(async (item) => {
     const model = (await loader.loadAsync(item.file)).scene, box = new THREE.Box3().setFromObject(model), size = box.getSize(new THREE.Vector3());
-    const scale = item.width / Math.max(size.x, size.z), reach = Math.max(size.x, size.z) * scale;
+    const scale = item.width ? item.width / Math.max(size.x, size.z) : 1, reach = Math.max(size.x, size.z) * scale;
     model.scale.setScalar(scale); model.position.set(-(box.min.x + size.x / 2) * scale, -box.min.y * scale, -(box.min.z + size.z / 2) * scale);
-    model.traverse((o) => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; lit(o.material, 0.5); } });
+    model.traverse((o) => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; lit(o.material, 1.1); } });
     const [x, yaw] = FLOOR[item.beat];
     [false, true].forEach((onDesk) => {
       const group = new THREE.Group(); group.add(onDesk ? model.clone() : model); scene.add(group);
@@ -146,7 +146,7 @@ export async function start(section, getDesk){
       if (k === BEATS - 1) outEye.set(0, DESK_TOP + span * 1.75, DESK_Z + 0.02); else outEye.set(0, DESK_TOP + span * 1.0, DESK_Z + span * 1.35);
       return;
     }
-    const p = pieces.find((x) => x.item.beat === k && !x.onDesk), r = Math.max(0.22, p.reach) * (wide ? 1.55 : 2.4);
+    const p = pieces.find((x) => x.item.beat === k && !x.onDesk), r = Math.max(0.2, p.reach) * (wide ? 1.45 : 2.4);
     outLook.set(p.home.x, p.tall * 0.4, p.home.z); outEye.set(p.home.x, p.tall * 0.4 + r * 0.75, p.home.z + r * 1.15);
   }
   const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), e = new THREE.Vector3();

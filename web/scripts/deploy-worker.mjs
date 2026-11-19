@@ -27,6 +27,25 @@ if (accountId && !/^[a-f0-9]{32}$/i.test(accountId)) {
   process.exit(1);
 }
 
+// A production deploy replaces the whole site, so it must be exactly origin/main. Deploying from
+// a stale or edited checkout would silently roll the site back. --preview skips this check;
+// --dry-run reports it.
+function mainProblem() {
+  const git = (...args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+  if (git('fetch', '--quiet', 'origin', 'main').status !== 0) return 'git fetch origin main failed, so this checkout cannot be checked.';
+  if (git('status', '--porcelain').stdout.trim()) return 'Uncommitted changes. Commit and merge them to main first.';
+  const head = git('rev-parse', 'HEAD').stdout.trim();
+  if (!head || head !== git('rev-parse', 'origin/main').stdout.trim())
+    return 'This checkout is not origin/main. Run git checkout main && git pull, then deploy again.';
+  return '';
+}
+const problem = preview ? '' : mainProblem();
+if (problem && !dryRun) {
+  console.error(problem);
+  console.error('Not deploying. Use --preview to try other code on the preview Worker.');
+  process.exit(1);
+}
+
 const built = spawnSync(process.execPath, [join(root, 'scripts', 'build-worker.mjs'), workerPath], {
   stdio: 'inherit',
 });
@@ -63,6 +82,7 @@ if (dryRun) {
   console.log('script: ' + scriptName + (preview ? ' (preview)' : ' (production)'));
   console.log('account id: ' + (accountId ? 'set' : 'not set'));
   console.log('token: ' + (token ? 'set' : 'not set'));
+  if (!preview) console.log('git: ' + (problem || 'checkout is origin/main'));
   process.exit(0);
 }
 

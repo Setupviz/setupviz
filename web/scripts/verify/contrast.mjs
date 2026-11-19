@@ -35,41 +35,43 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
 await page.addScriptTag({ content: axe.source });
 
-// Check each state of the interactive example, including its updated labels.
-const previewViolations = [];
-for (const keyboard of ['k75', 'full']) {
-  await page.selectOption('#demoKeyboard', keyboard);
+// Check every caption of the scene, each in the state where it shows.
+const captionViolations = [];
+const steps = await page.locator('.lines li').count();
+for (let step = 0; step <= steps; step++) {
+  await page.evaluate((f) => { const s = document.getElementById('how'); scrollTo(0, s.offsetTop + (s.offsetHeight - innerHeight) * f); }, (step + 0.5) / (steps + 1));
+  await page.waitForFunction((n) => document.getElementById('how').dataset.beat === String(n), step);
+  await page.waitForTimeout(900);
   const failures = await page.evaluate(async () => {
     const result = await axe.run(document, { runOnly: ['color-contrast'] });
     return result.violations.flatMap(rule => rule.nodes.map(node => node.target));
   });
-  previewViolations.push(...failures);
+  captionViolations.push(...failures);
 }
 
 await page.emulateMedia({ reducedMotion: 'reduce' });
 await page.reload({ waitUntil: 'load' });
 const sectionsVisible = await page.evaluate(() =>
-  ['.paper', '#sceneDesk', '#demoBoard', '.slots', '.checks', '.cards', '.money'].every(selector => {
+  ['.paper', '#sceneDesk'].every(selector => {
     const el = document.querySelector(selector);
     return el && el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && !el.getAnimations().length;
-  }) && !document.getElementById('dither').checkVisibility()
+  })
 );
 
 const colors = await page.evaluate(() => {
-  // The smallest muted text, on the grey gear cards and on the paper.
+  // The muted text on the paper.
   const read = (el, card) => ({ color: getComputedStyle(el).color, bg: getComputedStyle(card).backgroundColor });
-  return { small: read(document.querySelector('.mslot .m'), document.querySelector('.mslot:not(.on)')), em: read(document.querySelector('.paper .sub'), document.body) };
+  return { em: read(document.querySelector('.paper .sub'), document.querySelector('.paper')) };
 });
-const smallRatio = contrast(rgbHex(colors.small.color), rgbHex(colors.small.bg));
 const emRatio = contrast(rgbHex(colors.em.color), rgbHex(colors.em.bg));
 const motionOk = sectionsVisible;
-const previewOk = previewViolations.length === 0;
-const contrastOk = smallRatio >= 4.5 && emRatio >= 4.5;
-const pass = previewOk && motionOk && contrastOk;
+const captionsOk = captionViolations.length === 0;
+const contrastOk = emRatio >= 4.5;
+const pass = captionsOk && motionOk && contrastOk;
 
-console.log(`${previewOk ? 'PASS' : 'FAIL'} keyboard preview contrast ${JSON.stringify(previewViolations)}`);
+console.log(`${captionsOk ? 'PASS' : 'FAIL'} scene caption contrast ${JSON.stringify(captionViolations)}`);
 console.log(`${motionOk ? 'PASS' : 'FAIL'} reduced-motion sections visible and still`);
-console.log(`${contrastOk ? 'PASS' : 'FAIL'} gear card ${smallRatio.toFixed(2)}:1 paper text ${emRatio.toFixed(2)}:1 on ${rgbHex(colors.small.bg)} color ${rgbHex(colors.small.color)}`);
+console.log(`${contrastOk ? 'PASS' : 'FAIL'} paper text ${emRatio.toFixed(2)}:1`);
 console.log(pass ? 'PASS contrast' : 'FAIL contrast');
 await browser.close();
 server.close();

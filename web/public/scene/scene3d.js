@@ -3,7 +3,7 @@
 // scene in the page stays underneath as the fallback. three.js is vendored in /vendor/three.
 import * as THREE from '/vendor/three/three.module.min.js';
 import { GLTFLoader } from '/vendor/three/GLTFLoader.js';
-import { RoomEnvironment } from '/vendor/three/RoomEnvironment.js';
+import { RGBELoader } from '/vendor/three/RGBELoader.js';
 
 // To swap in a new model, change `file`. `width` is the real width in metres: whatever units
 // the file uses, it is scaled so its widest side matches. `turn` spins it to face the user.
@@ -14,7 +14,7 @@ const GEAR = [
   { id: 'pad', beat: 3, file: '/models/pad.glb', width: 0.49, turn: 0 },
   { id: 'mouse', beat: 4, file: '/models/mouse.glb', width: 0.1195, turn: Math.PI / 2 },
 ];
-const BEATS = 6, STEP = 1.5, DESK_TOP = 0.73, DESK_THICK = 0.03, DESK_Z = -(4 * STEP + 1.3);
+const BEATS = 7, STEP = 1.5, DESK_TOP = 0.73, DESK_THICK = 0.03, DESK_Z = -(4 * STEP + 1.3);
 // How each piece lies on the floor on the way there: sideways shift and turn, by beat.
 const FLOOR = { 1: [0.1, 0.12], 2: [-0.08, 0.3], 3: [0.1, -0.2], 4: [-0.04, 0.7] };
 
@@ -75,30 +75,34 @@ export async function start(section, getDesk){
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
   const DARK = '#14161B', scene = new THREE.Scene(); scene.background = new THREE.Color(DARK);
-  scene.fog = new THREE.Fog(DARK, 2.2, 6.5);   // the way ahead fades into the dark, so each piece is found in turn
-  const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.45;
+  scene.fog = new THREE.Fog(DARK, 3, 8);   // the way ahead fades into the dark, so each piece is found in turn
+  // A photo of a real studio lights the gear and shows in its glossy parts, which is most of
+  // what makes a render look real. The floor and desk take only a little of it, or the bright
+  // studio lamps wash them out.
+  const studio = new THREE.PMREMGenerator(renderer).fromEquirectangular(await new RGBELoader().loadAsync('/textures/studio.hdr')).texture;
+  const lit = (material, amount) => { material.envMap = studio; material.envMapIntensity = amount; return material; };
   const camera = new THREE.PerspectiveCamera(34, 1, 0.05, 30);
 
   // One warm lamp with shadows. It travels with the camera, so its shadow map only has to
   // cover the couple of metres in view and stays sharp.
-  const sun = new THREE.DirectionalLight('#FFE9CC', 3.4); sun.castShadow = true;
+  const sun = new THREE.DirectionalLight('#FFE9CC', 2.8); sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.004; sun.shadow.radius = 6;
   Object.assign(sun.shadow.camera, { left: -1.6, right: 1.6, top: 1.6, bottom: -1.6, near: 0.5, far: 8 });
-  scene.add(sun, sun.target, new THREE.HemisphereLight('#AFC3FF', '#0B0C10', 0.55));
+  scene.add(sun, sun.target, new THREE.HemisphereLight('#AFC3FF', '#0B0C10', 0.7));
 
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 24), new THREE.MeshStandardMaterial({
-    map: mottle('#2E323B', ['rgba(60,66,80,0.16)', 'rgba(8,9,12,0.2)'], ['rgba(255,255,255,0.03)', 'rgba(0,0,0,0.07)']),
-    roughnessMap: mottle('#B8B8B8', ['rgba(255,255,255,0.25)', 'rgba(60,60,60,0.3)'], ['rgba(255,255,255,0.12)', 'rgba(40,40,40,0.12)']),
-  }));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 24), lit(new THREE.MeshStandardMaterial({
+    map: mottle('#22252B', ['rgba(60,66,80,0.07)', 'rgba(8,9,12,0.09)'], ['rgba(255,255,255,0.03)', 'rgba(0,0,0,0.07)']),
+    roughnessMap: mottle('#E6E6E6', ['rgba(255,255,255,0.12)', 'rgba(150,150,150,0.12)'], ['rgba(255,255,255,0.12)', 'rgba(40,40,40,0.12)']),
+  }), 0.03));
   floor.material.map.colorSpace = THREE.SRGBColorSpace;
   floor.rotation.x = -Math.PI / 2; floor.position.z = -4; floor.receiveShadow = true; scene.add(floor);
 
   // the desk at the end of the walk: an oak top on four dark legs
   const table = new THREE.Group(); table.position.set(0, DESK_TOP, DESK_Z); scene.add(table);
-  const top = new THREE.Mesh(new THREE.BoxGeometry(1, DESK_THICK, 1), new THREE.MeshStandardMaterial({ map: oak(), roughness: 0.55 }));
+  const top = new THREE.Mesh(new THREE.BoxGeometry(1, DESK_THICK, 1), lit(new THREE.MeshStandardMaterial({ map: oak(), roughness: 0.55 }), 0.12));
   top.position.y = -DESK_THICK / 2; top.castShadow = top.receiveShadow = true; table.add(top);
   const legs = [0, 1, 2, 3].map(() => {
-    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, DESK_TOP - DESK_THICK, 0.05), new THREE.MeshStandardMaterial({ color: '#1A1B1F', roughness: 0.4, metalness: 0.6 }));
+    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, DESK_TOP - DESK_THICK, 0.05), lit(new THREE.MeshStandardMaterial({ color: '#1A1B1F', roughness: 0.4, metalness: 0.6 }), 0.6));
     leg.castShadow = true; table.add(leg); return leg;
   });
 
@@ -108,7 +112,7 @@ export async function start(section, getDesk){
     const model = (await loader.loadAsync(item.file)).scene, box = new THREE.Box3().setFromObject(model), size = box.getSize(new THREE.Vector3());
     const scale = item.width / Math.max(size.x, size.z), reach = Math.max(size.x, size.z) * scale;
     model.scale.setScalar(scale); model.position.set(-(box.min.x + size.x / 2) * scale, -box.min.y * scale, -(box.min.z + size.z / 2) * scale);
-    model.traverse((o) => { if (o.isMesh) o.castShadow = o.receiveShadow = true; });
+    model.traverse((o) => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; lit(o.material, 0.5); } });
     const [x, yaw] = FLOOR[item.beat];
     [false, true].forEach((onDesk) => {
       const group = new THREE.Group(); group.add(onDesk ? model.clone() : model); scene.add(group);
@@ -131,13 +135,16 @@ export async function start(section, getDesk){
     if (W > 820) camera.setViewOffset(W, H, -W * 0.16, 0, W, H); else camera.setViewOffset(W, H, 0, -H * 0.16, W, H);
     camera.updateProjectionMatrix();
   }
-  // Camera stop k: 0 looks down the path, 1 to 4 fly low over one piece each, 5 is the desk.
+  // Camera stop k: 0 looks down the path, 1 to 4 fly low over one piece each, 5 is the desk,
+  // and 6 rises straight above it, the same view the builder draws.
   function stop(k, outLook, outEye){
     const wide = camera.aspect > 1;
     if (k === 0) { outLook.set(0, 0.1, -0.4); outEye.set(0, 0.5, 1.7); return; }
-    if (k === BEATS - 1) {
+    if (k >= BEATS - 2) {
       const span = Math.max(w / 1000 / (wide ? 1 : 0.5), d / 1000 * 1.8);
-      outLook.set(0, DESK_TOP + 0.12, DESK_Z); outEye.set(0, DESK_TOP + span * 1.0, DESK_Z + span * 1.35); return;
+      outLook.set(0, DESK_TOP + 0.12, DESK_Z);
+      if (k === BEATS - 1) outEye.set(0, DESK_TOP + span * 1.75, DESK_Z + 0.02); else outEye.set(0, DESK_TOP + span * 1.0, DESK_Z + span * 1.35);
+      return;
     }
     const p = pieces.find((x) => x.item.beat === k && !x.onDesk), r = Math.max(0.22, p.reach) * (wide ? 1.55 : 2.4);
     outLook.set(p.home.x, p.tall * 0.4, p.home.z); outEye.set(p.home.x, p.tall * 0.4 + r * 0.75, p.home.z + r * 1.15);
@@ -158,7 +165,7 @@ export async function start(section, getDesk){
     sun.target.position.copy(look); sun.position.set(look.x - 1.5, look.y + 3, look.z + 1.4);
     pieces.forEach((p, i) => {
       // on the desk, the pieces come down one after another as the last step arrives
-      if (p.onDesk) p.drop += (clamp((u - (BEATS - 1.5) - p.item.beat * 0.07) / 0.35) - p.drop) * (shown ? 1 - Math.exp(-7 * dt) : 1);
+      if (p.onDesk) p.drop += (clamp((u - (BEATS - 2.5) - p.item.beat * 0.07) / 0.35) - p.drop) * (shown ? 1 - Math.exp(-7 * dt) : 1);
       const up = 1 - p.drop, g = p.group;
       g.visible = p.drop > 0.002;
       if (held === p) {

@@ -23,7 +23,7 @@
 /* One short path: desk size on the opening scene, a desk to try right under it, then the gear that fits. */
 .wrap{max-width:var(--sv-content);margin:0 auto;padding:0 24px;box-sizing:border-box}
 section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
-#checks,#more,.money,footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
+footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
 
 /* the size form on the paper */
 .size-form{display:flex;align-items:center;gap:6px;margin-top:8px;padding:6px 6px 6px 20px;border-radius:999px;background:var(--panel);box-shadow:0 1px 0 var(--line),0 12px 32px rgba(22,24,29,0.06);max-width:100%;box-sizing:border-box}
@@ -45,44 +45,14 @@ section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
 .chip:hover{color:var(--text);border-color:var(--line-3)}
 a.chip{color:var(--text)}
 
-/* the preview: the example desk, drawn to scale, with the gear on it in cards below */
-.preview{position:relative;margin-top:64px;border-radius:24px;background:var(--panel);padding:clamp(12px,2vw,24px);display:flex;flex-direction:column;gap:16px}
-.preview-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-.preview-top label{display:flex;align-items:center;gap:8px;white-space:nowrap;min-width:0}
-.preview-top select{min-width:0;max-width:100%}
-.preview-top select{font:inherit;color:var(--text);background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 10px}
-.board-wrap{position:relative}
-.board{position:relative;width:100%;aspect-ratio:2/1;border-radius:14px;border:1px solid var(--line);background-size:2.5% 5%;background-position:1.25% 2.5%;overflow:hidden}
-#demoBoard{touch-action:none;overflow:visible}
-.board > *{position:absolute;box-sizing:border-box}
-:where(.board .piece){padding:0;border:0;background:transparent;font:inherit;color:inherit;cursor:grab;touch-action:none;appearance:none}
-.board .drag{cursor:grabbing}
-/* Dots that resolve into the drawing once, as the preview scrolls into view. Decorative only. */
-.dither{position:absolute;inset:0;width:100%;height:100%;border-radius:14px;pointer-events:none;opacity:0}
-.dither.on{opacity:1}
-.dither.out{opacity:0;transition:opacity .9s ease .35s}
-.caps{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-.caps .cap-b{display:inline-flex;align-items:center;gap:6px;color:var(--text)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
-.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.mslot{padding:14px;border-radius:14px;background:var(--panel-2);border:1px solid transparent;display:flex;flex-direction:column;gap:2px;min-width:0}
-.mslot.on{border-color:var(--line-2);background:var(--panel)}
-.mslot .c{font-size:12px;color:var(--muted)}
-.mslot .n{font-size:14px;font-weight:600;line-height:20px}
-.mslot .m{font-size:12px;color:var(--muted)}
 .b-tag{align-self:flex-start;margin-top:8px;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--panel);border:1px solid var(--line-2);display:inline-flex;align-items:center;gap:6px}
-.preview-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.preview-foot p{margin:0;font-size:13px;color:var(--muted)}
 
-/* sections below */
-.block{padding:96px 0 0;display:flex;flex-direction:column;gap:24px}
-.block h2,.money h2{margin:0;font-size:clamp(24px,3vw,32px);line-height:1.15;font-weight:600;letter-spacing:-0.03em}
-/* a real sequence, so it is numbered; plain columns, not cards */
 /* The opening is one surface, not a page: a desk on a blue rug, seen from above, with the
    headline on a sheet of paper. Scrolling slides the paper away and drops the gear on, one beat
    at a time. Without the script it is a single still scene with the beats listed under it. */
 .scene{--ar:2;position:relative;color:#FFFFFF}
-.scene.armed{height:calc(5.4 * (100svh - var(--sv-bar)))}
+.scene.armed{height:calc(6.3 * (100svh - var(--sv-bar)))}
 .view{position:relative;height:calc(100svh - var(--sv-bar));min-height:600px;overflow:hidden;background:#3457CC}
 .scene.armed .view{position:sticky;top:var(--sv-bar)}
 .rug{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .14 0 0 0 0 .35 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23r)'/%3E%3C/svg%3E"),radial-gradient(120% 90% at 30% 20%,#4A6FE6,#3457CC 70%,#2D4DB8)}
@@ -121,25 +91,30 @@ a.chip{color:var(--text)}
 .scene.live [data-at]{transition:transform .8s cubic-bezier(.2,.9,.3,1.25),opacity .35s ease,filter .8s ease}
 .scene.armed [data-at]:not(.in){opacity:0;transform:translateY(-24px) scale(1.1) rotate(-4deg);filter:drop-shadow(18px 40px 24px rgba(40,28,14,0.3))}
 .scene.armed:not([data-beat="0"]) .paper{transform:translate(-115%,-60%) rotate(-16deg);opacity:0;visibility:hidden;transition-delay:0s,.2s,.9s;pointer-events:none}
-.scene.armed[data-beat="1"] .lines [data-beat="1"],.scene.armed[data-beat="2"] .lines [data-beat="2"],.scene.armed[data-beat="3"] .lines [data-beat="3"],.scene.armed[data-beat="4"] .lines [data-beat="4"],.scene.armed[data-beat="5"] .lines [data-beat="5"]{opacity:1;visibility:visible;transition-delay:0s;transform:translateY(-50%);pointer-events:auto}
+.scene.armed .lines li.on{opacity:1;visibility:visible;transition-delay:0s;transform:translateY(-50%);pointer-events:auto}
 .stage3d{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s ease}
 .scene.three .stage3d{opacity:1}
 .scene.three .rug,.scene.three .top,.scene.three .light{visibility:hidden}
 .scene.three .view{background:#14161B}
 .scene.three .view::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
 .scene.holding .lines{opacity:0;transition:opacity .3s ease}
+.lines .chk{padding-top:12px;border-top:1px solid rgba(255,255,255,0.28);font-size:15px;line-height:23px;align-self:stretch}
+.lines .more{font-size:14px;line-height:22px}
+.lines p a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.lines .fit-estimate{color:rgba(255,255,255,0.85)}
+.lines .b-tag{margin:0;background:#FFFFFF;color:#16181D}
 .scene.three.armed .lines li{left:4vw;width:min(440px,36vw);padding:26px 28px 28px;border-radius:22px;background:#2D4DB8;box-shadow:0 30px 60px -30px rgba(10,20,60,0.6)}
 .scene.three .lines h2{font-size:clamp(40px,4.8vw,72px)}
 .scene.three .lines p{text-shadow:none}
 @media (max-width:820px){.scene.three.armed .lines li{left:16px;right:16px;width:auto;padding:18px 20px 20px}}
-.scene:not(.armed) .lines{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;padding:32px 5vw;background:#2D4DB8}
+.scene:not(.armed) .lines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 24px;padding:32px 5vw;background:#2D4DB8}
 .scene:not(.armed) .lines h2{font-size:32px}
 @media (max-width:820px){
   .top{left:4vw;right:auto;top:auto;bottom:5svh;width:92vw;max-height:40svh;transform:none}
   .paper{left:4vw;right:4vw;top:12px;width:auto;padding:24px 20px 20px;gap:12px;transform:none}
   .scene.armed:not([data-beat="0"]) .paper{transform:translate(-110%,-20%) rotate(-12deg)}
   .scene.armed .lines li{top:24px;left:5vw;width:auto;right:5vw;transform:translateY(20px)}
-  .scene.armed[data-beat="1"] .lines [data-beat="1"],.scene.armed[data-beat="2"] .lines [data-beat="2"],.scene.armed[data-beat="3"] .lines [data-beat="3"],.scene.armed[data-beat="4"] .lines [data-beat="4"],.scene.armed[data-beat="5"] .lines [data-beat="5"]{transform:none}
+  .scene.armed .lines li.on{transform:none}
   .scene:not(.armed) .lines{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
@@ -150,17 +125,6 @@ a.chip{color:var(--text)}
 .verdicts{display:flex;gap:6px;flex-wrap:wrap}
 .verdicts .b-tag{margin:0}
 .fit-estimate{margin:0;font-size:13px;color:var(--muted)}
-.checks{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;max-width:880px}
-.checks div{padding:16px 0;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:4px}
-.checks dt{font-weight:600}
-.checks dd{margin:0;font-size:15px;line-height:23px;color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.card{padding:24px;border-radius:16px;background:var(--panel);display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s}
-.card:hover{box-shadow:0 0 0 1px var(--line-2)}
-.card .t{font-size:18px;font-weight:600;letter-spacing:-0.015em}
-.card .d{font-size:14px;line-height:21px;color:var(--muted)}
-.money{padding:120px 0 120px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
-.money p{margin:0;max-width:520px;font-size:16px;line-height:25px;color:var(--muted)}
 
 footer{border-top:1px solid var(--line)}
 .foot{padding:48px 24px 40px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;font-size:14px}
@@ -171,19 +135,15 @@ footer{border-top:1px solid var(--line)}
 .legal-row{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px}
 
 @media (max-width:820px){
-  .slots{grid-template-columns:1fr 1fr}
-  .cards,.checks{grid-template-columns:1fr}
-  .block{padding-top:72px}
 }
 @media (max-width:520px){
   .size-form{flex-wrap:wrap;justify-content:center;border-radius:20px;padding:10px}
   .size-form .pill{flex:1 0 100%;margin:4px 0 0}
 }
 @media (pointer:coarse){
-  .chip,.size-form .unit button,.foot .col a,.card{min-height:44px}
+  .chip,.size-form .unit button,.foot .col a{min-height:44px}
   .size-form .unit button{min-width:44px;height:40px}
 }
-@media (prefers-reduced-motion:reduce){.dither{display:none}}
 </style>
 </head>
 <body>
@@ -226,67 +186,16 @@ footer{border-top:1px solid var(--line)}
       </div>
       <div class="light" aria-hidden="true"></div>
       <ol class="lines">
-        <li data-beat="1"><span class="n">1 of 4</span><h2>Monitor</h2><p>The stand takes the room, not the screen. The Dell 27 Plus is 24.1 in wide, but only a 9.8 × 7.1 in base sits on the desk.</p></li>
-        <li data-beat="2"><span class="n">2 of 4</span><h2>Keyboard</h2><p>An MX Mechanical Mini, 12.3 × 5.2 in. Going compact leaves the mouse more room to move.</p></li>
-        <li data-beat="3"><span class="n">3 of 4</span><h2>Mouse pad</h2><p>A QcK Heavy Large, 17.7 × 15.7 in. We check that it clears the keyboard and the monitor stand.</p></li>
-        <li data-beat="4"><span class="n">4 of 4</span><h2>Mouse</h2><p>A DeathAdder V3 on the pad, with room to swing.</p></li>
-        <li data-beat="5"><span class="n">All together</span><h2>The full setup</h2><p class="verdict"><span class="dot" id="sceneDot" style="background:#1F9D55"></span><span id="sceneSum">Everything fits, and 27% of the desk is used.</span></p><a class="pill pill-secondary" href="/builder">Open it in the builder</a></li>
+        <li data-beat="1"><span class="n">1 of 4</span><h2>Monitor</h2><p>The stand takes the room, not the screen. The Dell 27 Plus is 24.1 in wide, but only a 9.8 × 7.1 in base sits on the desk.</p><p class="chk">We check whether that foot runs into your keyboard or pad.</p></li>
+        <li data-beat="2"><span class="n">2 of 4</span><h2>Keyboard</h2><p>An MX Mechanical Mini, 12.3 × 5.2 in. Going compact leaves the mouse more room to move.</p><p class="chk">We check that it isn’t hanging off the front edge.</p></li>
+        <li data-beat="3"><span class="n">3 of 4</span><h2>Mouse pad</h2><p>A QcK Heavy Large, 17.7 × 15.7 in.</p><p class="chk">We check that it clears the monitor stand, and show where the keyboard covers it.</p></li>
+        <li data-beat="4"><span class="n">4 of 4</span><h2>Mouse</h2><p>A DeathAdder V3 on the pad.</p><p class="chk">We check it has room to swing. <a href="/hand">Our guide</a> says which hand sizes and grips it suits.</p></li>
+        <li data-beat="5" id="checks"><span class="n">All together</span><h2>The full setup</h2><p class="verdict"><span class="dot" id="sceneDot" style="background:#1F9D55"></span><span id="sceneSum">Everything fits, and 27% of the desk is used.</span></p><p class="chk">Every piece gets one of three answers.</p><div class="verdicts" aria-label="What the colors mean"><span class="b-tag"><i class="dot" style="background:#1F9D55"></i>Fits</span><span class="b-tag"><i class="dot" style="background:#B7791F"></i>Tight</span><span class="b-tag"><i class="dot" style="background:#D2463A"></i>Won’t fit</span></div><p class="fit-estimate">Estimated fit—verify measurements before buying</p><a class="pill pill-secondary" href="/builder">Open it in the builder</a></li>
+        <li data-beat="6"><span class="n">Your turn</span><h2>SetupViz is free.</h2><p>Some product links are Amazon affiliate links. If you buy through one, we may earn a small commission. You pay the same price.</p><a href="/desk" class="pill pill-secondary">Plan my desk</a><p class="more">Or start from <a href="/setups">setups other people planned</a>, the <a href="/gear">gear sizes</a>, or <a href="/hand">a mouse for your hand</a>.</p></li>
       </ol>
     </div>
   </section>
 
-  <div class="wrap">
-    <section class="preview" id="preview" aria-label="Try gear on the example desk">
-      <div class="preview-top">
-        <label>Try a keyboard <select id="demoKeyboard"><option value="k75">Compact (MX Mechanical Mini)</option><option value="full">Full size (MX Keys S)</option></select></label>
-        <span id="demoSize">Desk 55.1 × 27.6 in</span>
-      </div>
-      <div class="board-wrap">
-        <div class="board desk-dots" id="demoBoard" role="group" aria-label="Desk from above. Drag a piece, or use the arrow keys.">
-          <button type="button" class="piece b-mon" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></button>
-          <button type="button" class="piece b-pad" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%" aria-label="SteelSeries QcK Heavy Large, fits. Drag to move."></button>
-          <button type="button" class="piece b-kb" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%" aria-label="Logitech MX Mechanical Mini, fits. Drag to move."></button>
-          <button type="button" class="piece b-mouse" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%" aria-label="Razer DeathAdder V3, fits. Drag to move."></button>
-        </div>
-        <canvas class="dither" id="dither" aria-hidden="true"></canvas>
-      </div>
-      <div class="caps"><span class="cap-b" id="demoSum"><i class="dot" style="background:#1F9D55"></i><span class="tx">4 fit</span></span><span id="demoUsed">27% of the desk used</span></div>
-      <div class="slots" id="demoSide" role="list" aria-label="Gear on the example desk">
-        <div class="mslot" data-cat="monitor" role="listitem"><span class="c">Monitor</span><span class="n">Dell 27 Plus QHD (S2725DS)</span><span class="m">Stand 9.8 × 7.1 in</span><span class="b-tag" data-tag="monitor"><i class="dot" style="background:#1F9D55"></i><span class="tx">Monitor fits</span></span></div>
-        <div class="mslot" data-cat="keyboard" role="listitem"><span class="c">Keyboard</span><span class="n">Logitech MX Mechanical Mini</span><span class="m">12.3 × 5.2 in</span><span class="b-tag" data-tag="keyboard"><i class="dot" style="background:#1F9D55"></i><span class="tx">Keyboard fits</span></span></div>
-        <div class="mslot on" data-cat="mouse" role="listitem"><span class="c">Mouse</span><span class="n">Razer DeathAdder V3</span><span class="m">2.7 × 5 in, 59 g</span><span class="b-tag" data-tag="mouse"><i class="dot" style="background:#1F9D55"></i><span class="tx">Mouse fits on the desk</span></span></div>
-        <div class="mslot" data-cat="pad" role="listitem"><span class="c">Mouse pad</span><span class="n">SteelSeries QcK Heavy Large</span><span class="m">17.7 × 15.7 in, cloth</span><span class="b-tag" data-tag="pad"><i class="dot" style="background:#1F9D55"></i><span class="tx">Pad fits</span></span></div>
-      </div>
-      <div class="preview-foot"><p>Drag things around to see how much room is left.</p><a id="demoTry" class="pill pill-secondary" href="/builder?s=eyJ2IjoxLCJkIjpbMTQwMCw3MDBdLCJwIjp7Im0iOiJtb24yNyIsImsiOiJrNzUiLCJwIjoiY2xvdGgiLCJvIjoiZGEzIn0sIngiOnsibSI6WzM5NSwyMF0sImsiOlszODAsNDQwXSwicCI6WzgyMCwyNzBdLCJvIjpbOTQwLDQzMF19LCJhIjpbIiIsIiIsIiJdfQ">Change the gear in the builder</a></div>
-    </section>
-
-    <section id="checks" class="block" aria-labelledby="checksH">
-      <h2 id="checksH">What it checks</h2>
-      <p class="fit-estimate">Estimated fit—verify measurements before buying</p>
-      <dl class="checks">
-        <div><dt>Desk edges</dt><dd>Whether anything sits too close to the edge or hangs off it.</dd></div>
-        <div><dt>Monitor stand</dt><dd>Whether the stand’s foot runs into your keyboard or pad.</dd></div>
-        <div><dt>Mouse pad</dt><dd>Whether your mouse has room on the pad, and where the keyboard covers it.</dd></div>
-        <div><dt>Mouse fit</dt><dd>Which hand sizes and grips each mouse suits, from our guide.</dd></div>
-      </dl>
-      <div class="verdicts" aria-label="What the colors mean"><span class="b-tag"><i class="dot" style="background:#1F9D55"></i>Fits</span><span class="b-tag"><i class="dot" style="background:#B7791F"></i>Tight</span><span class="b-tag"><i class="dot" style="background:#D2463A"></i>Won't fit</span></div>
-    </section>
-
-    <section id="more" class="block" aria-labelledby="moreH">
-      <h2 id="moreH">Other ways to start</h2>
-      <div class="cards">
-        <a href="/setups" class="card"><span class="t">Setups other people planned</span><span class="d">Real desks, drawn to scale. Try any of them on your own.</span></a>
-        <a href="/gear" class="card"><span class="t">Gear sizes</span><span class="d">Every measurement we use, and where it came from.</span></a>
-        <a href="/hand" class="card"><span class="t">A mouse for your hand</span><span class="d">Measure your hand, pick your grip, and see which mice suit it.</span></a>
-      </div>
-    </section>
-
-    <section class="money">
-      <h2>SetupViz is free.</h2>
-      <p>Some product links are Amazon affiliate links. If you buy through one, we may earn a small commission. You pay the same price.</p>
-      <a href="/desk" class="pill pill-primary pill-lg">Plan my desk</a>
-    </section>
-  </div>
 </main>
 
 <footer><div class="wrap foot">
@@ -294,7 +203,7 @@ footer{border-top:1px solid var(--line)}
   <div class="cols">
     <div class="col"><span>Plan</span><a href="/desk">Plan my desk</a><a href="/builder">Builder</a><a href="/share">Share a setup</a></div>
     <div class="col"><span>Browse</span><a href="/setups">Setups</a><a href="/gear">Gear dimensions</a><a href="/fit">Will it fit?</a></div>
-    <div class="col"><span>Help</span><a href="#how">How it works</a><a href="#checks">What we check</a><a href="/builder#request">Request a product</a></div>
+    <div class="col"><span>Help</span><a href="#how">How it works</a><a href="#how">What we check</a><a href="/builder#request">Request a product</a></div>
   </div>
   <div class="legal-row"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
 </div>

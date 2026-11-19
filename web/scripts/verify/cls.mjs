@@ -222,7 +222,7 @@ try {
   // QA's wider Arial crosses it (desk lead +1 line). Compare an
   // unadjusted local face with one 8% wider — the gap that produced the 56px and 25px shifts.
   for (const [path, width, selectors, rows] of [
-    ['/', 390, ['.preview', '.size-form'], 'pill'],
+    ['/', 390, ['.lines', '.size-form'], 'pill'],
     ['/desk', 360, ['.cols', 'p.lead', '.chips'], 'chip'],
   ]) {
     const natural = await layout(browser, origin, path, width, null);

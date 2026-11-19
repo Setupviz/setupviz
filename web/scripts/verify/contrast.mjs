@@ -49,16 +49,16 @@ for (const keyboard of ['k75', 'full']) {
 await page.emulateMedia({ reducedMotion: 'reduce' });
 await page.reload({ waitUntil: 'load' });
 const sectionsVisible = await page.evaluate(() =>
-  ['.hero', '#demoBoard', '.slots', '.steps', '.grid4', '.cards', '.money'].every(selector => {
+  ['.hero', '#demoBoard', '.slots', '.steps', '.checks', '.cards', '.money'].every(selector => {
     const el = document.querySelector(selector);
     return el && el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && !el.getAnimations().length;
   }) && !document.getElementById('dither').checkVisibility()
 );
 
 const colors = await page.evaluate(() => {
-  // The smallest muted text, on the grey gear cards and on the white step cards.
+  // The smallest muted text, on the grey gear cards and on the page under the steps.
   const read = (el, card) => ({ color: getComputedStyle(el).color, bg: getComputedStyle(card).backgroundColor });
-  return { small: read(document.querySelector('.mslot .m'), document.querySelector('.mslot:not(.on)')), em: read(document.querySelector('.steps li span:last-child'), document.querySelector('.steps li')) };
+  return { small: read(document.querySelector('.mslot .m'), document.querySelector('.mslot:not(.on)')), em: read(document.querySelector('.steps li span'), document.body) };
 });
 const smallRatio = contrast(rgbHex(colors.small.color), rgbHex(colors.small.bg));
 const emRatio = contrast(rgbHex(colors.em.color), rgbHex(colors.em.bg));
@@ -69,7 +69,7 @@ const pass = previewOk && motionOk && contrastOk;
 
 console.log(`${previewOk ? 'PASS' : 'FAIL'} keyboard preview contrast ${JSON.stringify(previewViolations)}`);
 console.log(`${motionOk ? 'PASS' : 'FAIL'} reduced-motion sections visible and still`);
-console.log(`${contrastOk ? 'PASS' : 'FAIL'} gear card ${smallRatio.toFixed(2)}:1 step card ${emRatio.toFixed(2)}:1 on ${rgbHex(colors.small.bg)} color ${rgbHex(colors.small.color)}`);
+console.log(`${contrastOk ? 'PASS' : 'FAIL'} gear card ${smallRatio.toFixed(2)}:1 steps text ${emRatio.toFixed(2)}:1 on ${rgbHex(colors.small.bg)} color ${rgbHex(colors.small.color)}`);
 console.log(pass ? 'PASS contrast' : 'FAIL contrast');
 await browser.close();
 server.close();

@@ -12,7 +12,7 @@ var pick = { monitor: 'mon27', keyboard: 'k75', pad: 'cloth', mouse: 'da3' }, po
 var colors = FIT_COLORS, state = { sel: 'mouse', drag: null };
 var board = document.getElementById('demoBoard'), side = document.getElementById('demoSide');
 var unit = savedUnit(), one = lengths(function(){ return unit; }).one;
-function dims(c, s){ return (c === 'monitor' ? 'Stand ' : '') + one(c === 'monitor' ? s.base[0] : s.w).replace(' ' + unit, '') + ' × ' + one(c === 'monitor' ? s.base[1] : s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + s.kind : ''); }
+function dims(c, s){ return (c === 'monitor' ? 'Stand ' : '') + one(c === 'monitor' ? s.base[0] : s.w).replace(' ' + unit, '') + ' × ' + one(c === 'monitor' ? s.base[1] : s.d) + (s.g ? ', ' + s.g + ' g' : '') + (s.kind ? ', ' + s.kind : ''); }
 function label(c, f){ return SV.labels[c] + (f.lvl === 1 ? ' is tight, ' : f.lvl === 2 ? " won't fit, " : ' ') + f.msg; }
 function words(f){ return f.lvl === 2 ? "won't fit" : 'tight'; }
 function park(c){

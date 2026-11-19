@@ -65,3 +65,11 @@ The code for step counts, "will it fit" pages, Save image, link previews, short 
 Removing a gallery entry: in the D1 console, `UPDATE setups SET published = 0 WHERE id = '<id>';`. Entries contain only catalog products, positions and desk sizes, never text people typed, so there is nothing to moderate beyond spam votes.
 
 The link-preview image (`/og/setup.png`) is drawn in the Worker in about 6 ms warm and cached per data center for a day.
+
+## Stress test fixes: owner steps (November 19, 2026)
+
+Do these **before** deploying this change, in this order. Until step 2 is done, upvotes answer "off" and the gallery shows a "Couldn't count that vote" note.
+
+1. **Add the votes table.** In the D1 console for `setupviz`, run the `votes` table and `votes_day` index from the end of `web/schema.sql`. Every statement there is `IF NOT EXISTS`, so running the whole file again is also safe.
+2. **Add the vote secret.** In Workers & Pages > setupviz > Settings > Variables and Secrets, add a **Secret** named `VOTE_SALT` with a long random value (for example the output of `openssl rand -hex 32`). Never commit it. Changing it later only means a network can vote once more that day.
+3. **Deploy.** `node scripts/deploy-worker.mjs` now refuses to deploy unless the checkout is exactly `origin/main` with no uncommitted changes. `--dry-run` prints the result of that check; `--preview` skips it.

@@ -13,3 +13,13 @@ CREATE TABLE IF NOT EXISTS setups (
 );
 CREATE INDEX IF NOT EXISTS setups_top ON setups (published, votes DESC);
 CREATE INDEX IF NOT EXISTS setups_new ON setups (published DESC);
+
+-- One row per counted upvote today. voter is a hash of the day, the network address and the
+-- VOTE_SALT secret, never the address itself. Rows from before yesterday are deleted as votes come in.
+CREATE TABLE IF NOT EXISTS votes (
+  setup_id TEXT NOT NULL,
+  voter TEXT NOT NULL,
+  day INTEGER NOT NULL,           -- days since epoch (UTC)
+  PRIMARY KEY (setup_id, voter)
+);
+CREATE INDEX IF NOT EXISTS votes_day ON votes (day);

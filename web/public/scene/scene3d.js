@@ -1,5 +1,5 @@
-// The homepage's opening scene in 3D: a desk seen from above, real sun and shadows, and each
-// piece of gear landing as you scroll. Loaded only when the browser can draw it; the drawn
+// The homepage's opening scene in 3D: a walk along a dark floor past each piece of gear, one
+// per scroll step, ending at the desk with all of it set up. Loaded only when the browser can draw it; the drawn
 // scene in the page stays underneath as the fallback. three.js is vendored in /vendor/three.
 import * as THREE from '/vendor/three/three.module.min.js';
 import { GLTFLoader } from '/vendor/three/GLTFLoader.js';
@@ -14,7 +14,9 @@ const GEAR = [
   { id: 'pad', beat: 3, file: '/models/pad.glb', width: 0.49, turn: 0 },
   { id: 'mouse', beat: 4, file: '/models/mouse.glb', width: 0.1195, turn: Math.PI / 2 },
 ];
-const BEATS = 5, DESK_THICK = 0.03;
+const BEATS = 6, STEP = 1.5, DESK_TOP = 0.73, DESK_THICK = 0.03, DESK_Z = -(4 * STEP + 1.3);
+// How each piece lies on the floor on the way there: sideways shift and turn, by beat.
+const FLOOR = { 1: [0.1, 0.12], 2: [-0.08, 0.3], 3: [0.1, -0.2], 4: [-0.04, 0.7] };
 
 // Where each piece sits on a desk of w x d metres (origin at the middle of the top, +z toward the user).
 function spot(id, w, d){
@@ -25,6 +27,22 @@ function spot(id, w, d){
     pad: [padX, 0, padZ],
     mouse: [padX - 0.02, 0.0039, padZ + 0.03],
   }[id];
+}
+
+// A canvas painted with soft blotches and fine specks. Used twice: as the floor's colour and,
+// in greys, as its roughness map, so the light catches the floor unevenly like a real surface.
+function mottle(base, blots, specks){
+  const c = document.createElement('canvas'); c.width = c.height = 1024;
+  const g = c.getContext('2d'); g.fillStyle = base; g.fillRect(0, 0, 1024, 1024);
+  for (let i = 0; i < 260; i++) {
+    const x = Math.random() * 1024, y = Math.random() * 1024, r = 40 + Math.random() * 180, blot = g.createRadialGradient(x, y, 0, x, y, r);
+    blot.addColorStop(0, blots[i % blots.length]); blot.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = blot;
+    // paint it again one tile over in each direction, so the texture repeats without a seam
+    for (const dx of [-1024, 0, 1024]) for (const dy of [-1024, 0, 1024]) { g.setTransform(1, 0, 0, 1, dx, dy); g.fillRect(x - r, y - r, r * 2, r * 2); }
+  }
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  for (let i = 0; i < 9000; i++) { g.fillStyle = specks[i % specks.length]; g.fillRect(Math.random() * 1024, Math.random() * 1024, 1 + Math.random(), 1 + Math.random()); }
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(16, 28); t.anisotropy = 8; return t;
 }
 
 function oak(){
@@ -38,6 +56,8 @@ function oak(){
   }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
+
+const clamp = (x) => Math.min(1, Math.max(0, x));
 
 export async function start(section, getDesk){
   const view = section.querySelector('.view'), canvas = document.createElement('canvas');
@@ -53,84 +73,102 @@ export async function start(section, getDesk){
   const renderer = new THREE.WebGLRenderer({ canvas, context: gl });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#3457CC');
-  const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.55;
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.05, 20);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
+  const DARK = '#14161B', scene = new THREE.Scene(); scene.background = new THREE.Color(DARK);
+  scene.fog = new THREE.Fog(DARK, 2.2, 6.5);   // the way ahead fades into the dark, so each piece is found in turn
+  const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.45;
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.05, 30);
 
-  // sun through a window: one light with shadows, and unseen slats that only cast them
-  const sun = new THREE.DirectionalLight('#FFF1DC', 2.6); sun.position.set(-1.6, 2.6, 0.9); sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.004; sun.shadow.radius = 5;
-  Object.assign(sun.shadow.camera, { left: -1.6, right: 1.6, top: 1.6, bottom: -1.6, near: 0.5, far: 7 });
-  scene.add(sun, new THREE.HemisphereLight('#DCE6FF', '#3A4A8A', 1.3));
-  const unseen = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false });
-  [[-0.95, 0.3], [-0.2, 0.05], [0.42, 0.05], [1.1, 0.3]].forEach(([x, wide]) => {   // window frame bars
-    const bar = new THREE.Mesh(new THREE.BoxGeometry(wide, 0.004, 3.4), unseen); bar.castShadow = true;
-    bar.position.set(x - 0.75, 1.25, 0.42); bar.rotation.y = 0.5; scene.add(bar);
+  // One warm lamp with shadows. It travels with the camera, so its shadow map only has to
+  // cover the couple of metres in view and stays sharp.
+  const sun = new THREE.DirectionalLight('#FFE9CC', 3.4); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.004; sun.shadow.radius = 6;
+  Object.assign(sun.shadow.camera, { left: -1.6, right: 1.6, top: 1.6, bottom: -1.6, near: 0.5, far: 8 });
+  scene.add(sun, sun.target, new THREE.HemisphereLight('#AFC3FF', '#0B0C10', 0.55));
+
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 24), new THREE.MeshStandardMaterial({
+    map: mottle('#2E323B', ['rgba(60,66,80,0.16)', 'rgba(8,9,12,0.2)'], ['rgba(255,255,255,0.03)', 'rgba(0,0,0,0.07)']),
+    roughnessMap: mottle('#B8B8B8', ['rgba(255,255,255,0.25)', 'rgba(60,60,60,0.3)'], ['rgba(255,255,255,0.12)', 'rgba(40,40,40,0.12)']),
+  }));
+  floor.material.map.colorSpace = THREE.SRGBColorSpace;
+  floor.rotation.x = -Math.PI / 2; floor.position.z = -4; floor.receiveShadow = true; scene.add(floor);
+
+  // the desk at the end of the walk: an oak top on four dark legs
+  const table = new THREE.Group(); table.position.set(0, DESK_TOP, DESK_Z); scene.add(table);
+  const top = new THREE.Mesh(new THREE.BoxGeometry(1, DESK_THICK, 1), new THREE.MeshStandardMaterial({ map: oak(), roughness: 0.55 }));
+  top.position.y = -DESK_THICK / 2; top.castShadow = top.receiveShadow = true; table.add(top);
+  const legs = [0, 1, 2, 3].map(() => {
+    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, DESK_TOP - DESK_THICK, 0.05), new THREE.MeshStandardMaterial({ color: '#1A1B1F', roughness: 0.4, metalness: 0.6 }));
+    leg.castShadow = true; table.add(leg); return leg;
   });
 
-  const rug = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.MeshStandardMaterial({ color: '#3457CC', roughness: 0.95 }));
-  rug.rotation.x = -Math.PI / 2; rug.position.y = -0.74; rug.receiveShadow = true; scene.add(rug);
-  const desk = new THREE.Mesh(new THREE.BoxGeometry(1, DESK_THICK, 1), new THREE.MeshStandardMaterial({ map: oak(), roughness: 0.55 }));
-  desk.position.y = -DESK_THICK / 2; desk.castShadow = desk.receiveShadow = true; scene.add(desk);
-
+  // Every model appears twice: once lying on the floor along the way, once on the desk.
   const loader = new GLTFLoader(), pieces = [];
   await Promise.all(GEAR.map(async (item) => {
     const model = (await loader.loadAsync(item.file)).scene, box = new THREE.Box3().setFromObject(model), size = box.getSize(new THREE.Vector3());
-    const scale = item.width / Math.max(size.x, size.z);
+    const scale = item.width / Math.max(size.x, size.z), reach = Math.max(size.x, size.z) * scale;
     model.scale.setScalar(scale); model.position.set(-(box.min.x + size.x / 2) * scale, -box.min.y * scale, -(box.min.z + size.z / 2) * scale);
     model.traverse((o) => { if (o.isMesh) o.castShadow = o.receiveShadow = true; });
-    const group = new THREE.Group(); group.add(model); group.rotation.y = item.turn; group.userData = item; scene.add(group);
-    pieces.push({ item, group, reach: Math.max(size.x, size.z) * scale, drop: 0, home: new THREE.Vector3() });
+    const [x, yaw] = FLOOR[item.beat];
+    [false, true].forEach((onDesk) => {
+      const group = new THREE.Group(); group.add(onDesk ? model.clone() : model); scene.add(group);
+      pieces.push({ item, group, reach, onDesk, tall: size.y * scale, drop: onDesk ? 0 : 1, yaw: item.turn + (onDesk ? 0 : yaw), home: new THREE.Vector3(x, 0, -(item.beat - 1) * STEP) });
+    });
   }));
 
-  let w = 0, d = 0, held = null, shown = false, last = performance.now();
+  let w = 0, d = 0, held = null, shown = false, running = false, last = performance.now();
   const pointer = new THREE.Vector2(), ray = new THREE.Raycaster(), look = new THREE.Vector3(), eye = new THREE.Vector3(), wantLook = new THREE.Vector3(), wantEye = new THREE.Vector3();
   function layout(){
     const size = getDesk(); if (size.w === w && size.d === d) return;
-    w = size.w; d = size.d; desk.scale.set(w / 1000, 1, d / 1000);
-    pieces.forEach((p) => p.home.fromArray(spot(p.item.id, w / 1000, d / 1000)));
+    w = size.w; d = size.d; const W = w / 1000, D = d / 1000;
+    top.scale.set(W, 1, D);
+    legs.forEach((leg, i) => leg.position.set((i % 2 ? 1 : -1) * (W / 2 - 0.06), -DESK_TOP / 2 - DESK_THICK / 2, (i < 2 ? 1 : -1) * (D / 2 - 0.06)));
+    pieces.filter((p) => p.onDesk).forEach((p) => p.home.fromArray(spot(p.item.id, W, D)).add(table.position));
   }
   function resize(){
     const W = view.clientWidth, H = view.clientHeight; renderer.setSize(W, H, false); camera.aspect = W / H;
-    // keep the desk clear of the words: to the right on wide screens, lower on tall ones
-    if (W > 820) camera.setViewOffset(W, H, -W * 0.17, 0, W, H); else camera.setViewOffset(W, H, 0, -H * 0.17, W, H);
+    // keep the subject clear of the words: to the right on wide screens, lower on tall ones
+    if (W > 820) camera.setViewOffset(W, H, -W * 0.16, 0, W, H); else camera.setViewOffset(W, H, 0, -H * 0.16, W, H);
     camera.updateProjectionMatrix();
   }
-  // Camera stop k: 0 is the whole desk, 1 to 4 fly low over one piece each.
+  // Camera stop k: 0 looks down the path, 1 to 4 fly low over one piece each, 5 is the desk.
   function stop(k, outLook, outEye){
-    const wide = camera.aspect > 1, span = Math.max(w / 1000 / (wide ? 1 : 0.55), d / 1000 * 1.9);
-    if (k === 0) { outLook.set(0, 0, 0); outEye.set(0, span * 1.55, span * 0.62); return; }
-    const p = pieces.find((x) => x.item.beat === k), r = Math.max(0.2, p.reach) * (wide ? 1.7 : 2.6);
-    outLook.copy(p.home); outEye.set(p.home.x, r * 1.25, p.home.z + r * 0.85);
+    const wide = camera.aspect > 1;
+    if (k === 0) { outLook.set(0, 0.1, -0.4); outEye.set(0, 0.5, 1.7); return; }
+    if (k === BEATS - 1) {
+      const span = Math.max(w / 1000 / (wide ? 1 : 0.5), d / 1000 * 1.8);
+      outLook.set(0, DESK_TOP + 0.12, DESK_Z); outEye.set(0, DESK_TOP + span * 1.0, DESK_Z + span * 1.35); return;
+    }
+    const p = pieces.find((x) => x.item.beat === k && !x.onDesk), r = Math.max(0.22, p.reach) * (wide ? 1.55 : 2.4);
+    outLook.set(p.home.x, p.tall * 0.4, p.home.z); outEye.set(p.home.x, p.tall * 0.4 + r * 0.75, p.home.z + r * 1.15);
   }
   const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), e = new THREE.Vector3();
   function frame(now){
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     layout();
     const box = section.getBoundingClientRect(), range = box.height - view.offsetHeight;
-    const u = Math.min(1, Math.max(0, -box.top / Math.max(1, range))) * BEATS;
-    // the camera rests on each beat and flies between them, rising a little on the way
+    const u = clamp(-box.top / Math.max(1, range)) * BEATS;
+    // the camera rests on each beat and glides to the next, rising a little on the way
     const t = Math.min(BEATS - 1, Math.max(0, u - 0.5)), k = Math.min(BEATS - 2, Math.floor(t)), f = t - k, s = f * f * (3 - 2 * f);
     stop(k, a, b); stop(k + 1, c, e);
-    wantLook.lerpVectors(a, c, s); wantEye.lerpVectors(b, e, s); wantEye.y += Math.sin(Math.PI * s) * 0.12;
-    wantEye.x += pointer.x * 0.04; wantEye.z -= pointer.y * 0.03;
+    wantLook.lerpVectors(a, c, s); wantEye.lerpVectors(b, e, s); wantEye.y += Math.sin(Math.PI * s) * 0.1;
+    wantEye.x += pointer.x * 0.05; wantEye.y += pointer.y * 0.02;
     const ease = shown ? 1 - Math.exp(-4.2 * dt) : 1;
     look.lerp(wantLook, ease); eye.lerp(wantEye, ease); camera.position.copy(eye); camera.lookAt(look);
-    pieces.forEach((p) => {
-      // each piece comes down as its beat arrives, and lifts off again if you scroll back
-      const want = Math.min(1, Math.max(0, (u - (p.item.beat - 0.35)) / 0.5));
-      p.drop += (want - p.drop) * (shown ? 1 - Math.exp(-7 * dt) : 1);
+    sun.target.position.copy(look); sun.position.set(look.x - 1.5, look.y + 3, look.z + 1.4);
+    pieces.forEach((p, i) => {
+      // on the desk, the pieces come down one after another as the last step arrives
+      if (p.onDesk) p.drop += (clamp((u - (BEATS - 1.5) - p.item.beat * 0.07) / 0.35) - p.drop) * (shown ? 1 - Math.exp(-7 * dt) : 1);
       const up = 1 - p.drop, g = p.group;
       g.visible = p.drop > 0.002;
       if (held === p) {
         const front = camera.getWorldDirection(a).multiplyScalar(Math.max(0.35, p.reach * 1.5)).add(camera.position);
         g.position.lerp(front, 1 - Math.exp(-8 * dt));
-        g.rotation.set(0.9 + pointer.y * 0.5, p.item.turn + pointer.x * 0.9, 0);
+        g.rotation.set(0.9 + pointer.y * 0.5, p.yaw + pointer.x * 0.9, 0);
       } else {
-        a.set(p.home.x + up * up * 0.25, p.home.y + up * up * 0.9, p.home.z + up * up * 0.5);
-        g.position.lerp(a, held ? 1 - Math.exp(-8 * dt) : 1);
-        g.rotation.set(up * 0.7, p.item.turn + up * 0.5, up * -0.35);
+        a.set(p.home.x, p.home.y + up * up * 0.7, p.home.z);
+        g.position.lerp(a, shown ? 1 - Math.exp(-8 * dt) : 1);
+        g.rotation.set(up * 0.5, p.yaw + up * 0.4, up * -0.25);
       }
     });
     renderer.render(scene, camera);
@@ -147,12 +185,12 @@ export async function start(section, getDesk){
     let o = found.object; while (o && !pieces.some((p) => p.group === o)) o = o.parent;
     return pieces.find((p) => p.group === o);
   }
+  const letGo = () => { held = null; section.classList.remove('holding'); };
   view.addEventListener('pointermove', (ev) => { const p = hit(ev); canvas.style.cursor = held || p ? 'pointer' : ''; });
   canvas.addEventListener('click', (ev) => { held = held ? null : hit(ev); section.classList.toggle('holding', !!held); });
-  addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && held) { held = null; section.classList.remove('holding'); } });
-  addEventListener('scroll', () => { if (held) { held = null; section.classList.remove('holding'); } }, { passive: true });
+  addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && held) letGo(); });
+  addEventListener('scroll', () => { if (held) letGo(); }, { passive: true });
 
-  let running = false;
   new ResizeObserver(resize).observe(view); resize();
   new IntersectionObserver((entries) => {   // only draw while the scene is on screen
     const on = entries[0].isIntersecting; if (on && !running) { running = true; last = performance.now(); requestAnimationFrame(frame); } else if (!on) running = false;

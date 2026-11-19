@@ -19,7 +19,7 @@ try {
     assert.ok(height < 8000, `homepage stays a few screens long (${height}px)`);
     assert.equal(await page.locator('#how .in').count(), 0, 'the desk starts empty, under the paper');
     await page.evaluate(() => { const s = document.getElementById('how'); scrollTo(0, s.offsetTop + s.offsetHeight - innerHeight - 20); });
-    await page.waitForFunction(() => document.querySelectorAll('#how .in').length === 4 && document.getElementById('how').dataset.beat === '4');
+    await page.waitForFunction(() => document.querySelectorAll('#how .in').length === 4 && document.getElementById('how').dataset.beat === '5');
     await page.locator('#demoBoard').scrollIntoViewIfNeeded();
     await page.waitForFunction(() => document.getElementById('dither').classList.contains('on'));
     await page.waitForTimeout(1600);

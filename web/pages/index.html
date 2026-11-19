@@ -82,7 +82,7 @@ a.chip{color:var(--text)}
    headline on a sheet of paper. Scrolling slides the paper away and drops the gear on, one beat
    at a time. Without the script it is a single still scene with the beats listed under it. */
 .scene{--ar:2;position:relative;color:#FFFFFF}
-.scene.armed{height:calc(5 * (100svh - var(--sv-bar)))}
+.scene.armed{height:calc(5.4 * (100svh - var(--sv-bar)))}
 .view{position:relative;height:calc(100svh - var(--sv-bar));min-height:600px;overflow:hidden;background:#3457CC}
 .scene.armed .view{position:sticky;top:var(--sv-bar)}
 .rug{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .14 0 0 0 0 .35 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23r)'/%3E%3C/svg%3E"),radial-gradient(120% 90% at 30% 20%,#4A6FE6,#3457CC 70%,#2D4DB8)}
@@ -121,23 +121,25 @@ a.chip{color:var(--text)}
 .scene.live [data-at]{transition:transform .8s cubic-bezier(.2,.9,.3,1.25),opacity .35s ease,filter .8s ease}
 .scene.armed [data-at]:not(.in){opacity:0;transform:translateY(-24px) scale(1.1) rotate(-4deg);filter:drop-shadow(18px 40px 24px rgba(40,28,14,0.3))}
 .scene.armed:not([data-beat="0"]) .paper{transform:translate(-115%,-60%) rotate(-16deg);opacity:0;visibility:hidden;transition-delay:0s,.2s,.9s;pointer-events:none}
-.scene.armed[data-beat="1"] .lines [data-beat="1"],.scene.armed[data-beat="2"] .lines [data-beat="2"],.scene.armed[data-beat="3"] .lines [data-beat="3"],.scene.armed[data-beat="4"] .lines [data-beat="4"]{opacity:1;visibility:visible;transition-delay:0s;transform:translateY(-50%);pointer-events:auto}
+.scene.armed[data-beat="1"] .lines [data-beat="1"],.scene.armed[data-beat="2"] .lines [data-beat="2"],.scene.armed[data-beat="3"] .lines [data-beat="3"],.scene.armed[data-beat="4"] .lines [data-beat="4"],.scene.armed[data-beat="5"] .lines [data-beat="5"]{opacity:1;visibility:visible;transition-delay:0s;transform:translateY(-50%);pointer-events:auto}
 .stage3d{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s ease}
 .scene.three .stage3d{opacity:1}
 .scene.three .rug,.scene.three .top,.scene.three .light{visibility:hidden}
+.scene.three .view{background:#14161B}
+.scene.three .view::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
 .scene.holding .lines{opacity:0;transition:opacity .3s ease}
 .scene.three.armed .lines li{left:4vw;width:min(440px,36vw);padding:26px 28px 28px;border-radius:22px;background:#2D4DB8;box-shadow:0 30px 60px -30px rgba(10,20,60,0.6)}
 .scene.three .lines h2{font-size:clamp(40px,4.8vw,72px)}
 .scene.three .lines p{text-shadow:none}
 @media (max-width:820px){.scene.three.armed .lines li{left:16px;right:16px;width:auto;padding:18px 20px 20px}}
-.scene:not(.armed) .lines{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;padding:32px 5vw;background:#2D4DB8}
+.scene:not(.armed) .lines{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;padding:32px 5vw;background:#2D4DB8}
 .scene:not(.armed) .lines h2{font-size:32px}
 @media (max-width:820px){
   .top{left:4vw;right:auto;top:auto;bottom:5svh;width:92vw;max-height:40svh;transform:none}
   .paper{left:4vw;right:4vw;top:12px;width:auto;padding:24px 20px 20px;gap:12px;transform:none}
   .scene.armed:not([data-beat="0"]) .paper{transform:translate(-110%,-20%) rotate(-12deg)}
   .scene.armed .lines li{top:24px;left:5vw;width:auto;right:5vw;transform:translateY(20px)}
-  .scene.armed[data-beat="1"] .lines [data-beat="1"],.scene.armed[data-beat="2"] .lines [data-beat="2"],.scene.armed[data-beat="3"] .lines [data-beat="3"],.scene.armed[data-beat="4"] .lines [data-beat="4"]{transform:none}
+  .scene.armed[data-beat="1"] .lines [data-beat="1"],.scene.armed[data-beat="2"] .lines [data-beat="2"],.scene.armed[data-beat="3"] .lines [data-beat="3"],.scene.armed[data-beat="4"] .lines [data-beat="4"],.scene.armed[data-beat="5"] .lines [data-beat="5"]{transform:none}
   .scene:not(.armed) .lines{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
@@ -227,7 +229,8 @@ footer{border-top:1px solid var(--line)}
         <li data-beat="1"><span class="n">1 of 4</span><h2>Monitor</h2><p>The stand takes the room, not the screen. The Dell 27 Plus is 24.1 in wide, but only a 9.8 × 7.1 in base sits on the desk.</p></li>
         <li data-beat="2"><span class="n">2 of 4</span><h2>Keyboard</h2><p>An MX Mechanical Mini, 12.3 × 5.2 in. Going compact leaves the mouse more room to move.</p></li>
         <li data-beat="3"><span class="n">3 of 4</span><h2>Mouse pad</h2><p>A QcK Heavy Large, 17.7 × 15.7 in. We check that it clears the keyboard and the monitor stand.</p></li>
-        <li data-beat="4"><span class="n">4 of 4</span><h2>Mouse</h2><p>A DeathAdder V3 on the pad, with room to swing.</p><p class="verdict"><span class="dot" id="sceneDot" style="background:#1F9D55"></span><span id="sceneSum">Everything fits, and 27% of the desk is used.</span></p><a class="pill pill-secondary" href="/builder">Open it in the builder</a></li>
+        <li data-beat="4"><span class="n">4 of 4</span><h2>Mouse</h2><p>A DeathAdder V3 on the pad, with room to swing.</p></li>
+        <li data-beat="5"><span class="n">All together</span><h2>The full setup</h2><p class="verdict"><span class="dot" id="sceneDot" style="background:#1F9D55"></span><span id="sceneSum">Everything fits, and 27% of the desk is used.</span></p><a class="pill pill-secondary" href="/builder">Open it in the builder</a></li>
       </ol>
     </div>
   </section>

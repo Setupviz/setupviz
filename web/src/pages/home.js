@@ -166,7 +166,7 @@ var pieces = sceneDesk.querySelectorAll('[data-at]'), beat = -1;
 scene.classList.add('armed');
 function onScroll(){
   var r = scene.getBoundingClientRect(), range = r.height - scene.querySelector('.view').offsetHeight;
-  var p = Math.min(1, Math.max(0, -r.top / Math.max(1, range))), now = Math.min(4, Math.floor(p * 5));
+  var p = Math.min(1, Math.max(0, -r.top / Math.max(1, range))), now = Math.min(5, Math.floor(p * 6));
   scene.style.setProperty('--p', p.toFixed(3));
   if (now === beat) return;
   beat = now; scene.dataset.beat = now;

@@ -8,11 +8,9 @@
 //   DB                  D1 database with the tables in ../schema.sql (short links, gallery, votes)
 //   SETUPS_RATE_LIMITER rate limiting binding for creating links, publishing and voting
 //   CLICKS              Analytics Engine dataset (already used by /go) for step counts
-//   VOTE_SALT           secret; without it voting is off. Lets a vote count once per network,
-//                       per setup, per day without storing the network's address.
 
 // Counted from the page. Short links, publishing and votes are counted where they're stored.
-const EVENTS = ['setup_changed', 'share_link', 'save_image', 'try_click', 'custom_item'];
+const EVENTS = ['setup_changed', 'share_link', 'save_image', 'try_click'];
 const ID_CHARS = 'abcdefghijkmnpqrstuvwxyz23456789';
 const PAGE_SIZE = 24;
 const DESK_SIZES = { small: [0, 1200], medium: [1200, 1500], large: [1500, 100000] };
@@ -119,38 +117,14 @@ async function publish(id, request, url, env) {
   return json({ id, url: url.origin + '/setups?sort=new' });
 }
 
-// Who voted, as a hash of the day, the network address and a secret salt. The salt keeps anyone
-// with the database from testing every address against the hash; the day in it means the same
-// network gets an unrelated hash tomorrow, so votes can't be linked across days.
-async function voterHash(env, request, day) {
-  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
-  const bytes = new TextEncoder().encode(env.VOTE_SALT + '|' + day + '|' + ip);
-  const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
-  return Array.from(hash.subarray(0, 16), (b) => b.toString(16).padStart(2, '0')).join('');
-}
-
 async function vote(id, request, url, env) {
-  if (!env?.DB || !env.VOTE_SALT) return json({ error: 'off' }, 503);
+  if (!env?.DB) return json({ error: 'off' }, 503);
   if (!sameOrigin(request, url)) return json({ error: 'origin' }, 403);
   if (await limited(env, request, 'vote')) return json({ error: 'slow down' }, 429);
-  const day = Math.floor(Date.now() / 86400000);
-  const voter = await voterHash(env, request, day);
-  // The vote row goes in first, so two quick clicks can't both count.
-  const added = await query(env, (DB) => DB.prepare('INSERT OR IGNORE INTO votes (setup_id, voter, day) SELECT id, ?2, ?3 FROM setups WHERE id = ?1 AND published > 0')
-    .bind(id, voter, day).run());
-  if (added === DB_DOWN) return unavailable();
-  let row;
-  if (added.meta?.changes) {
-    row = await query(env, (DB) => DB.prepare('UPDATE setups SET votes = votes + 1 WHERE id = ?1 RETURNING votes').bind(id).first());
-    if (row === DB_DOWN) return unavailable();
-    track(env, 'vote');
-    // Older days' hashes can never match again. Dropping them is housekeeping, so a failure is ignored.
-    await query(env, (DB) => DB.prepare('DELETE FROM votes WHERE day < ?1').bind(day - 1).run());
-  } else {
-    row = await query(env, (DB) => DB.prepare('SELECT votes FROM setups WHERE id = ?1 AND published > 0').bind(id).first());
-    if (row === DB_DOWN) return unavailable();
-  }
+  const row = await query(env, (DB) => DB.prepare('UPDATE setups SET votes = votes + 1 WHERE id = ?1 AND published > 0 RETURNING votes').bind(id).first());
+  if (row === DB_DOWN) return unavailable();
   if (!row) return json({ error: 'missing' }, 404);
+  track(env, 'vote');
   return json({ id, votes: row.votes });
 }
 
@@ -242,7 +216,7 @@ function hex(c) { return [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)); 
 
 async function setupPng(setup) {
   const W = 1200, H = 630, M = 60;
-  const palette = ['#F2F2F3', '#FFFFFF', '#C9CCD2', ...new Set(SVW.SVImage.shapes(setup).flatMap((s) => [s.fill, s.stroke]))];
+  const palette = ['#0A0A0A', '#141414', '#3A3A3A', ...new Set(SVW.SVImage.shapes(setup).flatMap((s) => [s.fill, s.stroke]))];
   const ix = (c) => palette.indexOf(c);
   const px = new Uint8Array((W + 1) * H);
   const scale = Math.min((W - 2 * M) / setup.desk.w, (H - 2 * M) / setup.desk.d);
@@ -259,8 +233,8 @@ async function setupPng(setup) {
     }
   };
   for (let y = 0; y < H; y++) px[y * (W + 1)] = 0;
-  fill(ox - 2, oy - 2, setup.desk.w * scale + 4, setup.desk.d * scale + 4, 14, ix('#C9CCD2'));
-  fill(ox, oy, setup.desk.w * scale, setup.desk.d * scale, 12, ix('#FFFFFF'));
+  fill(ox - 2, oy - 2, setup.desk.w * scale + 4, setup.desk.d * scale + 4, 14, ix('#3A3A3A'));
+  fill(ox, oy, setup.desk.w * scale, setup.desk.d * scale, 12, ix('#141414'));
   for (const s of SVW.SVImage.shapes(setup)) {
     const x = ox + s.x * scale, y = oy + s.y * scale, w = s.w * scale, h = s.d * scale, r = s.r * scale;
     fill(x, y, w, h, r, ix(s.stroke));

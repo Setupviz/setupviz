@@ -19,9 +19,8 @@ export async function copySetupLink(button, url){
 }
 
 // The "Buy this whole setup" link: one Amazon cart when every product has a listing, else a
-// disabled link that points people to the product links. Custom gear is already owned or bought elsewhere.
+// disabled link that points people to the product links.
 export function showBuyAll(button, items, from){
-  items = items.filter(function(item){ return !item.custom; });
   var complete = items.length && items.every(function(item){ return !!item.asin; });
   button.textContent = complete ? "Buy this whole setup" : "Use individual product links";
   button.setAttribute("aria-label", button.textContent);

@@ -129,7 +129,7 @@ export function omission(desk, pick){
 }
 // one line on why a pick matches the answers, or '' when the answers don't say
 export function matchReason(cat, s, a){
-  if (cat !== 'mouse' || s.custom) return '';
+  if (cat !== 'mouse') return '';
   var notes = [];
   if (gripWords[a.grip]) {
     notes.push(s.grips.includes(a.grip) ? 'Matches your ' + gripWords[a.grip] + '.' : 'A different shape may suit your ' + gripWords[a.grip] + ' better.');

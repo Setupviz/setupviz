@@ -64,7 +64,7 @@ document.getElementById('items').innerHTML = ['monitor', 'keyboard', 'mouse', 'p
   var s = SV.get(c, S.pick[c]);
   var dims = sizeLine(c, s, one, two);
   var note = st[c].issues.map(function(i){ return i.fix; }).join(' ') || st[c].msg;
-  return '<div class="item"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">' + esc(s.name) + '</span><span style="font-size:12px;color:#5F636C">' + esc(dims) + '</span>' + (st[c].lvl ? '<span style="font-size:12px;color:#3A3E46">' + esc(note) + '</span>' : '') + SV.measurementInfo(s) + priceLabel(s) + SV.buyLine(s, 'share') + '</div><span class="dot" style="background:' + colors[st[c].lvl] + '" title="' + esc(st[c].msg) + '"></span></div>';
+  return '<div class="item"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">' + esc(s.name) + '</span><span style="font-size:12px;color:#8F8F8F">' + esc(dims) + '</span>' + (st[c].lvl ? '<span style="font-size:12px;color:#CFCFCF">' + esc(note) + '</span>' : '') + SV.measurementInfo(s) + priceLabel(s) + SV.buyLine(s, 'share') + '</div><span class="dot" style="background:' + colors[st[c].lvl] + '" title="' + esc(st[c].msg) + '"></span></div>';
 }).join('');
 updatePrices(on.map(function(c){ return SV.get(c, S.pick[c]); }));
 showBuyAll(document.getElementById('buyAll'), ['monitor', 'keyboard', 'mouse', 'pad'].filter(function(c){ return on.indexOf(c) >= 0; }).map(function(c){ return SV.get(c, S.pick[c]); }).filter(SV.forSale), 'share-cart');

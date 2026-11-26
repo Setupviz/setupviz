@@ -21,7 +21,7 @@ function d1() {
     prepare(sql) {
       let args = [];
       const stmt = { bind(...a) { args = a; return stmt; },
-        async run() { const r = db.prepare(sql).run(...args); return { success: true, meta: { changes: Number(r.changes) } }; },
+        async run() { db.prepare(sql).run(...args); return { success: true }; },
         async first() { return db.prepare(sql).get(...args) || null; },
         async all() { return { results: db.prepare(sql).all(...args) }; } };
       return stmt;
@@ -30,7 +30,7 @@ function d1() {
 }
 function env(extra = {}) {
   const points = [];
-  return { DB: d1(), VOTE_SALT: 'test-salt', CLICKS: { writeDataPoint: (p) => points.push(p) }, points, ...extra };
+  return { DB: d1(), CLICKS: { writeDataPoint: (p) => points.push(p) }, points, ...extra };
 }
 const call = (e, path, init = {}) => worker.fetch(new Request('https://setupviz.com' + path, init), e);
 const post = (e, path, body, headers = {}) => call(e, path, { method: 'POST', body: body == null ? undefined : JSON.stringify(body), headers: { origin: 'https://setupviz.com', ...headers } });
@@ -86,24 +86,6 @@ test('gallery: publish, list, vote; unpublished setups cannot be voted on', asyn
   assert.equal(filtered.headers.get('x-robots-tag'), 'noindex, follow');
   assert.match(await filtered.text(), new RegExp('/s/' + id));
   for (const n of ['publish', 'vote']) assert.ok(e.points.some((p) => p.blobs[1] === n), n);
-});
-
-test('votes: one per network per setup per day, and none without the salt', async () => {
-  const e = env();
-  const { id } = await (await post(e, '/api/setups', { s: code })).json();
-  await post(e, '/api/setups/' + id + '/publish');
-  const vote = (ip) => post(e, '/api/setups/' + id + '/vote', null, { 'cf-connecting-ip': ip });
-  assert.equal((await (await vote('203.0.113.1')).json()).votes, 1);
-  const again = await vote('203.0.113.1');
-  assert.equal(again.status, 200);
-  assert.equal((await again.json()).votes, 1);
-  assert.equal((await (await vote('203.0.113.2')).json()).votes, 2);
-  const rows = await e.DB.prepare('SELECT voter FROM votes').all();
-  assert.equal(rows.results.length, 2);
-  assert.ok(rows.results.every((r) => /^[0-9a-f]{32}$/.test(r.voter) && !r.voter.includes('203')));
-  const off = await post({ ...e, VOTE_SALT: undefined }, '/api/setups/' + id + '/vote');
-  assert.equal(off.status, 503);
-  assert.equal((await off.json()).error, 'off');
 });
 
 test('gallery without a database still renders', async () => {
@@ -241,7 +223,7 @@ test('fit pages never promise a piece the checked setup left out', async () => {
   const e = env();
   const html = await (await call(e, '/fit/msig27c4x-on-40x20-desk')).text();
   assert.doesNotMatch(html, /fits on a 40 × 20 in desk with a keyboard, mouse pad and mouse/);
-  assert.match(html, /class="verdict"><span class="lvl" style="background:#B7791F"[^>]*><\/span>Yes, without a mouse pad\./);
+  assert.match(html, /class="verdict"><span class="lvl" style="background:#F5C542"[^>]*><\/span>Yes, without a mouse pad\./);
   const hub = await (await call(e, '/fit/40x20-desk')).text();
   const row = hub.match(/<tr><td><span class="lvl"[^>]*><\/span><a href="\/fit\/msig27c4x-on-40x20-desk">[^<]*<\/a><\/td><td>([^<]*)<\/td>/);
   assert.equal(row[1], 'Tight', 'the hub counts it as tight, not as a fit');

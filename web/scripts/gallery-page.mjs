@@ -7,26 +7,23 @@ export function galleryPage() {
 main.gallery{max-width:1200px}
 .setup-filters{display:flex;flex-wrap:wrap;gap:12px 24px;margin:8px 0 24px;font-size:15px}
 .setup-filters span{display:flex;flex-wrap:wrap;gap:8px}
-.setup-filters a{padding:6px 12px;border-radius:999px;border:1px solid #DDDFE3}
-.setup-filters a[aria-current]{background:#16181D;color:#FFFFFF;border-color:#16181D}
+.setup-filters a{padding:6px 12px;border-radius:999px;border:1px solid #2A2A2A}
+.setup-filters a[aria-current]{background:#EDEDED;color:#121212;border-color:#EDEDED}
 .setup-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-.setup-card{background:#FFFFFF;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.setup-card{background:#171717;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
 .setup-card .desk-svg{display:block;width:100%;height:auto}
-.setup-desk{margin:0;font-size:14px;color:#3A3E46}
-.setup-gear{margin:0;padding-left:18px;font-size:13px;line-height:20px;color:#5F636C}
+.setup-desk{margin:0;font-size:14px;color:#CFCFCF}
+.setup-gear{margin:0;padding-left:18px;font-size:13px;line-height:20px;color:#8F8F8F}
 .setup-acts{margin:4px 0 0;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
 .setup-acts a{text-decoration:underline;text-underline-offset:3px}
-.vote{min-height:44px;min-width:64px;border-radius:8px;border:1px solid #DDDFE3;background:none;color:#16181D;font:inherit;cursor:pointer}
-.vote[aria-pressed="true"]{border-color:#1F9D55;color:#1F9D55}
-.vote-note{position:fixed;left:16px;right:16px;bottom:16px;max-width:420px;margin:0 auto;padding:12px 16px;border-radius:12px;background:#FBF0D6;color:#7A5200;font-size:14px}
-.vote-note:empty{display:none}
+.vote{min-height:44px;min-width:64px;border-radius:8px;border:1px solid #2A2A2A;background:none;color:#EDEDED;font:inherit;cursor:pointer}
+.vote[aria-pressed="true"]{border-color:#5BE38A;color:#5BE38A}
 .setup-pager{display:flex;gap:24px;margin-top:24px}
 </style>
 <main class="legal gallery">
   <h1>Desk setups</h1>
   <p>Setups people planned on SetupViz, drawn to scale, with every piece checked against their desk. Open one, or try it on your own desk. <a href="/builder">Build and publish yours</a>.</p>
   <!--SETUPS-->
-  <p id="voteNote" class="vote-note" role="status"></p>
 </main>
 <script>
 (function(){
@@ -38,23 +35,15 @@ main.gallery{max-width:1200px}
     b.addEventListener('click', function(){
       if (voted[id]) return;
       b.disabled = true;
-      var note = document.getElementById('voteNote');
-      function failed(){
-        b.disabled = false;
-        note.textContent = "Couldn't count that vote. Try again in a minute.";
-        clearTimeout(note.timer);
-        note.timer = setTimeout(function(){ note.textContent = ''; }, 5000);
-      }
-      note.textContent = '';
       fetch('/api/setups/' + id + '/vote', { method: 'POST' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(res){
-        if (!res) return failed();
         b.disabled = false;
+        if (!res) return;
         voted[id] = 1;
         try { localStorage.setItem('sv-votes', JSON.stringify(voted)); } catch (e) {}
         b.setAttribute('aria-pressed', 'true');
         b.querySelector('span').textContent = res.votes;
         b.setAttribute('aria-label', 'Upvoted, ' + res.votes + ' votes');
-      }).catch(failed);
+      }).catch(function(){ b.disabled = false; });
     });
   });
 })();

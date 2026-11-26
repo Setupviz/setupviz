@@ -1,159 +1,132 @@
-/* SetupViz shared look: a quiet catalogue. Light grey page, white cards, graphite gear,
-   one blue accent taken from the logo. Loaded by every page. */
-/* Fonts are declared here, in the blocking sheet, with optional. A stylesheet that
-   arrives after first paint makes Chrome swap an "optional" face whenever the file shows up. */
+/* SetupViz shared look: quiet, monochrome, editorial. Loaded by every page. */
+/* Geist is declared here, in the blocking sheet, with optional. A stylesheet that
+   arrives after first paint (media=print, or a late Google CSS file) makes Chrome
+   swap an "optional" face whenever the file shows up. */
 @font-face{
-  font-family:'Instrument Sans';
+  font-family:'Geist';
+  font-style:normal;
+  font-weight:100 900;
+  font-display:optional;
+  src:url('/fonts/geist-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Geist Mono';
   font-style:normal;
   font-weight:400;
   font-display:optional;
-  src:url('/fonts/instrument-sans-400-latin.woff2') format('woff2');
+  src:url('/fonts/geist-mono-latin.woff2') format('woff2');
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
+/* Advance widths of the site's text in Geist latin vs Arimo, so the fallback occupies the same space.
+   optional: a local() face that resolves after first paint must not widen text and wrap a line. */
 @font-face{
-  font-family:'Instrument Sans';
-  font-style:normal;
-  font-weight:600;
-  font-display:optional;
-  src:url('/fonts/instrument-sans-600-latin.woff2') format('woff2');
-  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-}
-@font-face{
-  font-family:'IBM Plex Mono';
-  font-style:normal;
-  font-weight:500;
-  font-display:optional;
-  src:url('/fonts/ibm-plex-mono-500-latin.woff2') format('woff2');
-  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-}
-/* Advance widths of the site's text in Instrument Sans vs Arimo, so the fallback occupies the
-   same space. optional: a local() face that resolves after first paint must not widen text. */
-@font-face{
-  font-family:'Instrument Sans Fallback';
+  font-family:'Geist Fallback';
   src:local('Arial'),local('Arimo'),local('Liberation Sans');
-  size-adjust:101.79%;
-  ascent-override:95.30%;
-  descent-override:24.56%;
+  size-adjust:103.40%;
+  ascent-override:97.19%;
+  descent-override:28.53%;
   line-gap-override:0%;
   font-display:optional;
 }
 @font-face{
-  font-family:'IBM Plex Mono Fallback';
+  font-family:'Geist Mono Fallback';
   src:local('Courier New'),local('Cousine'),local('Liberation Mono');
   size-adjust:99.98%;
-  ascent-override:102.52%;
-  descent-override:27.50%;
+  ascent-override:100.52%;
+  descent-override:29.50%;
   line-gap-override:0%;
   font-display:optional;
 }
 :root{
-  --bg:#F2F2F3;
-  --panel:#FFFFFF;
-  --panel-2:#F7F7F8;
-  --raise:#ECEDF0;
-  --line:rgba(22,24,29,0.08);
-  --line-2:rgba(22,24,29,0.14);
-  --line-3:rgba(22,24,29,0.28);
-  --text:#16181D;
-  --muted:#5F636C;
-  --dim:#8A8E97;
-  --ink:#FFFFFF;
-  --accent:#3E63DD;
-  --accent-soft:#E4EAFB;
-  /* gear, drawn from above: graphite keyboard, soft grey pad, white mouse */
-  --gear-kb:#3A3E46;
-  --gear-kb-line:#24272D;
-  --gear-pad:#D5D8DE;
-  --gear-pad-line:#B9BDC4;
-  --gear-mouse:#FFFFFF;
-  --gear-mouse-line:#8A8E97;
-  --font:'Instrument Sans','Instrument Sans Fallback',-apple-system,BlinkMacSystemFont,system-ui,'Helvetica Neue',sans-serif;
-  --mono:'IBM Plex Mono','IBM Plex Mono Fallback',ui-monospace,SFMono-Regular,Menlo,monospace;
-  color-scheme:light;
+  --bg:#121212;
+  --panel:#171717;
+  --panel-2:#1C1C1C;
+  --raise:#232323;
+  --line:rgba(255,255,255,0.08);
+  --line-2:rgba(255,255,255,0.14);
+  --line-3:rgba(255,255,255,0.28);
+  --text:#EDEDED;
+  --muted:#8F8F8F;
+  --dim:#5E5E5E;
+  --ink:#121212;
+  --font:'Geist','Geist Fallback',-apple-system,BlinkMacSystemFont,system-ui,'Helvetica Neue',sans-serif;
+  --mono:'Geist Mono','Geist Mono Fallback',ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 html{background:var(--bg)}
 body{--sv-bar:56px;--sv-content:1200px;margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased}
 a{color:var(--text);text-decoration:none}
-a:hover{color:#000000}
+a:hover{color:#FFFFFF}
 button{font-family:inherit}
-::selection{background:var(--accent-soft);color:var(--text)}
+::selection{background:#EDEDED;color:#121212}
 
-/* top bar: brand left, links in one rounded group, the call to action right.
-   One 1200px column even when a page sets a wider --sv-content. */
-.sv-nav{--sv-content:1200px;position:sticky;top:0;z-index:20;background:var(--bg)}
-.sv-nav-in{position:relative;max-width:var(--sv-content);margin:0 auto;padding:12px 24px;box-sizing:border-box;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:16px}
-.sv-brand img{border-radius:7px;flex:none}
-.sv-brand{justify-self:start;display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;letter-spacing:-0.02em}
-.sv-links{justify-self:center;display:flex;align-items:center;gap:2px;font-size:14px}
-.sv-links a.l{height:30px;min-height:24px;padding:0 14px;display:inline-flex;align-items:center;color:var(--muted);border-radius:999px;transition:background-color .15s,color .15s}
-.sv-links a.l:hover{color:var(--text);background:var(--panel)}
-.sv-links a.l[aria-current="page"]{color:var(--text);background:var(--panel)}
+/* top bar; one 1200px column even when a page sets a wider --sv-content */
+.sv-nav{--sv-content:1200px;position:sticky;top:0;z-index:20;background:var(--bg);box-shadow:inset 0 -1px var(--line)}
+.sv-nav-in{max-width:var(--sv-content);margin:0 auto;padding:12px 24px;box-sizing:border-box;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:16px}
+.sv-brand img{border-radius:6px;flex:none}
+.sv-brand{justify-self:start;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;letter-spacing:-0.01em}
+.sv-links{justify-self:center;display:flex;align-items:center;gap:4px;font-size:14px}
+.sv-links a.l{height:32px;min-height:24px;padding:0 12px;display:inline-flex;align-items:center;color:var(--muted);border-radius:8px}
+.sv-links a.l:hover{color:var(--text)}
 .sv-nav-in>.nav-cta{justify-self:end}
 .page>nav:not(.sv-nav){top:var(--sv-bar)}
 @media (max-width:640px){
   body{--sv-bar:48px}
   .sv-nav-in{grid-template-columns:1fr auto auto;align-items:center;padding:8px 12px;gap:8px}
   .sv-brand,.sv-links a.l,.sv-nav-in>.nav-cta{height:32px;box-sizing:border-box}
-  .sv-links a.l{display:none}
-  .sv-nav .sv-menu{display:block}
+  .sv-links a[href*="#"]{display:none}
+
 }
 
-/* phone menu: the Menu pill grows into a dark card with the links in big type */
-.sv-menu{display:none}
-.sv-menu summary{list-style:none;height:32px;box-sizing:border-box;padding:0 14px;display:inline-flex;align-items:center;border-radius:999px;background:var(--panel);color:var(--text);font-size:14px;cursor:pointer}
-.sv-menu summary::-webkit-details-marker{display:none}
-.sv-menu .c,.sv-menu[open] .o{display:none}
-.sv-menu[open] .c{display:inline}
-.sv-menu-card{position:absolute;left:12px;right:12px;top:calc(100% + 4px);padding:16px 24px 20px;border-radius:24px;background:var(--text);display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(22,24,29,0.28);animation:sv-grow .34s cubic-bezier(.2,.8,.2,1)}
-.sv-menu-card a{padding:6px 0;font-size:36px;line-height:1.1;font-weight:600;letter-spacing:-0.035em;color:rgba(255,255,255,0.72)}
-.sv-menu-card a:hover,.sv-menu-card a:focus-visible,.sv-menu-card a[aria-current="page"]{color:#FFFFFF}
-@keyframes sv-grow{from{clip-path:inset(0 22% 100% 40% round 999px)}to{clip-path:inset(0 0 0 0 round 24px)}}
-@media (prefers-reduced-motion:reduce){.sv-menu-card{animation:none}}
-
-/* buttons: one dark primary, one white secondary, one text-only */
-.pill{height:36px;min-height:24px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;border:1px solid transparent;font:600 14px/1 var(--font);cursor:pointer;white-space:nowrap;transition:background-color .15s,border-color .15s,color .15s}
+/* pill buttons */
+.pill{height:36px;min-height:24px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;border:1px solid transparent;font:400 14px/1 var(--font);cursor:pointer;white-space:nowrap;transition:background-color .15s,border-color .15s,color .15s}
 .pill-lg{height:44px;min-height:44px;padding:0 20px;font-size:15px}
-.pill-sm{height:32px;min-height:24px;padding:0 14px;font-size:13px}
-.pill-primary{background:var(--text);color:var(--ink)}
-.pill-primary:hover{background:#2B2E35;color:var(--ink)}
-.pill-secondary{background:var(--panel);border-color:var(--line);color:var(--text)}
-.pill-secondary:hover{border-color:var(--line-2);color:var(--text)}
+.pill-sm{height:30px;min-height:24px;padding:0 12px;font-size:13px}
+.pill-light{background:#EDEDED;color:var(--ink)}
+.pill-light:hover{background:#FFFFFF;color:var(--ink)}
+.pill-dark{background:var(--panel-2);border-color:var(--line);color:var(--text)}
+.pill-dark:hover{background:var(--raise);border-color:var(--line-2);color:var(--text)}
 .pill-ghost{background:transparent;color:var(--muted)}
 .pill-ghost:hover{color:var(--text)}
 .arrow{font-size:.95em;opacity:.8}
 
 /* type */
 .eyebrow{font-size:14px;color:var(--muted)}
-.lede{font-size:clamp(20px,2vw,26px);line-height:1.25;font-weight:600;letter-spacing:-0.02em;margin:0}
+.lede{font-size:clamp(20px,2vw,26px);line-height:1.25;font-weight:400;letter-spacing:-0.015em;margin:0}
 .lede .g,.g{color:var(--muted)}
-.lede .g{font-weight:400}
 
-.stage{position:relative;border-radius:20px;overflow:hidden;background:var(--panel)}
+/* app window frame, used for product shots */
+.win{border-radius:12px;background:var(--panel);border:1px solid var(--line-2);overflow:hidden}
+.win-bar{height:34px;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+.win-bar i{width:9px;height:9px;border-radius:50%;background:#2E2E2E;display:inline-block}
+.win-bar span{flex:1;text-align:center;margin-right:36px}
 
-/* desk drawing, shared by landing, builder and share: graphite gear on a white desk */
-.desk-dots{background-color:var(--panel);background-image:radial-gradient(rgba(22,24,29,0.14) 1px,transparent 1.2px)}
+.stage{position:relative;border-radius:16px;overflow:hidden;background:var(--panel-2);border:1px solid var(--line)}
+
+/* desk drawing, shared by landing, builder and share */
+.desk-dots{background-color:#141414;background-image:radial-gradient(rgba(255,255,255,0.09) 1px,transparent 1.2px)}
 /* Keep the drawing to scale; enlarge only its invisible pointer target. */
 .piece{min-width:0;min-height:0}
 .piece::before{content:"";position:absolute;left:50%;top:50%;width:100%;height:100%;min-width:24px;min-height:24px;transform:translate(-50%,-50%);border-radius:inherit}
-.piece.sel,.piece:focus-visible{outline:1.5px solid var(--accent);outline-offset:4px}
+.piece.sel,.piece:focus-visible{outline:1.5px solid #EDEDED;outline-offset:4px}
 @media (pointer:coarse){.piece::before{min-width:44px;min-height:44px}}
 /* One set of silhouettes for the homepage and the working builder. */
-.piece-keyboard,.b-kb{border-radius:3% / 8%;background-color:var(--gear-kb);background-image:linear-gradient(90deg,var(--gear-kb-line) 1px,transparent 1px),linear-gradient(var(--gear-kb-line) 1px,transparent 1px);background-size:6.25% 20%;border:1px solid var(--gear-kb-line);box-shadow:0 10px 24px rgba(22,24,29,0.18)}
-.piece-pad,.b-pad{border-radius:3%;background:var(--gear-pad);border:1px solid var(--gear-pad-line)}
-.piece-mouse,.b-mouse{border-radius:40% 40% 45% 45%;background:var(--gear-mouse);border:1px solid var(--gear-mouse-line);box-shadow:0 8px 18px rgba(22,24,29,0.22)}
+.piece-keyboard,.b-kb{border-radius:3% / 8%;background-color:#454545;background-image:linear-gradient(90deg,#171717 1px,transparent 1px),linear-gradient(#171717 1px,transparent 1px);background-size:6.25% 20%;border:1px solid rgba(255,255,255,0.18);box-shadow:0 12px 30px rgba(0,0,0,0.5)}
+.piece-pad,.b-pad{border-radius:3%;background:#272727;border:1px solid #787878}
+.piece-mouse,.b-mouse{border-radius:40% 40% 45% 45%;background:#EDEDED;box-shadow:0 12px 30px rgba(0,0,0,0.6)}
 .piece-monitor.hang::after,.b-mon.hang::after,.p-monitor.hang::after{z-index:2}
-.hang::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg,transparent,transparent 3px,rgba(210,70,58,.75) 3px,rgba(210,70,58,.75) 5px);-webkit-mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000);-webkit-mask-position:left,right,top,bottom;-webkit-mask-size:var(--ol,0) 100%,var(--or,0) 100%,100% var(--ot,0),100% var(--ob,0);-webkit-mask-repeat:no-repeat;mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000);mask-position:left,right,top,bottom;mask-size:var(--ol,0) 100%,var(--or,0) 100%,100% var(--ot,0),100% var(--ob,0);mask-repeat:no-repeat}
+.hang::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg,transparent,transparent 3px,rgba(255,107,91,.75) 3px,rgba(255,107,91,.75) 5px);-webkit-mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000);-webkit-mask-position:left,right,top,bottom;-webkit-mask-size:var(--ol,0) 100%,var(--or,0) 100%,100% var(--ot,0),100% var(--ob,0);-webkit-mask-repeat:no-repeat;mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000),linear-gradient(#000,#000);mask-position:left,right,top,bottom;mask-size:var(--ol,0) 100%,var(--or,0) 100%,100% var(--ot,0),100% var(--ob,0);mask-repeat:no-repeat}
 
 /* affiliate disclosure, shown at the foot of every page */
-.sv-disclosure{max-width:var(--sv-content);margin:0 auto;padding:16px 24px 32px;box-sizing:border-box;font-size:12px;line-height:24px;min-height:24px;color:var(--muted);text-align:center}
-a.sv-legal-link{color:var(--muted);min-height:24px;display:inline-flex;align-items:center}
+.sv-disclosure{max-width:var(--sv-content);margin:0 auto;padding:16px 24px 32px;box-sizing:border-box;font-size:12px;line-height:24px;min-height:24px;color:#8F8F8F;text-align:center}
+a.sv-legal-link{color:#8F8F8F;min-height:24px;display:inline-flex;align-items:center}
 a.sv-mail{color:var(--text);text-decoration:underline;text-underline-offset:3px;min-height:24px;display:inline-flex;align-items:center}
-a.sv-mail:hover{color:#000000;text-decoration-thickness:2px}
-a.sv-mail:focus{color:#000000;outline:2px solid var(--accent);outline-offset:3px}
+a.sv-mail:hover{color:#FFFFFF;text-decoration-thickness:2px}
+a.sv-mail:focus{color:#FFFFFF;outline:2px solid #FFFFFF;outline-offset:3px}
 @media (pointer:coarse){
   body{--sv-bar:70px}
-  .sv-links a.l,.sv-menu summary,.pill,.pill-sm,.pill-lg,.sv-brand,.brand{min-height:44px;min-width:44px}
-  .sv-links a.l,.sv-menu summary,.pill,.pill-sm,.pill-lg{height:44px}
+  .sv-links a.l,.pill,.pill-sm,.pill-lg,.sv-brand,.brand{min-height:44px;min-width:44px}
+  .sv-links a.l,.pill,.pill-sm,.pill-lg{height:44px}
   a.pill{animation:none;transform:none}
   .sv-disclosure{min-height:44px}
   a.sv-legal-link,a.sv-mail{box-sizing:border-box;min-height:44px;min-width:44px;padding:10px 12px}
@@ -161,17 +134,16 @@ a.sv-mail:focus{color:#000000;outline:2px solid var(--accent);outline-offset:3px
 @media (max-width:640px) and (pointer:coarse){body{--sv-bar:60px}}
 
 body{font-variant-numeric:tabular-nums}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 
 main.legal{max-width:680px;margin:0 auto;padding:64px 24px 48px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px}
-main.legal h1{margin:0;font-size:clamp(32px,4vw,48px);line-height:1.1;font-weight:600;letter-spacing:-0.035em}
-main.legal h2{margin:20px 0 0;font-size:18px;font-weight:600}
+main.legal h1{margin:0;font-size:clamp(32px,4vw,48px);line-height:1.1;font-weight:400;letter-spacing:-0.03em}
+main.legal h2{margin:20px 0 0;font-size:18px;font-weight:500}
 main.legal p{margin:0;font-size:16px;line-height:26px}
 main.legal h1 + p{color:var(--muted);font-size:14px}
 
-/* top-down monitor: the stand in mid grey, the panel as a dark bar with a light face line */
 .monitor-plan{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.monitor-plan .stand-outline{fill:#C9CCD2;stroke:#8A8E97;stroke-width:.85;vector-effect:non-scaling-stroke;stroke-linejoin:round}
-.monitor-plan .stand-post{fill:none;stroke:#A2A6AE;stroke-width:30;stroke-linecap:round}
-.monitor-plan .panel-housing{fill:#2B2F36;stroke:#1B1E23;stroke-width:.8;vector-effect:non-scaling-stroke}
-.monitor-plan .panel-face{fill:none;stroke:#8A8E97;stroke-width:1.4;vector-effect:non-scaling-stroke}
+.monitor-plan .stand-outline{fill:#52565a;stroke:#afb5b9;stroke-width:.85;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.monitor-plan .stand-post{fill:none;stroke:#737a80;stroke-width:30;stroke-linecap:round}
+.monitor-plan .panel-housing{fill:#303439;stroke:#9ca3aa;stroke-width:.8;vector-effect:non-scaling-stroke}
+.monitor-plan .panel-face{fill:none;stroke:#ededed;stroke-width:1.4;vector-effect:non-scaling-stroke}

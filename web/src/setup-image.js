@@ -10,7 +10,7 @@ import { esc } from './html.js';
 import { FIT_COLORS, FIT_WORDS } from './fit-words.js';
 
 var ORDER = ['pad', 'monitor', 'keyboard', 'mouse'];
-var FILL = { pad: '#D5D8DE', stand: '#C9CCD2', panel: '#2B2F36', keyboard: '#3A3E46', mouse: '#FFFFFF' };
+var FILL = { pad: '#262A2E', stand: '#3A3F44', panel: '#5D646B', keyboard: '#4A5056', mouse: '#737B83' };
 
 function inches(mm){ return measureText(mm, 'in') + ' in'; }
 function on(setup){
@@ -59,7 +59,7 @@ export function svg(setup, label){
   }).join('');
   return '<svg class="desk-svg" viewBox="' + n(-m) + ' ' + n(-m) + ' ' + n(w + 2 * m) + ' ' + n(d + 2 * m) + '" role="img" aria-label="' +
     esc(label || 'Desk from above') + '" xmlns="http://www.w3.org/2000/svg">' +
-    '<rect x="0" y="0" width="' + n(w) + '" height="' + n(d) + '" rx="' + n(Math.min(w, d) * 0.02) + '" fill="#FFFFFF" stroke="#C9CCD2" stroke-width="1.5" vector-effect="non-scaling-stroke"/>' +
+    '<rect x="0" y="0" width="' + n(w) + '" height="' + n(d) + '" rx="' + n(Math.min(w, d) * 0.02) + '" fill="#141414" stroke="#3A3A3A" stroke-width="1.5" vector-effect="non-scaling-stroke"/>' +
     parts + '</svg>';
 }
 
@@ -71,9 +71,9 @@ function roundRect(ctx, x, y, w, h, r){
 }
 
 // The "Save image" picture: fit summary, the desk to scale, each piece with its result,
-// and the site's name, on the site's light background. Browser only.
+// and the site's name, on the site's dark background. Browser only.
 export function toCanvas(setup, unit){
-  var W = 1200, pad = 56, font = '"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+  var W = 1200, pad = 56, font = 'Geist, system-ui, -apple-system, "Segoe UI", sans-serif';
   var sum = summary(setup), items = ['monitor', 'keyboard', 'mouse', 'pad'].filter(function(c){ return sum.cats.indexOf(c) >= 0; });
   var one = function(mm){ var v = measureText(mm, unit); return v ? v + ' ' + unit : ''; };
   var deskText = 'Desk ' + measureText(setup.desk.w, unit) + ' × ' + measureText(setup.desk.d, unit) + ' ' + unit;
@@ -84,14 +84,14 @@ export function toCanvas(setup, unit){
   canvas.width = W * 2; canvas.height = H * 2;
   var ctx = canvas.getContext('2d');
   ctx.scale(2, 2);
-  ctx.fillStyle = '#F2F2F3'; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#16181D'; ctx.font = '600 38px ' + font; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#0A0A0A'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#EDEDED'; ctx.font = '600 38px ' + font; ctx.textBaseline = 'alphabetic';
   ctx.fillText(sum.text, pad, 82);
-  ctx.fillStyle = '#5F636C'; ctx.font = '400 22px ' + font;
+  ctx.fillStyle = '#8F8F8F'; ctx.font = '400 22px ' + font;
   ctx.fillText(deskText + ' · estimated fit, verify measurements before buying', pad, 118);
   var ox = (W - drawW) / 2, oy = 150;
   roundRect(ctx, ox, oy, drawW, drawH, Math.min(drawW, drawH) * 0.02);
-  ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#C9CCD2'; ctx.stroke();
+  ctx.fillStyle = '#141414'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#3A3A3A'; ctx.stroke();
   shapes(setup).forEach(function(s){
     roundRect(ctx, ox + s.x * scale, oy + s.y * scale, s.w * scale, s.d * scale, s.r * scale);
     ctx.fillStyle = s.fill; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = s.stroke; ctx.stroke();
@@ -99,12 +99,12 @@ export function toCanvas(setup, unit){
   items.forEach(function(c, i){
     var s = get(c, setup.pick[c]), st = sum.status[c], y = listTop + i * 44;
     ctx.beginPath(); ctx.arc(pad + 8, y - 8, 8, 0, Math.PI * 2); ctx.fillStyle = FIT_COLORS[st.lvl]; ctx.fill();
-    ctx.fillStyle = '#16181D'; ctx.font = '500 24px ' + font; ctx.fillText(s.name, pad + 28, y);
+    ctx.fillStyle = '#EDEDED'; ctx.font = '500 24px ' + font; ctx.fillText(s.name, pad + 28, y);
     var right = FIT_WORDS[st.lvl] + (st.lvl ? ', ' + st.msg : '') + ' · ' + one(s.w) + ' × ' + one(s.d);
-    ctx.fillStyle = '#5F636C'; ctx.font = '400 20px ' + font; ctx.textAlign = 'right'; ctx.fillText(right, W - pad, y); ctx.textAlign = 'left';
+    ctx.fillStyle = '#8F8F8F'; ctx.font = '400 20px ' + font; ctx.textAlign = 'right'; ctx.fillText(right, W - pad, y); ctx.textAlign = 'left';
   });
-  ctx.fillStyle = '#16181D'; ctx.font = '600 24px ' + font; ctx.fillText('setupviz.com', pad, H - 40);
-  ctx.fillStyle = '#5F636C'; ctx.font = '400 20px ' + font; ctx.textAlign = 'right';
+  ctx.fillStyle = '#EDEDED'; ctx.font = '600 24px ' + font; ctx.fillText('setupviz.com', pad, H - 40);
+  ctx.fillStyle = '#8F8F8F'; ctx.font = '400 20px ' + font; ctx.textAlign = 'right';
   ctx.fillText('Plan your desk setup to scale before you buy', W - pad, H - 40); ctx.textAlign = 'left';
   return canvas;
 }

@@ -20,129 +20,222 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="/sv.css">
 <style>
-/* One short path: desk size on the opening scene, a desk to try right under it, then the gear that fits. */
 .wrap{max-width:var(--sv-content);margin:0 auto;padding:0 24px;box-sizing:border-box}
 section{scroll-margin-top:calc(var(--sv-bar) + 8px)}
-footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
+/* Skip layout and paint for sections below the first screen until they near the viewport. */
+#story,#start,#checks,.money,footer{content-visibility:auto;contain-intrinsic-size:auto 900px}
 
-/* the size form on the paper */
-.size-form{display:flex;align-items:center;gap:6px;margin-top:8px;padding:6px 6px 6px 20px;border-radius:999px;background:var(--panel);box-shadow:0 1px 0 var(--line),0 12px 32px rgba(22,24,29,0.06);max-width:100%;box-sizing:border-box}
-.size-form label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
-.size-form input{width:3.4em;height:40px;padding:0;border:0;background:transparent;font:500 17px/1 var(--mono);color:var(--text);outline:none}
-.size-form input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
-.size-form input[aria-invalid="true"]{color:#D2463A}
-.size-form .x{color:var(--dim)}
-.size-form .unit{display:inline-flex;padding:2px;border-radius:999px;background:var(--panel-2)}
-.size-form .unit button{height:28px;min-height:24px;min-width:34px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:12px;cursor:pointer}
-.size-form .unit button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(22,24,29,0.12)}
-.size-form .pill{margin-left:4px}
-.size-err{margin:0;font-size:13px;line-height:20px;color:#B42318;background:#FFFFFF;padding:4px 10px;border-radius:8px}
-.size-err:empty{display:none}
-.source{margin:4px 0 0;font-size:13px}
-.source a{color:inherit;text-decoration:underline;text-underline-offset:3px}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--muted);font:400 13px/1 var(--font);cursor:pointer}
-.chip:hover{color:var(--text);border-color:var(--line-3)}
-a.chip{color:var(--text)}
+/* hero */
+.hero{padding:40px 0 24px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
+.hero h1{margin:0;max-width:880px;font-size:clamp(32px,5vw,64px);line-height:1.08;font-weight:400;letter-spacing:-0.035em}
+.hero .row{display:flex;gap:10px;flex-wrap:wrap}
+/* 390px sits on the wrap: a few wider glyphs drop the second pill and push the story 56px. */
+@media (min-width:380px) and (max-width:520px){
+  .hero .pill-lg{padding:0 12px}
+  .hero .row{gap:8px}
+}
 
-.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
-.b-tag{align-self:flex-start;margin-top:8px;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--panel);border:1px solid var(--line-2);display:inline-flex;align-items:center;gap:6px}
+/* product shot: builder in miniature */
+.mini{display:flex;min-height:380px}
+.mini-desk{flex:1 1 auto;min-width:0;padding:18px;display:flex;flex-direction:column;gap:10px;border-right:1px solid var(--line)}
+.mini-desk .cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.mini-side{flex:0 0 260px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.mini-side .h{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.mslot{padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.mslot.on{border-color:var(--line-3);background:var(--raise)}
+.mslot .c{font-size:12px;letter-spacing:0;color:var(--muted)}
+.mslot .n{font-size:13px}
+.mslot .m{font-size:12px;color:var(--muted)}
+.mini-side .h a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 
-/* The opening is one surface, not a page: a desk on a blue rug, seen from above, with the
-   headline on a sheet of paper. Scrolling slides the paper away and drops the gear on, one beat
-   at a time. Without the script it is a single still scene with the beats listed under it. */
-.scene{--ar:2;position:relative;color:#FFFFFF}
-.scene.armed{height:calc(6.3 * (100svh - var(--sv-bar)))}
-.view{position:relative;height:calc(100svh - var(--sv-bar));min-height:600px;overflow:hidden;background:#3457CC}
-.scene.armed .view{position:sticky;top:var(--sv-bar)}
-.rug{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .14 0 0 0 0 .35 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23r)'/%3E%3C/svg%3E"),radial-gradient(120% 90% at 30% 20%,#4A6FE6,#3457CC 70%,#2D4DB8)}
-.top{position:absolute;right:5vw;top:50%;width:min(58vw,calc((100svh - var(--sv-bar) - 120px) * var(--ar)));aspect-ratio:var(--ar);transform:translateY(-50%);border-radius:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .22' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .15 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='600' height='300' filter='url(%23g)'/%3E%3C/svg%3E") center/100% 100%,linear-gradient(160deg,#EADCC6,#DCC8AA);box-shadow:0 1px 0 rgba(255,255,255,0.35) inset,0 2px 2px rgba(10,20,60,0.35),24px 40px 60px rgba(10,20,60,0.45);transition:width .5s ease}
-.top > div{position:absolute;box-sizing:border-box}
-.top .art{display:block;width:100%;height:100%;overflow:visible}
-/* sunlight from the top left: a tight contact shadow plus a long soft one */
-.g-kb,.g-mouse,.g-mon{filter:drop-shadow(0 1px 1px rgba(40,28,14,0.45)) drop-shadow(8px 12px 10px rgba(40,28,14,0.28))}
-.g-pad{filter:drop-shadow(0 1px 0.5px rgba(40,28,14,0.35)) drop-shadow(3px 4px 4px rgba(40,28,14,0.18))}
-.g-mon .stand-outline{fill:#D7D9DD;stroke:#A9ADB4}
-.g-mon .stand-post{stroke:#B9BCC2}
-.g-mon .panel-housing{fill:#26292E;stroke:#121417}
-.g-mon .panel-face{stroke:#5B6068}
-/* light through a window, across everything; it drifts a little as you scroll */
-.light{position:absolute;inset:-25%;background:linear-gradient(118deg,rgba(255,250,240,0.22),transparent 40%),repeating-linear-gradient(118deg,transparent 0 6%,rgba(10,16,40,0.12) 6% 10%);filter:blur(18px);transform:translateX(calc(var(--p, 0) * -8%));pointer-events:none}
-.paper{position:absolute;left:5vw;top:50%;z-index:1;width:min(460px,38vw);box-sizing:border-box;padding:36px 32px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:16px;color:var(--text);background:#FBFAF7;border-radius:3px;transform:translateY(-50%) rotate(-2deg);box-shadow:0 1px 1px rgba(10,20,60,0.25),20px 34px 44px rgba(10,20,60,0.38);transition:transform .9s cubic-bezier(.3,.7,.2,1),opacity .5s ease .2s,visibility 0s}
-.paper h1{margin:0;font-size:clamp(36px,4.4vw,60px);line-height:1;font-weight:600;letter-spacing:-0.045em;text-wrap:balance}
-.paper .sub{margin:0;font-size:16px;line-height:24px;color:var(--muted);text-wrap:pretty}
-.paper .size-form{margin-top:0;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--line)}
-.bot{margin:4px 0 0;display:flex;align-items:center;gap:10px}
-.bot img{width:40px;height:40px;border-radius:12px}
-.bot span{background:var(--raise);color:var(--text);font-size:14px;line-height:20px;padding:8px 14px;border-radius:16px 16px 16px 4px}
-.bot span.pop{animation:pop .35s ease}
-@keyframes pop{from{transform:scale(.92)}}
-.lines{position:relative;z-index:1;margin:0;padding:0;list-style:none}
-.scene.armed .lines{position:absolute;inset:0;pointer-events:none}
-.lines li{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
-.scene.armed .lines li{position:absolute;left:5vw;top:50%;width:min(420px,34vw);opacity:0;visibility:hidden;transform:translateY(calc(-50% + 20px));pointer-events:none}
-/* transitions start a frame after arming, so nothing fades on load */
-.scene.live .lines li{transition:opacity .45s ease,transform .7s cubic-bezier(.2,.8,.2,1),visibility 0s .45s}
-.lines .n{font-size:14px;color:rgba(255,255,255,0.85)}
-.lines h2{margin:0;font-size:clamp(48px,6.4vw,96px);line-height:.95;font-weight:600;letter-spacing:-0.05em}
-.lines p{margin:0;font-size:17px;line-height:26px;text-shadow:0 1px 12px rgba(10,20,60,0.35)}
-.lines .verdict{display:flex;align-items:center;gap:8px}
-.lines .verdict .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:0 0 0 2px #FFFFFF}
-.scene.live [data-at]{transition:transform .8s cubic-bezier(.2,.9,.3,1.25),opacity .35s ease,filter .8s ease}
-.scene.armed [data-at]:not(.in){opacity:0;transform:translateY(-24px) scale(1.1) rotate(-4deg);filter:drop-shadow(18px 40px 24px rgba(40,28,14,0.3))}
-.scene.armed:not([data-beat="0"]) .paper{transform:translate(-115%,-60%) rotate(-16deg);opacity:0;visibility:hidden;transition-delay:0s,.2s,.9s;pointer-events:none}
-.scene.armed .lines li.on{opacity:1;visibility:visible;transition-delay:0s;transform:translateY(-50%);pointer-events:auto}
-.stage3d{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s ease}
-.scene.three .stage3d{opacity:1}
-.scene.three .rug,.scene.three .top,.scene.three .light{visibility:hidden}
-.scene.three .view{background:#14161B}
-.scene.three .view::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
-.scene.holding .lines{opacity:0;transition:opacity .3s ease}
-.lines .chk{padding-top:12px;border-top:1px solid rgba(255,255,255,0.28);font-size:15px;line-height:23px;align-self:stretch}
-.lines .more{font-size:14px;line-height:22px}
-.lines p a{color:inherit;text-decoration:underline;text-underline-offset:3px}
-.lines .fit-estimate{color:rgba(255,255,255,0.85)}
-.lines .b-tag{margin:0;background:#FFFFFF;color:#16181D}
-.scene.three.armed .lines li{left:4vw;width:min(440px,36vw);padding:26px 28px 28px;border-radius:22px;background:#2D4DB8;box-shadow:0 30px 60px -30px rgba(10,20,60,0.6)}
-.scene.three .lines h2{font-size:clamp(40px,4.8vw,72px)}
-.scene.three .lines p{text-shadow:none}
-@media (max-width:820px){.scene.three.armed .lines li{left:16px;right:16px;width:auto;padding:18px 20px 20px}}
-.scene:not(.armed) .lines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 24px;padding:32px 5vw;background:#2D4DB8}
-.scene:not(.armed) .lines h2{font-size:32px}
+.board{position:relative;width:100%;aspect-ratio:2/1;border-radius:10px;border:1px solid var(--line);background-size:2.5% 5%;background-position:1.25% 2.5%;overflow:hidden}
+#demoBoard{width:auto;touch-action:none;overflow:visible}
+.board > *{position:absolute;box-sizing:border-box}
+:where(.board .piece){padding:0;border:0;background:transparent;font:inherit;color:inherit;cursor:grab;touch-action:none;appearance:none}
+.board .drag{cursor:grabbing}
+.b-tag{font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(18,18,18,0.9);border:1px solid var(--line-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;pointer-events:none}
+.b-tag .dot,.caps .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
+.caps .cap-b{display:inline-flex;align-items:center;gap:6px}
+.demo-verdicts{display:none}
+
+.pin{display:flex;flex-direction:column}
+.shot{padding:clamp(8px,1vw,16px)}
+.demo-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.demo-controls select{font:inherit;color:var(--text);background:var(--panel-2);border:1px solid var(--line-3);border-radius:8px;padding:8px}
+.story{position:relative}
+.hint{display:none;text-align:center;font-size:13px}
+@keyframes land{from{opacity:.92;transform:translateY(-14%) scale(1.05)}to{opacity:1;transform:none}}
+@keyframes hint-out{to{visibility:hidden}}
+@keyframes slot{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes show{to{opacity:1}}
+@media (min-width:761px) and (prefers-reduced-motion:no-preference){
+@supports (animation-timeline:view()){
+  .story{height:300vh;view-timeline-name:--build;view-timeline-axis:block}
+  .pin{position:sticky;top:0;height:100vh;box-sizing:border-box;padding-top:64px;justify-content:flex-start}
+  .pin .stage{flex:0 1 auto;max-height:calc(100vh - 118px);overflow:hidden;padding-top:clamp(16px,3vw,40px)}
+  .hint{display:block;opacity:1;animation:hint-out linear both;animation-timeline:--build;animation-range:cover 27% cover 31%}
+  .board .st-1,.board .st-2,.board .st-3,.board .st-4{animation:land ease-out both;animation-timeline:--build}
+  .board .st-1{animation-range:cover 30% cover 37%}
+  .board .st-2{animation-range:cover 39% cover 46%}
+  .board .st-3{animation-range:cover 48% cover 55%}
+  .board .st-4{animation-range:cover 57% cover 64%}
+  @keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+  .board .b-tag{transform-origin:left center;animation:pop ease-out both;animation-timeline:--build}
+  .board .tg-1{animation-range:cover 37% cover 40%}
+  .board .tg-2{animation-range:cover 46% cover 49%}
+  .board .tg-3{animation-range:cover 55% cover 58%}
+  .board .tg-4{animation-range:cover 64% cover 67%}
+  .mslot.st-1,.mslot.st-2,.mslot.st-3,.mslot.st-4{animation:slot ease-out both;animation-timeline:--build}
+  .mslot.st-1{animation-range:cover 31% cover 38%}
+  .mslot.st-2{animation-range:cover 40% cover 47%}
+  .mslot.st-3{animation-range:cover 49% cover 56%}
+  .mslot.st-4{animation-range:cover 58% cover 65%}
+  .caps .st-5{opacity:0;animation:show linear both;animation-timeline:--build;animation-range:cover 66% cover 71%}
+}
+}
+@media (max-width:760px){
+  .story{height:auto}.pin{position:static;height:auto;padding-top:0}
+  .pin .stage{max-height:none;overflow:visible}
+  .mini{flex-direction:column}.mini-side{display:flex;flex:1 1 auto}.mini-desk{border-right:0}
+  .board .piece,.board .b-tag,.mslot,.caps .st-5{animation:none!important;opacity:1}
+  #demoBoard .b-tag{display:none}
+  .demo-verdicts{display:flex;flex-wrap:wrap;gap:6px}
+  .demo-verdicts .b-tag{max-width:100%;box-sizing:border-box;white-space:normal}
+  .demo-verdicts .tx{min-width:0;overflow-wrap:anywhere}
+  .caps .cap-a,.hint{display:none}
+}
+
+/* Walkthrough */
+.pin2{display:flex;flex-direction:column;gap:28px;justify-content:center}
+.steps-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-rows:auto auto auto auto;column-gap:clamp(24px,5vw,80px);row-gap:28px;align-items:center;border-radius:20px;background:var(--panel);padding:clamp(20px,3vw,40px)}
+.steps-in .eyebrow{grid-column:1;grid-row:1;margin:0}
+.step{display:contents}
+.step .copy{grid-column:1;display:flex;flex-direction:column;gap:8px}
+.step .copy .n{font-family:var(--mono);font-size:12px;color:#8F8F8F}
+.step .copy p{margin:0}
+.step .copy .g{font-size:15px;line-height:23px}
+.step .copy a{display:inline-flex;align-items:center;min-height:24px;margin-top:6px;font-size:14px;color:var(--muted)}
+.step .copy a:hover{color:var(--text)}
+.s-1 .copy{grid-row:2}.s-2 .copy{grid-row:3}.s-3 .copy{grid-row:4}
+.step .win{grid-column:2;grid-row:1/5;width:100%;max-width:560px;justify-self:center;background:#1D1D1D;border-color:#4A4A4A;border-radius:13px;box-shadow:none}
+.step .win .win-bar,.step .win .f,.step .win .ps span:not(.on){color:#929292}
+.q{padding:20px;display:flex;flex-direction:column;gap:12px}
+.q .t{font-size:19px;letter-spacing:-0.015em}
+.q .fs{display:flex;gap:8px}
+.q .f{flex:1;display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
+.q .f b{height:38px;padding:0 12px;border-radius:9px;border:1px solid var(--line-2);background:var(--bg);display:flex;align-items:center;font-weight:400;font-size:14px;color:var(--text)}
+.q .ps{display:flex;gap:6px;flex-wrap:wrap}
+.q .ps span{height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;font-size:12px;color:var(--muted)}
+.q .ps span.on{border-color:var(--line-3);background:var(--raise);color:var(--text)}
+.picks{padding:16px;display:flex;flex-direction:column;gap:6px}
+.pk{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;border:1px solid var(--line)}
+.pk.on{background:var(--raise);border-color:var(--line-2)}
+.pk div{flex:1;display:flex;flex-direction:column;gap:1px}
+.pk b{font-weight:400;font-size:13px}.pk small{font-size:12px}
+.pk em{font-style:normal;font-size:12px;font-family:var(--mono)}
+.step .win small,.step .win em{color:#9A9A9A}
+
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.card{min-height:240px;padding:24px;border-radius:16px;background:var(--panel);display:flex;flex-direction:column;gap:6px;transition:background-color .2s}
+.card:hover{background:var(--panel-2)}
+.card .k{font-size:13px;color:var(--muted)}
+.card .t{margin-top:auto;font-size:20px;letter-spacing:-0.015em}
+.card .d{font-size:14px;line-height:21px;color:var(--muted)}
+.card.light{background:#EDEDED;color:var(--ink)}
+.card.light:hover{background:#FFFFFF;color:var(--ink)}
+.card.light .k,.card.light .d{color:#5A5A5A}
+
+.verdicts{display:flex;gap:8px;flex-wrap:wrap}
+.verdicts .b-tag{position:static}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.grid4 > div{padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-height:170px}
+.grid4 .t{font-size:16px}
+.grid4 .d{font-size:14px;line-height:21px;color:var(--muted)}
+
+.money{padding:140px 24px 160px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
+.money .lede{font-size:clamp(32px,5vw,64px);line-height:1.08;letter-spacing:-0.035em}
+.money p.g{margin:0;max-width:640px;font-size:16px;line-height:25px}
+
 @media (max-width:820px){
-  .top{left:4vw;right:auto;top:auto;bottom:5svh;width:92vw;max-height:40svh;transform:none}
-  .paper{left:4vw;right:4vw;top:12px;width:auto;padding:24px 20px 20px;gap:12px;transform:none}
-  .scene.armed:not([data-beat="0"]) .paper{transform:translate(-110%,-20%) rotate(-12deg)}
-  .scene.armed .lines li{top:24px;left:5vw;width:auto;right:5vw;transform:translateY(20px)}
-  .scene.armed .lines li.on{transform:none}
-  .scene:not(.armed) .lines{grid-template-columns:1fr}
+  .steps-in{grid-template-columns:1fr;grid-template-rows:none;row-gap:20px}
+  .step{display:flex;flex-direction:column;gap:14px}
+  .step .win{grid-column:auto;grid-row:auto;max-width:none}
+  .steps-in .eyebrow{grid-row:auto}
+  .cards{grid-template-columns:1fr}.card{min-height:160px}
+  .grid4{grid-template-columns:1fr 1fr}
 }
-@media (prefers-reduced-motion:reduce){
-  .scene.live [data-at],.paper,.scene.live .lines li,.top{transition:opacity .2s ease}
-  .scene.armed [data-at]:not(.in){transform:none;filter:none}
-  .light{transform:none}
-}
-.verdicts{display:flex;gap:6px;flex-wrap:wrap}
-.verdicts .b-tag{margin:0}
-.fit-estimate{margin:0;font-size:13px;color:var(--muted)}
+@media (max-width:520px){.grid4{grid-template-columns:1fr}}
 
 footer{border-top:1px solid var(--line)}
-.foot{padding:48px 24px 40px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;font-size:14px}
+.foot{padding:48px 24px 64px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;font-size:14px}
 .foot .cols{display:flex;gap:64px;flex-wrap:wrap}
 .foot .col{display:flex;flex-direction:column;gap:10px}
-.foot .col span{font-weight:600}
 .foot .col a{display:inline-flex;align-items:center;min-height:24px;color:var(--muted)}.foot .col a:hover{color:var(--text)}
-.legal-row{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px}
 
-@media (max-width:820px){
+/* Pair each example with its instructions in reading order. */
+.pin2{padding-block:clamp(32px,5vw,72px)}
+@media(min-width:821px){
+  .s-1 .win{grid-row:2}.s-2 .win{grid-row:3}.s-3 .win{grid-row:4}
 }
-@media (max-width:520px){
-  .size-form{flex-wrap:wrap;justify-content:center;border-radius:20px;padding:10px}
-  .size-form .pill{flex:1 0 100%;margin:4px 0 0}
+@media(pointer:coarse){.step .copy a,.foot .col a{min-height:44px;min-width:44px}}
+@media (min-width:821px) and (prefers-reduced-motion:no-preference){
+@keyframes rise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes lift{from{opacity:0;transform:translateY(90px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes sink{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-40px) scale(.98)}}
+@keyframes win-in{from{opacity:0;transform:translateY(60px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes win-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-60px) scale(.94)}}
+@keyframes dim{from{opacity:1}to{opacity:.28}}
+@keyframes lit{from{opacity:.28;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes pulse{0%{opacity:.28;transform:translateY(10px)}24%{opacity:1;transform:none}76%{opacity:1;transform:none}100%{opacity:.28;transform:none}}
+@keyframes win-thru{0%{opacity:0;transform:translateY(60px) scale(.94)}32%{opacity:1;transform:none}74%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-60px) scale(.94)}}
+@keyframes tick{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@supports (animation-timeline:view()){
+  .step .win{grid-row:1/5}
+  .hero{animation:sink linear both;animation-timeline:scroll(root);animation-range:0 420px}
+
+  /* how it works: three steps, one pinned screen; text lights up as the window swaps */
+  .steps{height:340vh;view-timeline-name:--steps}
+  .start{height:220vh;view-timeline-name:--start}
+  .checks{height:300vh;view-timeline-name:--checks}
+  .pin2{position:sticky;top:0;height:100vh;box-sizing:border-box;padding-top:64px}
+  .step .copy{animation:dim linear both;animation-timeline:--steps}
+  .s-1 .copy{animation-range:cover 42% cover 47%}
+  .s-2 .copy{animation:pulse linear both;animation-timeline:--steps;animation-range:cover 42% cover 63%}
+  .s-3 .copy{opacity:.28;animation:lit linear both;animation-timeline:--steps;animation-range:cover 58% cover 63%}
+  .v-1{animation:win-out cubic-bezier(.4,0,.6,1) both;animation-timeline:--steps;animation-range:cover 42% cover 47%}
+  .v-2{animation:win-thru linear both;animation-timeline:--steps;animation-range:cover 44% cover 63%}
+  .v-3{opacity:0;animation:win-in cubic-bezier(.2,.7,.2,1) both;animation-timeline:--steps;animation-range:cover 60% cover 66%}
+  .steps-in{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:--steps;animation-range:cover 18% cover 30%}
+
+  /* where to start: the three cards slide up one after another and hold */
+  .start .lede{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:--start;animation-range:cover 30% cover 40%}
+  .cards .card{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:--start}
+  .cards .c-1{animation-range:cover 36% cover 48%}
+  .cards .c-2{animation-range:cover 44% cover 56%}
+  .cards .c-3{animation-range:cover 52% cover 64%}
+
+  /* what we check: the grid draws itself alongside the verdict labels */
+  .checks .lede{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:--checks;animation-range:cover 30% cover 38%}
+  .verdicts .b-tag{transform-origin:left center;animation:tick cubic-bezier(.2,.7,.2,1) both;animation-timeline:--checks}
+  .verdicts .k-1{animation-range:cover 48% cover 52%}.verdicts .k-2{animation-range:cover 53% cover 57%}.verdicts .k-3{animation-range:cover 58% cover 62%}
+  .grid4{animation:wipe linear both;animation-timeline:--checks;animation-range:cover 40% cover 50%}
+  .grid4 > div .t,.grid4 > div .d{opacity:1}
+  .grid4 > div{animation:none}
+
+  /* the close: headline, then the why, then the button, as the page bottoms out */
+  .m-1{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% entry 90%}
+  .m-2{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 35%}
+  .m-3{animation:lift cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 60%}
+  .foot > *{animation:rise cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% entry 100%}
+  .foot .col:nth-child(2){animation-range:entry 20% cover 20%}
 }
-@media (pointer:coarse){
-  .chip,.size-form .unit button,.foot .col a{min-height:44px}
-  .size-form .unit button{min-width:44px;height:40px}
+}
+@media (max-width:820px) and (prefers-reduced-motion:no-preference){
+  @supports (animation-timeline:view()){
+    .step .win,.cards .card{animation:enter-example linear both;animation-timeline:view();animation-range:entry 0% entry 85%}
+    @keyframes enter-example{from{transform:translateY(20px)}to{transform:none}}
+  }
 }
 </style>
 </head>
@@ -151,61 +244,148 @@ footer{border-top:1px solid var(--line)}
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
   <a href="/home" class="sv-brand"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="sv-links">
-    <a class="l" href="/builder">Builder</a>
-    <a class="l l-wide" href="/gear">Gear</a>
-    <a class="l l-wide" href="/setups">Setups</a>
-    <details class="sv-menu"><summary><span class="o">Menu</span><span class="c">Close</span></summary><div class="sv-menu-card"><a href="/builder">Builder</a><a href="/gear">Gear</a><a href="/setups">Setups</a></div></details>
+    <a class="l" href="#story" aria-label="How it works"><span class="nav-full">How it works</span></a>
+    <a class="l" href="#checks" aria-label="Checks we run"><span class="nav-full">Checks we run</span></a>
+    <a class="l" href="/builder" aria-label="Builder">Builder</a>
   </div>
-  <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
+  <a class="pill pill-light pill-sm nav-cta" href="/desk" aria-label="Find my setup"><span class="nav-full">Find my setup</span></a>
 </div></nav>
 
 <main>
-  <section class="scene" id="how" aria-labelledby="sceneH">
-    <div class="view">
-      <div class="rug" aria-hidden="true"></div>
-      <div class="top" id="sceneDesk" aria-hidden="true">
-        <div class="g-pad" data-at="3" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%"><svg class="art" viewBox="0 0 450 400" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="cloth" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .52  0 0 0 0 .56  0 0 0 .09 0"/><feComposite in2="SourceGraphic" operator="in"/></filter><linearGradient id="padTone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A2D33"/><stop offset="1" stop-color="#1B1D21"/></linearGradient></defs><rect width="450" height="400" rx="10" fill="url(#padTone)"/><rect width="450" height="400" rx="10" fill="#000" filter="url(#cloth)"/><rect x="1.5" y="1.5" width="447" height="397" rx="9" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2"/></svg></div>
-        <div class="g-mon" data-at="1" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%"><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></div>
-        <div class="g-kb" data-at="2" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%"><svg class="art" viewBox="0 0 313 132" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="kbBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4E55"/><stop offset="1" stop-color="#2A2D32"/></linearGradient><linearGradient id="kbCap" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A5F67"/><stop offset=".55" stop-color="#43474E"/><stop offset="1" stop-color="#3A3E44"/></linearGradient></defs><rect width="313" height="132" rx="9" fill="url(#kbBody)"/><rect x="1" y="1" width="311" height="130" rx="8" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1"/><rect x="8.05" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="9.65" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="26.68" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="28.28" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="45.30" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="46.90" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="63.92" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="65.52" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="82.55" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="84.15" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="101.17" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="102.77" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="119.80" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="121.40" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="138.43" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="140.03" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="157.05" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="158.65" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="175.68" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="177.28" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="194.30" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="195.90" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="212.93" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="214.53" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="231.55" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="233.15" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="250.18" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="251.78" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="268.80" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="270.40" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="9.55" width="17.52" height="12.31" rx="2.2" fill="#1E2024"/><rect x="289.03" y="10.65" width="14.32" height="8.91" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="26.68" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="28.28" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="45.30" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="46.90" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="63.92" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="65.52" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="82.55" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="84.15" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="101.17" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="102.77" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="119.80" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="121.40" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="138.43" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="140.03" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="157.05" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="158.65" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="175.68" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="177.28" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="194.30" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="195.90" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="212.93" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="214.53" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="231.55" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="233.15" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="250.18" y="22.96" width="36.15" height="17.52" rx="2.2" fill="#1E2024"/><rect x="251.78" y="24.06" width="32.95" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="22.96" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="24.06" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="41.58" width="26.84" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="42.68" width="23.64" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="35.99" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="37.59" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="54.61" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="56.21" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="73.24" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="74.84" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="91.86" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="93.46" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="110.49" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="112.09" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="129.11" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="130.71" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="147.74" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="149.34" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="166.36" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="167.96" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="184.99" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="186.59" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="203.61" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="205.21" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="222.24" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="223.84" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="240.86" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="242.46" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="259.49" y="41.58" width="26.84" height="17.52" rx="2.2" fill="#1E2024"/><rect x="261.09" y="42.68" width="23.64" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="41.58" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="42.68" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="60.21" width="31.49" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="61.31" width="28.29" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="40.64" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="42.24" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="59.27" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="60.87" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="77.89" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="79.49" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="96.52" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="98.12" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="115.14" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="116.74" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="133.77" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="135.37" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="152.39" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="153.99" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="171.02" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="172.62" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="189.64" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="191.24" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="208.27" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="209.87" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="226.89" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="228.49" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="245.52" y="60.21" width="40.81" height="17.52" rx="2.2" fill="#1E2024"/><rect x="247.12" y="61.31" width="37.61" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="60.21" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="61.31" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="78.83" width="40.81" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="79.93" width="37.61" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="49.96" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="51.56" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="68.58" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="70.18" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="87.21" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="88.81" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="105.83" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="107.43" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="124.46" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="126.06" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="143.08" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="144.68" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="161.71" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="163.31" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="180.33" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="181.93" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="198.96" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="200.56" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="217.58" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="219.18" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="236.21" y="78.83" width="31.49" height="17.52" rx="2.2" fill="#1E2024"/><rect x="237.81" y="79.93" width="28.29" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="268.80" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="270.40" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="78.83" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="79.93" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="8.05" y="97.46" width="22.18" height="17.52" rx="2.2" fill="#1E2024"/><rect x="9.65" y="98.56" width="18.98" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="31.33" y="97.46" width="22.18" height="17.52" rx="2.2" fill="#1E2024"/><rect x="32.93" y="98.56" width="18.98" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="54.61" y="97.46" width="22.18" height="17.52" rx="2.2" fill="#1E2024"/><rect x="56.21" y="98.56" width="18.98" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="77.89" y="97.46" width="115.31" height="17.52" rx="2.2" fill="#1E2024"/><rect x="79.49" y="98.56" width="112.11" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="194.30" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="195.90" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="212.93" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="214.53" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="231.55" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="233.15" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="250.18" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="251.78" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="268.80" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="270.40" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/><rect x="287.43" y="97.46" width="17.52" height="17.52" rx="2.2" fill="#1E2024"/><rect x="289.03" y="98.56" width="14.32" height="14.12" rx="2.6" fill="url(#kbCap)"/></svg></div>
-        <div class="g-mouse" data-at="4" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%"><svg class="art" viewBox="0 0 68 128" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="msBody" cx=".42" cy=".62" r=".7"><stop offset="0" stop-color="#3A3D43"/><stop offset=".6" stop-color="#25272B"/><stop offset="1" stop-color="#141518"/></radialGradient><radialGradient id="msHi" cx=".38" cy=".6" r=".35"><stop offset="0" stop-color="rgba(255,255,255,.18)"/><stop offset="1" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><path d="M34 2 C49 2 58 8 61 22 C64 38 67 58 67 80 C67 104 58 125 36 126.5 C14 127.5 3 112 2 92 C1 72 5 52 7 34 C9 14 18 2 34 2 Z" fill="url(#msBody)"/><path d="M34 2 C49 2 58 8 61 22 C64 38 67 58 67 80 C67 104 58 125 36 126.5 C14 127.5 3 112 2 92 C1 72 5 52 7 34 C9 14 18 2 34 2 Z" fill="url(#msHi)"/><path d="M34 3 V50" stroke="#0E0F11" stroke-width="1.2"/><path d="M8 50 C20 46 48 46 63 50" fill="none" stroke="#0E0F11" stroke-width="1"/><rect x="30.5" y="16" width="7" height="20" rx="3.5" fill="#0C0D0F"/><rect x="31.6" y="17.5" width="4.8" height="17" rx="2.4" fill="#54585F"/><rect x="31.6" y="18.5" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="20.7" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="22.9" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="25.1" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="27.3" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="29.5" width="4.8" height=".7" fill="#2E3136"/><rect x="31.6" y="31.7" width="4.8" height=".7" fill="#2E3136"/><path d="M3.5 56 C3 62 3 68 3.2 72" stroke="#55595F" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M3.2 76 C3 81 3.1 86 3.4 90" stroke="#55595F" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M34 2 C49 2 58 8 61 22 C64 38 67 58 67 80 C67 104 58 125 36 126.5 C14 127.5 3 112 2 92 C1 72 5 52 7 34 C9 14 18 2 34 2 Z" fill="none" stroke="rgba(255,255,255,.12)" stroke-width=".8"/></svg></div>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Will it fit on your desk?</h1>
+      <p class="g" style="margin:0;max-width:520px;font-size:17px;line-height:26px">Try real gear on a scale drawing of your desk before you buy.</p>
+      <p class="g" style="margin:0;max-width:520px;font-size:14px;line-height:22px;color:#8F8F8F">Sizes come from manufacturer drawings and spec sheets. <a href="/gear" style="color:inherit">See every measurement</a>.</p>
+      <div class="row">
+        <a href="/desk" class="pill pill-light pill-lg">Enter my desk size <span class="arrow">→</span></a>
+        <a href="/builder" class="pill pill-dark pill-lg">Open builder</a>
       </div>
-      <div class="paper">
-      <h1 id="sceneH">Will it fit on your desk?</h1>
-      <p class="sub">Type in your desk size and we’ll lay out real gear on it, to scale, so you know what fits before you buy anything.</p>
-      <form class="size-form" id="sizeForm" action="/builder" novalidate>
-        <label>W <input id="hw" inputmode="decimal" autocomplete="off" value="55.1" aria-label="Desk width" disabled></label>
-        <span class="x" aria-hidden="true">×</span>
-        <label>D <input id="hd" inputmode="decimal" autocomplete="off" value="27.6" aria-label="Desk depth" disabled></label>
-        <span class="unit" role="group" aria-label="Unit"><button type="button" data-unit="in" aria-pressed="true">in</button><button type="button" data-unit="cm" aria-pressed="false">cm</button></span>
-        <button class="pill pill-primary" type="submit">Plan my desk</button>
-      </form>
-      <p class="size-err" id="sizeErr" role="alert"></p>
-      <div class="chips" id="sizeChips"><button type="button" class="chip" data-w="1200" data-d="600">Small desk</button><button type="button" class="chip" data-w="1400" data-d="700">Standard desk</button><button type="button" class="chip" data-w="1600" data-d="800">Large desk</button><a class="chip" href="/desk">Not sure? Answer 4 questions</a></div>
-      <p class="source">Free to use. Sizes come from each maker’s drawings and spec sheets. <a href="/gear">See every measurement</a></p>
-        <p class="bot"><img src="/apple-touch-icon.png" alt="" width="40" height="40"><span id="botSay">How big is your desk?</span></p>
+    </section>
+
+    <section class="story" aria-label="Try a keyboard on the example desk">
+      <div class="pin">
+        <div class="stage shot">
+          <div class="win">
+            <div class="win-bar"><i></i><i></i><i></i><span>Your setup · desk 55.1 × 27.6 in</span></div>
+            <div class="mini">
+              <div class="mini-desk">
+                <label class="demo-controls">Try a keyboard <select id="demoKeyboard"><option value="k75">Compact · MX Mechanical Mini</option><option value="full">Full size · MX Keys S</option></select></label>
+                <div class="cap"><span>Width 55.1 in</span><span>Depth 27.6 in</span></div>
+                <div class="board desk-dots" id="demoBoard" role="group" aria-label="Desk from above. Drag a piece, or use the arrow keys.">
+                  <button type="button" class="piece b-mon st-1" data-cat="monitor" style="left:28.21%;top:2.86%;width:43.64%;height:28.57%" aria-label="Dell 27 Plus QHD (S2725DS), fits. Drag to move."><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></button>
+                  <button type="button" class="piece b-pad st-3" data-cat="pad" style="left:58.57%;top:38.57%;width:32.14%;height:57.14%" aria-label="SteelSeries QcK Heavy Large, fits. Drag to move."></button>
+                  <button type="button" class="piece b-kb st-2" data-cat="keyboard" style="left:27.14%;top:62.86%;width:22.36%;height:18.86%" aria-label="Logitech MX Mechanical Mini, fits. Drag to move."></button>
+                  <button type="button" class="piece b-mouse st-4" data-cat="mouse" style="left:67.14%;top:61.43%;width:4.86%;height:18.29%" aria-label="Razer DeathAdder V3, fits. Drag to move."></button>
+                  <span class="b-tag tg-1" data-tag="monitor" style="left:28.21%;top:4.86%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Monitor fits</span></span>
+                  <span class="b-tag tg-2" data-tag="keyboard" style="left:27.14%;top:54.86%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Keyboard fits</span></span>
+                  <span class="b-tag tg-3" data-tag="pad" style="left:58.57%;top:30.57%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Pad fits</span></span>
+                  <span class="b-tag tg-4" data-tag="mouse" style="left:62.00%;top:53.43%"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits on the desk</span></span>
+                </div>
+                <div class="demo-verdicts" role="list" aria-label="Fit checks">
+                  <span class="b-tag" data-tag="monitor" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Monitor fits</span></span>
+                  <span class="b-tag" data-tag="keyboard" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Keyboard fits</span></span>
+                  <span class="b-tag" data-tag="pad" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Pad fits</span></span>
+                  <span class="b-tag" data-tag="mouse" role="listitem"><i class="dot" style="background:#5BE38A"></i><span class="tx">Mouse fits on the desk</span></span>
+                </div>
+                <div class="cap caps"><span class="cap-b st-5" id="demoSum"><i class="dot" style="background:#5BE38A"></i><span class="tx">4 fit</span></span><span class="st-5" id="demoUsed">27% of the desk used</span></div>
+              </div>
+              <div class="mini-side" id="demoSide">
+                <div class="h"><span>Your setup</span><a id="demoTry" href="/builder?s=eyJ2IjoxLCJkIjpbMTQwMCw3MDBdLCJwIjp7Im0iOiJtb24yNyIsImsiOiJrNzUiLCJwIjoiY2xvdGgiLCJvIjoiZGEzIn0sIngiOnsibSI6WzM5NSwyMF0sImsiOlszODAsNDQwXSwicCI6WzgyMCwyNzBdLCJvIjpbOTQwLDQzMF19LCJhIjpbIiIsIiIsIiJdfQ">Try it in the builder</a></div>
+                <div class="mslot st-1" data-cat="monitor"><span class="c">Monitor</span><span class="n">Dell 27 Plus QHD (S2725DS)</span><span class="m">Stand 9.8 × 7.1 in</span></div>
+                <div class="mslot st-2" data-cat="keyboard"><span class="c">Keyboard</span><span class="n">Logitech MX Mechanical Mini</span><span class="m">12.3 × 5.2 in</span></div>
+                <div class="mslot st-4 on" data-cat="mouse"><span class="c">Mouse</span><span class="n">Razer DeathAdder V3</span><span class="m">2.7 × 5 in · 59 g</span></div>
+                <div class="mslot st-3" data-cat="pad"><span class="c">Mouse pad</span><span class="n">SteelSeries QcK Heavy Large</span><span class="m">17.7 × 15.7 in · cloth</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="hint g">Scroll to build the desk</p>
       </div>
-      <div class="light" aria-hidden="true"></div>
-      <ol class="lines">
-        <li data-beat="1"><span class="n">1 of 4</span><h2>Monitor</h2><p>The stand takes the room, not the screen. A 27-inch monitor is about 24 in wide, but only its feet sit on the desk.</p><p class="chk">We check whether that foot runs into your keyboard or pad.</p></li>
-        <li data-beat="2"><span class="n">2 of 4</span><h2>Keyboard</h2><p>A compact board, about 12 in wide. Going compact leaves the mouse more room to move.</p><p class="chk">We check that it isn’t hanging off the front edge.</p></li>
-        <li data-beat="3"><span class="n">3 of 4</span><h2>Mouse pad</h2><p>A large one, so the mouse never runs out of room.</p><p class="chk">We check that it clears the monitor stand, and show where the keyboard covers it.</p></li>
-        <li data-beat="4"><span class="n">4 of 4</span><h2>Mouse</h2><p>Small, but it needs space around it.</p><p class="chk">We check it has room to swing. <a href="/hand">Our guide</a> says which hand sizes and grips it suits.</p></li>
-        <li data-beat="5" id="checks"><span class="n">All together</span><h2>The full setup</h2><p class="verdict"><span class="dot" id="sceneDot" style="background:#1F9D55"></span><span id="sceneSum">Everything fits, and 27% of the desk is used.</span></p><p class="chk">Every piece gets one of three answers.</p><div class="verdicts" aria-label="What the colors mean"><span class="b-tag"><i class="dot" style="background:#1F9D55"></i>Fits</span><span class="b-tag"><i class="dot" style="background:#B7791F"></i>Tight</span><span class="b-tag"><i class="dot" style="background:#D2463A"></i>Won’t fit</span></div><p class="fit-estimate">Estimated fit—verify measurements before buying</p><a class="pill pill-secondary" href="/builder">Open it in the builder</a></li>
-        <li data-beat="6"><span class="n">Your turn</span><h2>SetupViz is free.</h2><p>Some product links are Amazon affiliate links. If you buy through one, we may earn a small commission. You pay the same price.</p><a href="/desk" class="pill pill-secondary">Plan my desk</a><p class="more">Or start from <a href="/setups">setups other people planned</a>, the <a href="/gear">gear sizes</a>, or <a href="/hand">a mouse for your hand</a>.</p></li>
-      </ol>
+    </section>
+  <section id="story" class="steps wrap" aria-label="How it works">
+    <div class="pin2">
+      <div class="steps-in">
+        <p class="eyebrow">How it works</p>
+        <div class="step s-1">
+          <div class="copy"><span class="n">01</span><p class="lede">Start with your desk size.</p><p class="g">Enter the width and depth of your desktop. If you want help choosing a mouse, add your hand size and grip.</p><a href="/desk">Start with your desk →</a></div>
+          <div class="win v-1"><div class="win-bar"><i></i><i></i><i></i><span>Question 1 of 4</span></div>
+            <div class="q">
+              <span class="t">How big is the desk?</span>
+              <div class="fs"><div class="f">Width<b>55.1 in</b></div><div class="f">Depth<b>27.6 in</b></div></div>
+              <div class="ps"><span>Small</span><span class="on">Standard · 55.1 × 27.6</span><span>Large · 63 × 31.5</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="step s-2">
+          <div class="copy"><span class="n">02</span><p class="lede">Choose a mouse.</p><p class="g">Compare mice by shape, weight and how you hold them.</p><a href="/hand">Measure your hand →</a></div>
+          <div class="win v-2"><div class="win-bar"><i></i><i></i><i></i><span>Mice for a palm grip, large hands</span></div>
+            <div class="picks">
+              <div class="pk on"><div><b>Razer DeathAdder V3</b><small>Long body with a raised back.</small></div><em>59 g</em></div>
+              <div class="pk"><div><b>Logitech G Pro X Superlight 2</b><small>Symmetrical shape, with buttons on the left.</small></div><em>60 g</em></div>
+              <div class="pk"><div><b>DeathAdder V3 HyperSpeed</b><small>Shorter palm-grip option.</small></div><em>55 g</em></div>
+            </div>
+          </div>
+        </div>
+        <div class="step s-3">
+          <div class="copy"><span class="n">03</span><p class="lede">Try the layout.</p><p class="g">Drag the keyboard or swap the monitor to see how much room you have left.</p><a href="/builder">Open the builder →</a></div>
+          <div class="win v-3"><div class="win-bar"><i></i><i></i><i></i><span>Desk from above</span></div>
+            <div style="padding:16px">
+              <div class="board desk-dots">
+                <div class="b-mon" style="left:28.07%;top:8%;width:43.86%;height:30%"><svg class="monitor-plan" aria-hidden="true" viewBox="0 0 611 200" preserveAspectRatio="none"><polygon class="stand-outline" points="193.9,20 417.1,20 427.02,25.4 429.5,34.4 429.5,185.6 427.02,194.6 417.1,200 193.9,200 183.98,194.6 181.5,185.6 181.5,34.4 183.98,25.4"/><path class="stand-post" d="M305.5 52.4 V140"/><path class="panel-housing" d="M0 140 Q305.5 140 611 140 l0 -7 Q470.47 81.19 305.5 81.19 Q140.53 81.19 0 133 Z"/><path class="panel-face" d="M0 140 Q305.5 140 611 140"/></svg></div>
+                <div class="b-pad" style="left:61%;top:42%;width:32%;height:50%"></div>
+                <div class="b-kb" style="left:30%;top:66%;width:26%;height:20%"></div>
+                <div class="b-mouse" style="left:74%;top:60%;width:5%;height:18%"></div>
+                <span class="b-tag" style="left:6%;top:10%"><i class="dot" style="background:#5BE38A"></i>3 fit, 1 tight</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
+  <section id="start" class="start wrap" aria-label="Where to start">
+    <div class="pin2">
+      <p class="lede">Where do you want to start? <span class="g">Answer a few questions, or go straight to the parts.</span></p>
+      <div class="cards">
+        <a href="/desk" class="card light c-1"><span class="k">Recommended</span><span class="t">Help me pick</span><span class="d">Start with your desk size, then choose whether to answer the mouse questions.</span></a>
+        <a href="/builder" class="card c-2"><span class="t">I know what I want</span><span class="d">Search for your products and check how they fit.</span></a>
+        <a href="#demoBoard" class="card c-3"><span class="t">Try the example desk</span><span class="d">Open the example desk, then swap any piece.</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="checks" class="checks wrap" aria-label="What we check">
+    <div class="pin2">
+      <p class="lede">What does the builder check? <span class="g">Move a piece to see where it overlaps or hangs off the desk.</span></p>
+      <p class="muted fit-estimate">Estimated fit—verify measurements before buying</p>
+      <div class="verdicts">
+        <span class="b-tag k-1"><i class="dot" style="background:#5BE38A"></i>Fits</span><span class="b-tag k-2"><i class="dot" style="background:#F5C542"></i>Tight</span><span class="b-tag k-3"><i class="dot" style="background:#FF6B5B"></i>Won't fit</span>
+      </div>
+      <div class="grid4">
+        <div class="g-1"><span class="t">Desk edges</span><span class="d">See when a piece sits close to the edge or hangs over it.</span></div>
+        <div class="g-2"><span class="t">Mouse size and grip</span><span class="d">See which hand sizes and grips our guide pairs with each mouse.</span></div>
+        <div class="g-3"><span class="t">Mouse pad space</span><span class="d">Check whether the mouse sits fully on the pad and where the keyboard overlaps it.</span></div>
+        <div class="g-4"><span class="t">Monitor stand</span><span class="d">See whether the stand overlaps your keyboard or pad.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="money wrap">
+    <p class="lede m-1">SetupViz is free to use.</p>
+    <p class="g m-2">If you buy through an Amazon product link, we may earn a commission. You pay the same price.</p>
+    <a href="/desk" class="pill pill-light pill-lg m-3">Find my setup <span class="arrow">→</span></a>
+  </section>
 </main>
 
 <footer><div class="wrap foot">
   <a href="/home" class="sv-brand" style="align-self:flex-start"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="cols">
-    <div class="col"><span>Plan</span><a href="/desk">Plan my desk</a><a href="/builder">Builder</a><a href="/share">Share a setup</a></div>
-    <div class="col"><span>Browse</span><a href="/setups">Setups</a><a href="/gear">Gear dimensions</a><a href="/fit">Will it fit?</a></div>
-    <div class="col"><span>Help</span><a href="#how">How it works</a><a href="#how">What we check</a><a href="/builder#request">Request a product</a></div>
+    <div class="col"><span>Product</span><a href="/desk">Find my setup</a><a href="/builder">Builder</a><a href="/share">Share a setup</a></div>
+    <div class="col"><span>Help</span><a href="#story">How it works</a><a href="#checks">What we check</a><a href="/builder#request">Request a product</a><a href="/gear">Gear dimensions</a></div>
   </div>
-  <div class="legal-row"><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
+<div style="flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-top:8px"><a href="/setups" class="sv-legal-link">Setups gallery</a><a href="/fit" class="sv-legal-link">Will it fit?</a><a href="/privacy" class="sv-legal-link">Privacy</a><a href="/terms" class="sv-legal-link">Terms</a><a href="/disclosure" class="sv-legal-link">Affiliate disclosure</a></div>
 </div>
 <p class="sv-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer>
 <script src="/data.js"></script>

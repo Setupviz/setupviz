@@ -39,7 +39,7 @@ try {
     },
     '/hand': async () => { await page.check('input[type="radio"] >> nth=0'); },
     '/use': async () => { await page.check('input[type="radio"] >> nth=0'); },
-    '/home': async () => { await page.locator('#how.armed').waitFor(); },
+    '/home': async () => { await page.locator('#demoBoard [data-cat="monitor"] svg').waitFor(); },
   };
   for (const [path, check] of Object.entries(checks)) {
     try {

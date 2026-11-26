@@ -25,12 +25,11 @@
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
   <a href="/home" class="sv-brand"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="sv-links">
-    <a class="l" href="/builder">Builder</a>
-    <a class="l l-wide" href="/gear">Gear</a>
-    <a class="l l-wide" href="/setups">Setups</a>
-    <details class="sv-menu"><summary><span class="o">Menu</span><span class="c">Close</span></summary><div class="sv-menu-card"><a href="/builder">Builder</a><a href="/gear">Gear</a><a href="/setups">Setups</a></div></details>
+    <a class="l" href="/home#story" aria-label="How it works"><span class="nav-full">How it works</span></a>
+    <a class="l" href="/home#checks" aria-label="Checks we run"><span class="nav-full">Checks we run</span></a>
+    <a class="l" href="/builder" aria-label="Builder">Builder</a>
   </div>
-  <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
+  <a class="pill pill-light pill-sm nav-cta" href="/desk" aria-label="Find my setup"><span class="nav-full">Find my setup</span></a>
 </div></nav>
 <div class="wrap">
   <header class="hdr">
@@ -46,9 +45,9 @@
       <p class="lead">Rest your hand on your mouse. Which picture looks closest?</p>
     </div>
     <div class="opts" role="radiogroup" aria-label="Grip style">
-      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#B9BDC4"/><path d="M6 27 Q9 18 15 17 Q24 12 32 17 L43 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Palm</span><span class="d">Your whole hand rests on the mouse.</span></span><input type="radio" name="grip" value="palm"></label>
-      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#B9BDC4"/><path d="M6 27 L12 23 Q18 14 25 9 Q28 7 31 11 L41 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Claw</span><span class="d">Palm on the back, fingers arched.</span></span><input type="radio" name="grip" value="claw"></label>
-      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#B9BDC4"/><path d="M5 18 Q14 9 24 10 Q32 10 41 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Fingertip</span><span class="d">Only your fingertips touch it.</span></span><input type="radio" name="grip" value="fingertip"></label>
+      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#484848"/><path d="M6 27 Q9 18 15 17 Q24 12 32 17 L43 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Palm</span><span class="d">Your whole hand rests on the mouse.</span></span><input type="radio" name="grip" value="palm"></label>
+      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#484848"/><path d="M6 27 L12 23 Q18 14 25 9 Q28 7 31 11 L41 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Claw</span><span class="d">Palm on the back, fingers arched.</span></span><input type="radio" name="grip" value="claw"></label>
+      <label class="opt"><svg aria-hidden="true" width="48" height="34" viewBox="0 0 48 34" fill="none"><path d="M8 28 Q15 11 31 18 L44 25 V29 H8Z" fill="#484848"/><path d="M5 18 Q14 9 24 10 Q32 10 41 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Fingertip</span><span class="d">Only your fingertips touch it.</span></span><input type="radio" name="grip" value="fingertip"></label>
       <label class="opt"><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span class="t">Not sure</span><span class="d">Skip the grip question.</span></span><input type="radio" name="grip" value="unsure"></label>
     </div>
   </main>

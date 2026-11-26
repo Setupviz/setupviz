@@ -13,8 +13,7 @@ export function buildWorker() {
   });
 }
 
-// `fresh` tells the browser to keep nothing, for a preview that is rebuilt between looks.
-export async function serveWorker(port, { fresh = false } = {}) {
+export async function serveWorker(port) {
   const worker = (await import(pathToFileURL(join(root, 'dist', 'worker.js')).href)).default;
   const server = createServer(async (req, res) => {
     try {
@@ -29,7 +28,6 @@ export async function serveWorker(port, { fresh = false } = {}) {
       const body = Buffer.from(await response.arrayBuffer());
       const out = {};
       response.headers.forEach((value, key) => { out[key] = value; });
-      if (fresh) out['cache-control'] = 'no-store';
       res.writeHead(response.status, out);
       res.end(body);
     } catch (err) {

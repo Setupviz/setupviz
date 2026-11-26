@@ -20,36 +20,36 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="/sv.css">
 <style>
-body{--sv-content:1248px;margin:0;background:#F2F2F3;color:#16181D;font-family:var(--font)} /* 1200px card plus the 24px gutter on each side */
-a{color:#16181D;text-decoration:none}a:hover{color:#000000}
+body{--sv-content:1248px;margin:0;background:#121212;color:#EDEDED;font-family:var(--font)} /* 1200px card plus the 24px gutter on each side */
+a{color:#EDEDED;text-decoration:none}a:hover{color:#FFFFFF}
 .wrap{width:100%;max-width:var(--sv-content);margin:0 auto;min-height:calc(100vh - var(--sv-bar));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px 24px;box-sizing:border-box;overflow-x:clip}
-.card{width:100%;box-sizing:border-box;padding:40px;border-radius:20px;background:#FFFFFF;border:0;display:flex;flex-wrap:wrap;gap:36px}
+.card{width:100%;box-sizing:border-box;padding:40px;border-radius:20px;background:#171717;border:0;display:flex;flex-wrap:wrap;gap:36px}
 .left{flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:12px}
 .right{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:10px;justify-content:center}
-.muted{font-size:13px;color:#5F636C}
+.muted{font-size:13px;color:#8F8F8F}
 .deskframe{overflow:clip;padding:28px 32px 32px;min-width:0}
-#desk{position:relative;width:100%;aspect-ratio:2/1;border-radius:14px;background:#FFFFFF;border:1px solid rgba(22,24,29,0.08);background-image:radial-gradient(rgba(22,24,29,0.09) 1px,transparent 1.2px);background-size:16px 16px;background-position:8px 8px;overflow:visible}
+#desk{position:relative;width:100%;aspect-ratio:2/1;border-radius:14px;background:#141414;border:1px solid rgba(255,255,255,0.08);background-image:radial-gradient(rgba(255,255,255,0.09) 1px,transparent 1.2px);background-size:16px 16px;background-position:8px 8px;overflow:visible}
 .left > .muted:first-child{min-height:24px}
-.fallback{margin:0;padding:10px 16px;border-radius:8px;background:#FFFFFF;border:1px solid rgba(22,24,29,0.1);font-size:13px;line-height:18px;color:#3A3E46}
+.fallback{margin:0;padding:10px 16px;border-radius:8px;background:#141414;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:18px;color:#CFCFCF}
 .p{position:absolute;box-sizing:border-box}
-.p-keyboard{border-radius:8px;background-color:var(--gear-kb);background-image:linear-gradient(90deg,var(--gear-kb-line) 1px,transparent 1px),linear-gradient(var(--gear-kb-line) 1px,transparent 1px);background-size:12px 12px;border:1px solid var(--gear-kb-line)}
-.p-pad{border-radius:12px;background:var(--gear-pad);border:1px solid var(--gear-pad-line)}
-.p-pad.glass{background:linear-gradient(135deg,#E6EAF1 0%,#F3F5F8 55%,#E9EDF3 100%);border-color:var(--gear-pad-line)}
-.p-mouse{border-radius:40% 40% 45% 45%;background:var(--gear-mouse);border:1px solid var(--gear-mouse-line)}
-h1{margin:0 0 8px;font-size:34px;line-height:1.1;font-weight:600;letter-spacing:-0.035em;min-height:2.2em}
+.p-keyboard{border-radius:8px;background-color:#262626;background-image:linear-gradient(90deg,#171717 1px,transparent 1px),linear-gradient(#171717 1px,transparent 1px);background-size:12px 12px;border:1px solid rgba(255,255,255,0.18)}
+.p-pad{border-radius:12px;background:#161616;border:1px solid rgba(255,255,255,0.12)}
+.p-pad.glass{background:linear-gradient(135deg,#222222 0%,#181818 55%,#202020 100%);border-color:rgba(255,255,255,0.26)}
+.p-mouse{border-radius:40% 40% 45% 45%;background:#EDEDED}
+h1{margin:0 0 8px;font-size:34px;line-height:1.1;font-weight:400;letter-spacing:-0.03em;min-height:2.2em}
 #items{min-height:590px} /* four parts, each with a price link and the paid line, held until data.js fills them */
-.item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#F7F7F8;border:0}
-.paid,.unavail{margin:0;font-size:12px;line-height:16px;color:#5F636C}
-.amz{display:inline-flex;align-items:center;box-sizing:border-box;max-width:100%;font-size:12px;line-height:24px;min-height:24px;color:#5F636C;text-decoration:underline;text-underline-offset:3px;width:fit-content}
-.amz:hover{color:#16181D}
+.item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#1C1C1C;border:0}
+.paid,.unavail{margin:0;font-size:12px;line-height:16px;color:#8F8F8F}
+.amz{display:inline-flex;align-items:center;box-sizing:border-box;max-width:100%;font-size:12px;line-height:24px;min-height:24px;color:#8F8F8F;text-decoration:underline;text-underline-offset:3px;width:fit-content}
+.amz:hover{color:#EDEDED}
 .buy-note.sv-disclosure{max-width:none;margin:0;padding:4px 0 0;text-align:center;flex-basis:100%}
 .acts .paid{flex-basis:100%;text-align:center}
 a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .btn{height:40px;min-height:24px;padding:0 18px;display:inline-flex;align-items:center;border-radius:8px;font-size:14px;font-weight:400;cursor:pointer;border:0;font-family:inherit}
-.btn-primary{background:#16181D;color:#FFFFFF}.btn-primary:hover{color:#FFFFFF;background:#2B2E35}
-.btn-outline{background:#F7F7F8;border:1px solid rgba(22,24,29,0.08);color:#16181D}.btn-outline:hover{background:#ECEDF0;color:#16181D}
+.btn-primary{background:#EDEDED;color:#121212}.btn-primary:hover{color:#121212;background:#FFFFFF}
+.btn-outline{background:#1C1C1C;border:1px solid rgba(255,255,255,0.08);color:#EDEDED}.btn-outline:hover{background:#232323;color:#EDEDED}
 @media (max-width:640px){.card{padding:20px;gap:24px}h1{font-size:26px}}
 @media (pointer:coarse){.btn,.amz{min-height:44px;min-width:44px;height:44px}}
 .item span{white-space:pre-line}
@@ -59,12 +59,11 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
 <nav class="sv-nav" aria-label="Main"><div class="sv-nav-in">
   <a href="/home" class="sv-brand"><img src="/setupviz-logo.png" width="26" height="26" alt="">SetupViz</a>
   <div class="sv-links">
-    <a class="l" href="/builder">Builder</a>
-    <a class="l l-wide" href="/gear">Gear</a>
-    <a class="l l-wide" href="/setups">Setups</a>
-    <details class="sv-menu"><summary><span class="o">Menu</span><span class="c">Close</span></summary><div class="sv-menu-card"><a href="/builder">Builder</a><a href="/gear">Gear</a><a href="/setups">Setups</a></div></details>
+    <a class="l" href="/home#story" aria-label="How it works"><span class="nav-full">How it works</span></a>
+    <a class="l" href="/home#checks" aria-label="Checks we run"><span class="nav-full">Checks we run</span></a>
+    <a class="l" href="/builder" aria-label="Builder">Builder</a>
   </div>
-  <a class="pill pill-primary pill-sm nav-cta" href="/desk">Plan my desk</a>
+  <a class="pill pill-light pill-sm nav-cta" href="/desk" aria-label="Find my setup"><span class="nav-full">Find my setup</span></a>
 </div></nav>
 <main class="wrap">
   <div class="card">
@@ -73,13 +72,13 @@ a.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
       <p class="fallback" id="deskFallback" hidden>We're showing a 55 × 28 in desk. Enter yours for a real fit check.</p>
       <div class="deskframe"><div id="desk" role="img"></div></div>
       <div class="muted" style="display:flex;align-items:center;justify-content:space-between">
-        <span style="display:flex;align-items:center;gap:8px;color:#16181D;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" stroke="#16181D" stroke-width="2"></rect><rect x="6" y="12" width="8" height="3" rx="1.5" fill="#16181D"></rect><rect x="16" y="11" width="2.5" height="4" rx="1.25" fill="#5F636C"></rect></svg>SetupViz</span>
+        <span style="display:flex;align-items:center;gap:8px;color:#EDEDED;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" stroke="#EDEDED" stroke-width="2"></rect><rect x="6" y="12" width="8" height="3" rx="1.5" fill="#EDEDED"></rect><rect x="16" y="11" width="2.5" height="4" rx="1.25" fill="#8F8F8F"></rect></svg>SetupViz</span>
         <span>Planned on SetupViz</span>
       </div>
     </div>
     <div class="right">
-      <h1><span id="title"></span><br><span style="color:#5F636C" id="sub"></span></h1>
-      <p class="fit-estimate" style="font-size:13px;color:#5F636C">Estimated fit—verify measurements before buying</p>
+      <h1><span id="title"></span><br><span style="color:#8F8F8F" id="sub"></span></h1>
+      <p class="fit-estimate" style="font-size:13px;color:#8F8F8F">Estimated fit—verify measurements before buying</p>
       <div id="items" style="display:flex;flex-direction:column;gap:10px"></div>
     </div>
   </div>

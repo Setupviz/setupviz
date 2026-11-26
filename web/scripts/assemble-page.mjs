@@ -23,12 +23,11 @@ export const pageScripts = {
 const MARKER = '<script data-page-script></script>';
 const STYLESHEET = '<link rel="stylesheet" href="/sv.css">';
 
-// The shared stylesheet goes into the page, with the two text weights preloaded, so the first paint
+// The shared stylesheet goes into the page, with the main font preloaded, so the first paint
 // waits on neither. Pages without the stylesheet link are left alone.
 export function inlineSharedStyles(html, css) {
   return html.replace(STYLESHEET,
-    '<link rel="preload" href="/fonts/instrument-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
-    '<link rel="preload" href="/fonts/instrument-sans-600-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
+    '<link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
     '<style data-shared-styles>' + css + '</style>');
 }
 

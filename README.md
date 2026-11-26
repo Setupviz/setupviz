@@ -45,7 +45,7 @@ Imports run one way: data, then rules, then layout and picks, then browser code.
 | `recommend.js`, `fix-swap.js` | Our picks for a person's answers and desk, and the one-swap fix. |
 | `usage.js`, `share.js` | Desk area used, and share-link encoding. |
 | `html.js`, `units.js`, `fit-words.js`, `product-text.js` | Escaping, lengths in the visitor's unit, the Fits/Tight/Won't fit colours and words, and product size lines. |
-| `draw.js`, `dither.js`, `client.js`, `setup-image.js`, `prices.js`, `setup-source.js` | Browser code: drawing pieces and monitors, the homepage preview's dots, step counts, link copying and the buy-all link, setup pictures, Amazon prices, and which setup a page shows (link, saved or our picks). |
+| `draw.js`, `client.js`, `setup-image.js`, `prices.js`, `setup-source.js` | Browser code: drawing pieces and monitors, step counts, link copying and the buy-all link, setup pictures, Amazon prices, and which setup a page shows (link, saved or our picks). |
 | `api.js` | The `SV` and `SVImage` objects the pages use. |
 | `entry-site.js`, `entry-desk.js`, `entry-prices.js` | Served as `/data.js`, `/desk-size.js` and `/prices.js`; they publish `window.SV`, `SVDesk`, `SVImage` and `SVPrices`. |
 | `pages/builder.js`, `home.js`, `share.js`, `desk.js`, `questions.js` | Each page's script. `questions.js` serves the grip, hand and use pages. |

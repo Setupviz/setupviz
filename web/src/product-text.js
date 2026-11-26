@@ -7,6 +7,5 @@ export function monitorMeasurements(s, one, two){
 
 // One line of sizes for any product; one(mm) and two(w, d) format lengths.
 export function sizeLine(cat, s, one, two){
-  if (s.custom) return two(s.w, s.d) + (s.base ? ' · stand ' + one(s.base[0]) + ' wide' : '') + ' · your measurements';
   return cat === 'monitor' ? monitorMeasurements(s, one, two) : two(s.w, s.d) + (s.g ? ' · ' + s.g + ' g' : '') + (s.kind ? ' · ' + padLabels[s.kind].toLowerCase() : '');
 }

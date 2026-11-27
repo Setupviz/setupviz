@@ -51,13 +51,22 @@ function n(v){ return Math.round(v * 10) / 10; }
 
 // A to-scale top view as SVG markup. Every number comes from the catalog or a
 // decoded setup, and the label is escaped, so it is safe to put straight into a page.
+// The desk and every piece: a piece hanging off the desk stays in the picture.
+export function bounds(setup){
+  var b = { x0: 0, y0: 0, x1: setup.desk.w, y1: setup.desk.d };
+  shapes(setup).forEach(function(s){
+    b.x0 = Math.min(b.x0, s.x); b.y0 = Math.min(b.y0, s.y);
+    b.x1 = Math.max(b.x1, s.x + s.w); b.y1 = Math.max(b.y1, s.y + s.d);
+  });
+  return b;
+}
 export function svg(setup, label){
-  var w = setup.desk.w, d = setup.desk.d, m = Math.max(w, d) * 0.03;
+  var w = setup.desk.w, d = setup.desk.d, m = Math.max(w, d) * 0.03, b = bounds(setup);
   var parts = shapes(setup).map(function(s){
     return '<rect x="' + n(s.x) + '" y="' + n(s.y) + '" width="' + n(s.w) + '" height="' + n(s.d) + '" rx="' + n(s.r) +
       '" fill="' + s.fill + '" stroke="' + s.stroke + '" stroke-width="2" vector-effect="non-scaling-stroke"/>';
   }).join('');
-  return '<svg class="desk-svg" viewBox="' + n(-m) + ' ' + n(-m) + ' ' + n(w + 2 * m) + ' ' + n(d + 2 * m) + '" role="img" aria-label="' +
+  return '<svg class="desk-svg" viewBox="' + n(b.x0 - m) + ' ' + n(b.y0 - m) + ' ' + n(b.x1 - b.x0 + 2 * m) + ' ' + n(b.y1 - b.y0 + 2 * m) + '" role="img" aria-label="' +
     esc(label || 'Desk from above') + '" xmlns="http://www.w3.org/2000/svg">' +
     '<rect x="0" y="0" width="' + n(w) + '" height="' + n(d) + '" rx="' + n(Math.min(w, d) * 0.02) + '" fill="#141414" stroke="#3A3A3A" stroke-width="1.5" vector-effect="non-scaling-stroke"/>' +
     parts + '</svg>';

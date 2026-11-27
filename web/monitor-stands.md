@@ -58,5 +58,8 @@ Panel positions are approximate at neutral tilt. Side and overhead images locate
 | MPG 272QRF X36 | [Manufacturer reference](https://storage-asset.msi.com/global/picture/product/product_17606699548afdd44105c2a8d16fc3e84850d5b0ce.webp) | Side product view |
 | MPG 274URDFW E16M | [Manufacturer reference](https://storage-asset.msi.com/global/picture/product/product_17448727624459d4b54e20e8ed985097b3afb53b00.webp) | Side product view |
 | MPG 341CQR QD-OLED X36 | [Manufacturer reference](https://storage-asset.msi.com/global/picture/product/product_1765248715d6fc61566c2bfec0597df6a235235d4a.webp) | Overhead product view |
+| Q27G3XMN | [AOC leaflet](https://mmd-aoc2.oss-cn-hongkong.aliyuncs.com/Products/Monitors/G%20Line/G3/Q27G3XMN/Q27G3XMN_leaflet.pdf) | Base span and panel offset estimated from product views. With-stand depth used for the base envelope. |
+| 27GX704A-B | [LG US spec sheet](https://static.pcrichard.com/docs/27GX704A-B_Specifications-Sheet_01.pdf) | Base span and panel offset estimated from product views. With-stand depth used for the base envelope. |
+| LC34G55TWWNXZA | [Samsung spec sheet](https://image-us.samsung.com/SamsungUS/home/pdf/LC34G55TWWNXZA.pdf) | Base span estimated from front view. Panel offset and base depth estimated from side view. |
 
 The MSI MAG 321UPD E14 regional sheet repeats the stand dimensions in the cabinet row. Its 61.09 mm cabinet depth comes from the [global datasheet](https://storage-asset.msi.com/datasheet/monitor/global/MAG-321UPD-E14.pdf).

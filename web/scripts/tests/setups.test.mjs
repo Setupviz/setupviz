@@ -125,6 +125,23 @@ test('step counts: known steps are counted, others refused', async () => {
   assert.equal((await call(env({ CLICKS: undefined }), '/e?n=save_image', { method: 'POST' })).status, 204);
 });
 
+test('demo counts accept only known audiences and preserve normal affiliate attribution', async () => {
+  const e = env();
+  assert.equal((await call(e, '/e?n=demo_open&demo=gaming', { method: 'POST' })).status, 204);
+  assert.equal((await call(e, '/e?n=setup_changed&demo=remote-work', { method: 'POST' })).status, 204);
+  assert.equal((await call(e, '/e?n=demo_return_edit&demo=first-setup', { method: 'POST' })).status, 204);
+  assert.equal((await call(e, '/e?n=demo_open&demo=arbitrary', { method: 'POST' })).status, 400);
+  const redirect = await call(e, '/go/B0F1H325FN?from=builder&demo=gaming');
+  assert.equal(redirect.status, 302);
+  assert.match(redirect.headers.get('location'), /tag=setupvizbuilder-20$/);
+  await call(e, '/go/B0F1H325FN?from=builder&demo=arbitrary');
+  assert.deepEqual(e.points.map((p) => p.blobs), [
+    ['event', 'demo_open', 'gaming'], ['event', 'setup_changed', 'remote-work'],
+    ['event', 'demo_return_edit', 'first-setup'], ['item', 'builder', 'B0F1H325FN', 'gaming'],
+    ['item', 'builder', 'B0F1H325FN'],
+  ]);
+});
+
 test('fit pages exist, answer the question, and are in the sitemap', async () => {
   const e = env();
   const page = await call(e, '/fit/mon34-on-40x20-desk');

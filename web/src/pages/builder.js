@@ -24,6 +24,8 @@ try {
   var hasOwnSetup = !stored.fallback && saved && saved.sig === setupSig(stored.desk, A) && saved.pick && saved.pos;
   var linked = linkSetup(location.search);
   var hasLink = linked.hasLink, fromLink = linked.data;
+  var demo = fromLink ? SV.demoAudience(new URLSearchParams(location.search).get('demo')) : '';
+  var lastDemoEditDay;
   var deskFallback = false;
   // The swap on offer in the verdict, with the exact pick and positions fixSwap scored.
   var offeredSwap = null;
@@ -36,7 +38,10 @@ try {
     editKey = linked.token + (mine ? '|mine' : '');
     DESK = { w: fromLink.setup.desk.w, d: fromLink.setup.desk.d }; A = fromLink.answers; state.pick = fromLink.setup.pick; state.pos = fromLink.setup.pos; state.shared = true;
     var edit = sharedEdit(editKey);
-    if (edit) { DESK = { w: edit.desk.w, d: edit.desk.d }; state.pick = edit.pick; state.pos = edit.pos; }
+    if (edit) {
+      DESK = { w: edit.desk.w, d: edit.desk.d }; state.pick = edit.pick; state.pos = edit.pos;
+      lastDemoEditDay = edit.demoEditedDay;
+    }
     else if (mine) { DESK = stored.desk; state.pos = SV.layout(DESK, state.pick); }
   }
   else if (hasLink) deskFallback = true;
@@ -74,14 +79,23 @@ try {
       var bag = sharedBag() || { order: [], edits: {} };
       var order = [editKey].concat(bag.order.filter(function(s){ return s !== editKey && sharedEdit(s); })).slice(0, 5);
       var edits = {};
-      order.forEach(function(s){ edits[s] = s === editKey ? { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos } : bag.edits[s]; });
+      order.forEach(function(s){ edits[s] = s === editKey ? { desk: { w: DESK.w, d: DESK.d }, pick: state.pick, pos: state.pos, demoEditedDay: lastDemoEditDay } : bag.edits[s]; });
       writeStored('sv-shared', JSON.stringify({ order: order, edits: edits }));
     } catch (e) {}
   }
   var changed = false;
   function save(){
     // Count the first change per visit: "placed or changed gear", not every drag.
-    if (!changed) { changed = true; SV.track('setup_changed'); }
+    if (!changed) {
+      changed = true;
+      SV.track('setup_changed', demo);
+      if (demo) {
+        var today = Math.floor(Date.now() / 86400000);
+        var daysSinceEdit = today - lastDemoEditDay;
+        if (daysSinceEdit >= 1 && daysSinceEdit <= 90) SV.track('demo_return_edit', demo);
+        lastDemoEditDay = today;
+      }
+    }
     // "Published" was about the setup before this change.
     document.getElementById('publishNote').textContent = '';
     try {
@@ -284,7 +298,7 @@ try {
         '<span class="name">' + esc(s.name) + '</span><span class="muted" style="font-size:12px">' + esc(dims(id, s)) + '</span>' +
         (match ? '<span class="match">' + esc(match) + '</span>' : '') +
         (sel ? '<p class="why">' + withUnits(s.why) + '</p>' : '') +
-        SV.measurementInfo(s) + priceLabel(s) + SV.buyLine(s) +
+        SV.measurementInfo(s) + priceLabel(s) + SV.buyLine(s, 'builder', demo) +
         '<div class="acts"><button type="button" data-act="change" aria-expanded="' + open + '">Change</button><button type="button" class="rm" data-act="remove">Remove</button></div>' +
         (open ? menuHtml(id) : '') + '</div>';
     }).join('');
@@ -294,7 +308,7 @@ try {
     if (state.focusSlot) { var back = document.querySelector('.slot[data-id="' + state.focusSlot + '"] [data-act="change"]'); state.focusSlot = null; if (back) back.focus({ preventScroll: true }); }
     $('navShare').href = shareUrl();
     updatePrices(listOrder.filter(has).map(spec));
-    showBuyAll($('buyAll'), listOrder.filter(has).map(spec).filter(SV.forSale), 'builder-cart');
+    showBuyAll($('buyAll'), listOrder.filter(has).map(spec).filter(SV.forSale), 'builder-cart', demo);
   }
 
   var coarse = matchMedia('(pointer:coarse)').matches;
@@ -381,7 +395,7 @@ try {
   };
   $('shareBtn').onclick = function(){
     var b = $('shareBtn');
-    SV.track('share_link');
+    SV.track('share_link', demo);
     var long = shareUrl();
     var url = Promise.race([shortLink(), new Promise(function(done){ setTimeout(done, 2500); })])
       .then(function(res){ return res && res.url || long; });
@@ -395,7 +409,7 @@ try {
         }, function(){ url.then(function(u){ SV.copySetupLink(b, u); }); });
     } else url.then(function(u){ SV.copySetupLink(b, u); });
   };
-  $('saveImg').onclick = function(){ SV.track('save_image'); download(setupNow(), state.unit, $('saveImg')); };
+  $('saveImg').onclick = function(){ SV.track('save_image', demo); download(setupNow(), state.unit, $('saveImg')); };
   $('publishBtn').onclick = function(){
     var b = $('publishBtn'), note = $('publishNote');
     b.disabled = true; note.textContent = 'Publishing…';
@@ -451,6 +465,7 @@ try {
   }, true);
   document.querySelectorAll('#units button').forEach(function(b){ b.onclick = function(){ state.unit = b.dataset.unit; writeStored('sv-unit', state.unit); render(); }; });
   render();
+  if (demo) SV.track('demo_open', demo);
 } catch (e) {
   var err = document.getElementById('setupError');
   if (err) {

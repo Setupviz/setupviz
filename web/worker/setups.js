@@ -222,8 +222,10 @@ async function setupPng(setup) {
   const palette = ['#0A0A0A', '#141414', '#3A3A3A', ...new Set(SVW.SVImage.shapes(setup).flatMap((s) => [s.fill, s.stroke]))];
   const ix = (c) => palette.indexOf(c);
   const px = new Uint8Array((W + 1) * H);
-  const scale = Math.min((W - 2 * M) / setup.desk.w, (H - 2 * M) / setup.desk.d);
-  const ox = (W - setup.desk.w * scale) / 2, oy = (H - setup.desk.d * scale) / 2;
+  // Fit the desk and every piece, so a piece hanging off the desk is drawn, not cut off.
+  const b = SVW.SVImage.bounds(setup), bw = b.x1 - b.x0, bd = b.y1 - b.y0;
+  const scale = Math.min((W - 2 * M) / bw, (H - 2 * M) / bd);
+  const ox = (W - bw * scale) / 2 - b.x0 * scale, oy = (H - bd * scale) / 2 - b.y0 * scale;
   const fill = (x0, y0, w, h, r, color) => {
     const xa = Math.max(0, Math.round(x0)), xb = Math.min(W, Math.round(x0 + w)), ya = Math.max(0, Math.round(y0)), yb = Math.min(H, Math.round(y0 + h));
     r = Math.max(0, Math.min(r, w / 2, h / 2));

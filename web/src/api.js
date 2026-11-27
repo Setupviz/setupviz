@@ -14,7 +14,7 @@ import { encode, decode, invalidShareNotice } from './share.js';
 import { drawMonitor, markPadContact } from './draw.js';
 import { monitorMeasurements } from './product-text.js';
 import { track, copySetupLink } from './client.js';
-import { summary, shapes, svg, toCanvas, download } from './setup-image.js';
+import { summary, shapes, bounds, svg, toCanvas, download } from './setup-image.js';
 import { FIT_COLORS } from './fit-words.js';
 import { demoAudience } from './demo.js';
 
@@ -28,4 +28,4 @@ export const SV = {
   deskRangeMessage, measureText, percentText, usedPercent,
 };
 
-export const SVImage = { colors: FIT_COLORS, summary, shapes, svg, toCanvas, download };
+export const SVImage = { colors: FIT_COLORS, summary, shapes, bounds, svg, toCanvas, download };

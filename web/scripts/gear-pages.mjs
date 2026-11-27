@@ -9,9 +9,30 @@ export const cm = (mm) => (mm / 10).toFixed(1).replace(/\.0$/, '') + ' cm';
 const both = (mm) => inch(mm) + ' (' + cm(mm) + ')';
 const units = (text) => String(text || '').replace(/\{(\d+(?:\.\d+)?)\}/g, (_, mm) => inch(+mm));
 
+const NONE = { grip: '', hand: '', use: '' };
 const plural = { monitor: 'Monitors', keyboard: 'Keyboards', pad: 'Mouse pads and desk mats', mouse: 'Mice' };
 
-export function head(title, description, path) {
+// A page's own link-preview picture and structured data are optional: without them the
+// page keeps the site-wide picture and has no JSON-LD.
+// image: a path on the site (e.g. /og/setup.png?s=...). ld: one or more schema.org objects.
+export function ogSetup(code) { return '/og/setup.png?s=' + code; }
+function jsonLd(ld) {
+  const list = (Array.isArray(ld) ? ld : [ld]).filter(Boolean);
+  if (!list.length) return '';
+  const data = list.length === 1 ? { '@context': 'https://schema.org', ...list[0] } : { '@context': 'https://schema.org', '@graph': list };
+  // JSON inside <script>: '<' can't start a closing tag once escaped.
+  return '\n<script type="application/ld+json">' + JSON.stringify(data).replace(/</g, '\\u003c') + '</script>';
+}
+export function breadcrumbs(trail) {
+  return { '@type': 'BreadcrumbList', itemListElement: trail.map(([name, path], i) => ({ '@type': 'ListItem', position: i + 1, name, item: SITE + path })) };
+}
+export function faq(pairs) {
+  return { '@type': 'FAQPage', mainEntity: pairs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) };
+}
+
+export function head(title, description, path, extra = {}) {
+  const image = SITE + (extra.image || '/og-launch-v1.png');
+  const alt = extra.imageAlt || 'SetupViz desk setup planner';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -25,8 +46,12 @@ export function head(title, description, path) {
 <meta property="og:type" content="website">
 <meta property="og:url" content="${SITE}${path}">
 <meta property="og:site_name" content="SetupViz">
-<meta property="og:image" content="${SITE}/og-launch-v1.png">
+<meta property="og:image" content="${esc(image)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(alt)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${esc(image)}">${jsonLd(extra.ld)}
 <link rel="icon" href="/favicon-rounded.png" type="image/png" sizes="64x64">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="/sv.css">
@@ -101,7 +126,16 @@ export function gearPages(SV) {
         : '';
       const others = items.filter((o) => o.id !== item.id).slice(0, 8)
         .map((o) => `<li><a href="/gear/${esc(o.id)}">${esc(o.name)}</a></li>`).join('\n');
-      const body = head(title, description, path) + `
+      // Link preview: this product on a 55 × 28 in desk with our picks for the rest, to scale.
+      const desk = { w: 1400, d: 700 };
+      const pick = { ...SV.recommend(NONE, desk), [cat]: item.id };
+      const preview = { desk, pick, pos: SV.layout(desk, pick) };
+      const dimsLine = rows(cat, item, SV).map(([k, v]) => k + ': ' + v).join('. ') + '.';
+      const ld = [
+        breadcrumbs([['All gear', '/gear'], [item.name, path]]),
+        faq([[`What are the dimensions of the ${item.name}?`, dimsLine]]),
+      ];
+      const body = head(title, description, path, { image: ogSetup(SV.encode(preview, NONE)), imageAlt: `${item.name} on a 55 × 28 in desk, to scale, from above`, ld }) + `
 <main class="legal gear">
   <p><a href="/gear">All gear</a> · ${esc(plural[cat])}</p>
   <h1>${esc(item.name)} dimensions</h1>

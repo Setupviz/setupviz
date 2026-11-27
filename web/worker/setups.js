@@ -11,6 +11,7 @@
 
 // Counted from the page. Short links, publishing and votes are counted where they're stored.
 const EVENTS = ['setup_changed', 'share_link', 'save_image', 'try_click'];
+const DEMO_EVENTS = ['demo_open', 'demo_return_edit'];
 const ID_CHARS = 'abcdefghijkmnpqrstuvwxyz23456789';
 const PAGE_SIZE = 24;
 const DESK_SIZES = { small: [0, 1200], medium: [1200, 1500], large: [1500, 100000] };
@@ -51,13 +52,15 @@ async function setupId(code) {
 }
 
 // One count per step, no visitor data. Missing binding: the step is dropped.
-function track(env, name) {
-  try { env?.CLICKS?.writeDataPoint({ blobs: ['event', name], doubles: [1], indexes: ['event'] }); } catch {}
+function track(env, name, demo) {
+  const blobs = demo ? ['event', name, demo] : ['event', name];
+  try { env?.CLICKS?.writeDataPoint({ blobs, doubles: [1], indexes: ['event'] }); } catch {}
 }
 function countEvent(url, env) {
   const name = url.searchParams.get('n');
-  if (!EVENTS.includes(name)) return new Response(null, { status: 400, headers: SEC });
-  track(env, name);
+  const demo = SVW.SV.demoAudience(url.searchParams.get('demo'));
+  if (!EVENTS.includes(name) && !(demo && DEMO_EVENTS.includes(name))) return new Response(null, { status: 400, headers: SEC });
+  track(env, name, demo);
   return new Response(null, { status: 204, headers: { ...SEC, 'cache-control': 'no-store' } });
 }
 

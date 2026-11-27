@@ -82,7 +82,10 @@ function goRedirect(url, env) {
     target = 'https://www.amazon.com/dp/' + parts[1] + '?tag=' + tag;
     kind = 'item';
   }
-  try { env?.CLICKS?.writeDataPoint({ blobs: [kind, from, asins.join(',')], doubles: [asins.length], indexes: [from] }); } catch {}
+  const demo = SVW.SV.demoAudience(url.searchParams.get('demo'));
+  const blobs = [kind, from, asins.join(',')];
+  if (demo) blobs.push(demo);
+  try { env?.CLICKS?.writeDataPoint({ blobs, doubles: [asins.length], indexes: [from] }); } catch {}
   return new Response(null, { status: 302, headers: { ...SEC, location: target, 'cache-control': 'no-store', 'x-robots-tag': 'noindex' } });
 }
 

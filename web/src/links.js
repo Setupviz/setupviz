@@ -1,15 +1,16 @@
 // Paid links and the measurement-source note shown with each product.
 import { forSale } from './products.js';
 import { esc } from './html.js';
+import { demoQuery } from './demo.js';
 
 // Paid links go through the site's /go route, which counts the click and
 // redirects to Amazon with the tag. `from` names where the link was shown.
 export const AMAZON_TAG = 'setupviz-20';
-export function amazonLink(asin, from){
-  return '/go/' + asin + '?from=' + encodeURIComponent(from || 'other');
+export function amazonLink(asin, from, demo){
+  return '/go/' + asin + '?from=' + encodeURIComponent(from || 'other') + demoQuery(demo);
 }
-export function cartLink(asins, from){
-  return '/go/cart?a=' + asins.join(',') + '&from=' + encodeURIComponent(from || 'other');
+export function cartLink(asins, from, demo){
+  return '/go/cart?a=' + asins.join(',') + '&from=' + encodeURIComponent(from || 'other') + demoQuery(demo);
 }
 export function measurementInfo(item){
   var source = item.dimsSource;
@@ -21,8 +22,8 @@ export function measurementInfo(item){
     (item.base ? ' Stock stand outlines and panel positions are estimates from drawings and product photos at neutral tilt; they are not measured 3D models. <a href="https://github.com/Setupviz/setupviz/blob/main/web/monitor-stands.md" target="_blank" rel="noopener">Stand references and estimation notes</a>.' : '') +
     '</p></details>';
 }
-export function buyLine(item, from){
+export function buyLine(item, from, demo){
   if (!forSale(item)) return '<p class="unavail">Not currently available</p>';
   if (!item.asin) return '<a class="amz" href="https://www.amazon.com/s?k=' + encodeURIComponent(item.name) + '" rel="noopener" target="_blank">Find this model on Amazon</a>';
-  return '<p class="paid">Paid link · We may earn a commission.</p><a class="amz" href="' + amazonLink(item.asin, from || 'builder') + '" rel="sponsored nofollow noopener" target="_blank" aria-label="See today\'s price on Amazon (opens in a new tab)">See today\'s price on Amazon</a>';
+  return '<p class="paid">Paid link · We may earn a commission.</p><a class="amz" href="' + esc(amazonLink(item.asin, from || 'builder', demo)) + '" rel="sponsored nofollow noopener" target="_blank" aria-label="See today\'s price on Amazon (opens in a new tab)">See today\'s price on Amazon</a>';
 }

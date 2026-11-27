@@ -16,9 +16,10 @@ import { monitorMeasurements } from './product-text.js';
 import { track, copySetupLink } from './client.js';
 import { summary, shapes, svg, toCanvas, download } from './setup-image.js';
 import { FIT_COLORS } from './fit-words.js';
+import { demoAudience } from './demo.js';
 
 export const SV = {
-  track, measurementInfo, markPadContact, drawMonitor, copySetupLink, invalidShareNotice, monitorMeasurements,
+  track, demoAudience, measurementInfo, markPadContact, drawMonitor, copySetupLink, invalidShareNotice, monitorMeasurements,
   catalog, cats, labels, padLabels, preferences, get padTry(){ return activePads(); }, idAlias, get, forSale, isMat,
   amazonLink, fixSwap, amazonTag: AMAZON_TAG, cartLink, buyLine, answers, answerText, mouseSlot,
   recommend, omission, matchReason, place, layout, settle, retarget, previewSetup, overhang, overlap, check, encode, decode, usedArea,

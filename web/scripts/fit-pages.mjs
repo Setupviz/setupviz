@@ -2,7 +2,7 @@
 // size listing what fits, and a /fit index. Each answer comes from the same
 // recommend, layout and check code as the builder, run on a full setup
 // (monitor, keyboard, mouse pad and mouse), so the pages say what the builder would.
-import { inch, cm, head, foot } from './gear-pages.mjs';
+import { inch, cm, head, foot, ogSetup, breadcrumbs, faq } from './gear-pages.mjs';
 import { esc } from '../src/html.js';
 import { FIT_COLORS, FIT_WORDS } from '../src/fit-words.js';
 
@@ -83,7 +83,11 @@ export function fitPages(SV, IMG) {
       const advice = fixes(f).map((t) => `<li>${esc(t)}</li>`).join('\n');
       const others = FIT_DESKS.filter((o) => o !== desk).map((o) => `<li><a href="/fit/${m.id}-on-${o.slug}-desk">${esc(m.name)} on a ${esc(o.name)} desk</a></li>`).join('\n');
       const buy = m.asin ? `<p class="paid">Paid link. We may earn a commission, at no extra cost to you.</p><a class="pill pill-dark" href="/go/${esc(m.asin)}?from=fit" rel="sponsored nofollow noopener" target="_blank">See today's price on Amazon</a>` : '';
-      const body = head(title, description, path) + style + `
+      const ld = [
+        breadcrumbs([['Will it fit?', '/fit'], [desk.name + ' desks', `/fit/${desk.slug}-desk`], [m.name, path]]),
+        faq([[`Will the ${m.name} fit on a ${desk.name} desk?`, v.line + ' Estimated fit from the manufacturer\'s measurements; verify before buying.']]),
+      ];
+      const body = head(title, description, path, { image: ogSetup(f.code), imageAlt: `${m.name} with a keyboard, mouse pad and mouse on a ${desk.name} desk, from above`, ld }) + style + `
 <main class="legal gear fit">
   <p><a href="/fit">Will it fit?</a> · <a href="/fit/${desk.slug}-desk">${esc(desk.name)} desks</a></p>
   <h1>Will the ${esc(m.name)} fit on a ${esc(desk.name)} desk?</h1>
@@ -121,7 +125,11 @@ ${others}
     const hubTitle = `What fits on a ${desk.name} (${desk.metric}) desk | SetupViz`;
     const hubDesc = `${counts[0]} of ${rows.length} monitors fit on a ${desk.name} desk with a keyboard, mouse pad and mouse. See which ones, to scale.`;
     const table = rows.map((r) => `<tr><td>${dot(r.v.lvl)}<a href="${r.path}">${esc(r.m.name)}</a></td><td>${esc(WORD[r.v.lvl])}</td><td>${inch(r.m.w)}</td><td>${r.f.room > 0 ? inch(r.f.room) : 'none'}</td></tr>`).join('\n');
-    const hub = head(hubTitle, hubDesc, hubPath) + style + `
+    const hubLd = [
+      breadcrumbs([['Will it fit?', '/fit'], [desk.name + ' desks', hubPath]]),
+      faq([[`What monitors fit on a ${desk.name} desk?`, `${hubDesc.replace(' See which ones, to scale.', '')} Most room in front of the stand: ${rows.filter((r) => r.v.lvl === 0).slice(0, 3).map((r) => r.m.name).join(', ') || 'none'}.`]]),
+    ];
+    const hub = head(hubTitle, hubDesc, hubPath, { image: ogSetup(SV.encode(start, NONE)), imageAlt: `Suggested setup on a ${desk.name} desk, from above`, ld: hubLd }) + style + `
 <main class="legal gear fit">
   <p><a href="/fit">Will it fit?</a></p>
   <h1>What fits on a ${esc(desk.name)} desk</h1>
